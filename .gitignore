@@ -53,3 +53,11 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# KiCAD
+*-backups/
+*.lck
+.history/
+*~sch
+*.kicad_pcb-bak
+fp-info-cache
