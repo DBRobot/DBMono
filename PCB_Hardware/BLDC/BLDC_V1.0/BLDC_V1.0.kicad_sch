@@ -91,16 +91,6 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 152.4) (xy 215.9 152.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1fe3f694-31ca-4f94-bc91-5ff951b35e91")
-	)
-	(wire
-		(pts
 			(xy 203.2 54.61) (xy 215.9 54.61)
 		)
 		(stroke
@@ -278,6 +268,16 @@
 			(type default)
 		)
 		(uuid "4bb896e7-e0e5-4818-b592-bc75016c857c")
+	)
+	(wire
+		(pts
+			(xy 203.2 123.19) (xy 215.9 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4d75b9e1-f36e-4bce-b8d1-3a6a8bb37ecc")
 	)
 	(wire
 		(pts
@@ -706,16 +706,6 @@
 		(pin "BOARD_TEMP" input
 			(at 215.9 149.86 180)
 			(uuid "9b88b8fd-14a2-492f-9056-d8f21155c989")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "EXT_TEMP" input
-			(at 215.9 152.4 180)
-			(uuid "8bdd0716-cc6f-4bbb-9316-301d5f0215ed")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1589,16 +1579,6 @@
 				(justify right)
 			)
 		)
-		(pin "EXT_TEMP" input
-			(at 203.2 152.4 0)
-			(uuid "7960128e-2f28-45f1-8f78-f9ea5e7142a9")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
 		(pin "VBUS" input
 			(at 127 66.04 180)
 			(uuid "3192a99b-7564-43ba-89c6-c30d517b2db7")
@@ -1657,6 +1637,16 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+			)
+		)
+		(pin "CAL_EN" input
+			(at 203.2 123.19 0)
+			(uuid "5f7110dd-28b0-4cc4-8f97-841b22de0fb9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 			)
 		)
 		(instances

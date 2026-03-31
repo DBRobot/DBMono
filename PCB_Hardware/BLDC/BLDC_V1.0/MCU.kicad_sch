@@ -4708,17 +4708,6 @@
 		)
 		(uuid "4c735bfb-d376-4390-93ae-3afe46bb485b")
 	)
-	(hierarchical_label "EXT_TEMP"
-		(shape input)
-		(at 125.73 87.63 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "53317632-b750-4330-8f64-1b6c41a5025f")
-	)
 	(hierarchical_label "SOC"
 		(shape input)
 		(at 163.83 130.81 0)
@@ -5037,6 +5026,17 @@
 			(justify left)
 		)
 		(uuid "eef6f70d-224d-475a-b7e9-f08795b73e0f")
+	)
+	(hierarchical_label "CAL_EN"
+		(shape input)
+		(at 125.73 87.63 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f863084d-686c-48ad-ac81-d920cd34ae2e")
 	)
 	(hierarchical_label "PC4{slash}SCL{slash}ADC"
 		(shape input)
