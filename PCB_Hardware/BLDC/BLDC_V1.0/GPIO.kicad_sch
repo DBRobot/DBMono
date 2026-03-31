@@ -3420,16 +3420,6 @@
 	)
 	(wire
 		(pts
-			(xy 67.31 31.75) (xy 68.58 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "10df5541-738a-4110-8b6f-110700307462")
-	)
-	(wire
-		(pts
 			(xy 127 142.24) (xy 162.56 142.24)
 		)
 		(stroke
@@ -3737,6 +3727,16 @@
 			(type default)
 		)
 		(uuid "5e565cc7-e223-4d31-9db0-6e4c1f874766")
+	)
+	(wire
+		(pts
+			(xy 68.58 31.75) (xy 68.58 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "609c02a5-a9eb-471b-be81-567b6addc64b")
 	)
 	(wire
 		(pts
@@ -4220,16 +4220,6 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 31.75) (xy 68.58 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ed8f5393-d750-4acb-8bba-5524c1a2f642")
-	)
-	(wire
-		(pts
 			(xy 172.72 25.4) (xy 172.72 26.67)
 		)
 		(stroke
@@ -4319,17 +4309,6 @@
 			(justify left)
 		)
 		(uuid "1c4993cb-fe13-48fb-a2d9-79788b4f06ee")
-	)
-	(hierarchical_label "GPIO_LEVEL"
-		(shape input)
-		(at 67.31 31.75 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "2d60c857-2450-4060-9eaa-f86b1a97e7fa")
 	)
 	(hierarchical_label "PC4{slash}SCL{slash}ADC"
 		(shape input)
@@ -6740,6 +6719,84 @@
 			(project "BLDC_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
 					(reference "#PWR062")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 68.58 31.75 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fa6441a1-39e3-4e41-9183-f9f928354f8e")
+		(property "Reference" "#PWR070"
+			(at 68.58 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 68.58 26.67 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 68.58 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 68.58 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 68.58 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f5ab8f0b-6cb8-4f5b-a8ef-b140fd304489")
+		)
+		(instances
+			(project "BLDC_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
+					(reference "#PWR070")
 					(unit 1)
 				)
 			)

@@ -4653,17 +4653,6 @@
 		)
 		(uuid "30e81eea-f8b8-47ff-a908-b154c1db0ff7")
 	)
-	(hierarchical_label "GPIO_LEVEL"
-		(shape input)
-		(at 125.73 115.57 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "34a5efd7-3cf7-4679-bcf2-c18e8ae2cbea")
-	)
 	(hierarchical_label "SEQ2"
 		(shape input)
 		(at 125.73 113.03 180)
@@ -4960,6 +4949,17 @@
 			(justify left)
 		)
 		(uuid "c0990ba8-b7aa-4934-85f1-e6dd04cf23ef")
+	)
+	(hierarchical_label "AUX2_V_CRTL"
+		(shape input)
+		(at 125.73 115.57 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "cfff2172-cbae-4c45-b3ef-f246877974a0")
 	)
 	(hierarchical_label "PA0{slash}TIM{slash}ADC"
 		(shape input)
