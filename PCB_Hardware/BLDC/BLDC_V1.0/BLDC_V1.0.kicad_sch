@@ -91,6 +91,16 @@
 	)
 	(wire
 		(pts
+			(xy 203.2 152.4) (xy 215.9 152.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1fe3f694-31ca-4f94-bc91-5ff951b35e91")
+	)
+	(wire
+		(pts
 			(xy 203.2 54.61) (xy 215.9 54.61)
 		)
 		(stroke
@@ -271,16 +281,6 @@
 	)
 	(wire
 		(pts
-			(xy 203.2 123.19) (xy 215.9 123.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4d75b9e1-f36e-4bce-b8d1-3a6a8bb37ecc")
-	)
-	(wire
-		(pts
 			(xy 63.5 104.14) (xy 127 104.14)
 		)
 		(stroke
@@ -448,16 +448,6 @@
 			(type default)
 		)
 		(uuid "a8695bf7-3442-4a4e-a4fa-b1c148fff5b7")
-	)
-	(wire
-		(pts
-			(xy 63.5 66.04) (xy 127 66.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b1896f81-98d0-443f-b7e0-0817ffe1c323")
 	)
 	(wire
 		(pts
@@ -713,6 +703,16 @@
 				(justify left)
 			)
 		)
+		(pin "EXT_TEMP" input
+			(at 215.9 152.4 180)
+			(uuid "8bdd0716-cc6f-4bbb-9316-301d5f0215ed")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
 		(instances
 			(project "BLDC_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb"
@@ -878,16 +878,6 @@
 		(pin "USB_D-" input
 			(at 63.5 63.5 0)
 			(uuid "439d0387-b1e3-4ec7-ae9b-2b3fcdcca743")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "VBUS" input
-			(at 63.5 66.04 0)
-			(uuid "609087f4-87c2-4581-b717-44629484b042")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1579,14 +1569,14 @@
 				(justify right)
 			)
 		)
-		(pin "VBUS" input
-			(at 127 66.04 180)
-			(uuid "3192a99b-7564-43ba-89c6-c30d517b2db7")
+		(pin "EXT_TEMP" input
+			(at 203.2 152.4 0)
+			(uuid "7960128e-2f28-45f1-8f78-f9ea5e7142a9")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(pin "EEPROM_SCL" input
@@ -1637,16 +1627,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-			)
-		)
-		(pin "CAL_EN" input
-			(at 203.2 123.19 0)
-			(uuid "5f7110dd-28b0-4cc4-8f97-841b22de0fb9")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 			)
 		)
 		(instances

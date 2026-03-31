@@ -1680,19 +1680,13 @@
 		(at 165.1 64.77)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "203af483-ca58-418a-a97d-25b948152aed")
+		(uuid "1e312711-1366-4d23-8485-ff27573a7069")
 	)
 	(junction
 		(at 133.35 96.52)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2379a609-d9ea-4d84-8ba2-0fad99c142bd")
-	)
-	(junction
-		(at 177.8 64.77)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "2ca722a5-eeec-46c6-9a6d-1c30cef12f18")
 	)
 	(junction
 		(at 137.16 74.93)
@@ -1743,22 +1737,10 @@
 		(uuid "aa56f3c7-5a22-48b0-8b2f-ec155f8d4d28")
 	)
 	(junction
-		(at 165.1 74.93)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c2e494c3-ca7a-4059-9b19-e07caf0343c4")
-	)
-	(junction
 		(at 107.95 120.65)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "eb90a79e-c70b-412b-a0c5-cc45fa753cef")
-	)
-	(junction
-		(at 177.8 74.93)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f5d5528c-fe58-466e-b9f0-2c306996a4d1")
 	)
 	(no_connect
 		(at 130.81 109.22)
@@ -1810,16 +1792,6 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 74.93) (xy 167.64 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "17307ce1-b0bf-4f1d-9424-7269cf51208d")
-	)
-	(wire
-		(pts
 			(xy 132.08 64.77) (xy 137.16 64.77)
 		)
 		(stroke
@@ -1847,16 +1819,6 @@
 			(type default)
 		)
 		(uuid "2087b45f-3130-44ea-ae59-1efe6dd829a9")
-	)
-	(wire
-		(pts
-			(xy 177.8 66.04) (xy 177.8 64.77)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "27c2dff9-ac23-41ca-820a-748538b0b5d9")
 	)
 	(wire
 		(pts
@@ -1930,16 +1892,6 @@
 	)
 	(wire
 		(pts
-			(xy 175.26 74.93) (xy 177.8 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6cd5911d-d477-4802-bf39-98447719c9da")
-	)
-	(wire
-		(pts
 			(xy 130.81 93.98) (xy 133.35 93.98)
 		)
 		(stroke
@@ -1990,7 +1942,7 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 64.77) (xy 165.1 64.77)
+			(xy 165.1 64.77) (xy 166.37 64.77)
 		)
 		(stroke
 			(width 0)
@@ -2007,16 +1959,6 @@
 			(type default)
 		)
 		(uuid "84d487c1-217c-4c22-bd71-cdd42b2304de")
-	)
-	(wire
-		(pts
-			(xy 177.8 73.66) (xy 177.8 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8a4cd274-0d59-414f-a495-b1ef5fee2c87")
 	)
 	(wire
 		(pts
@@ -2190,26 +2132,6 @@
 	)
 	(wire
 		(pts
-			(xy 177.8 74.93) (xy 180.34 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e98b4c77-a4e6-4236-905b-5d5f68be36f8")
-	)
-	(wire
-		(pts
-			(xy 177.8 64.77) (xy 180.34 64.77)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "eaab64dd-47f1-4f2a-b90d-3f3f89b8f53e")
-	)
-	(wire
-		(pts
 			(xy 139.7 86.36) (xy 152.4 86.36)
 		)
 		(stroke
@@ -2220,7 +2142,7 @@
 	)
 	(hierarchical_label "5V_USB"
 		(shape input)
-		(at 180.34 64.77 0)
+		(at 166.37 64.77 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2250,17 +2172,6 @@
 			(justify left)
 		)
 		(uuid "b5fcc22e-f519-415a-a491-cf92c6161b6b")
-	)
-	(hierarchical_label "VBUS"
-		(shape input)
-		(at 180.34 74.93 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "eb33cfbc-4a74-40f1-9b37-6311f3a00d92")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -2336,167 +2247,6 @@
 			(project "BLDC_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/1bfd0788-fffd-4064-ae06-93bfbcdcc4d1"
 					(reference "#PWR082")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 177.8 69.85 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2c9b9a61-fd71-4a65-a827-a2dadabbb716")
-		(property "Reference" "R45"
-			(at 180.34 68.5799 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "220k"
-			(at 180.34 71.1199 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 179.578 69.85 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 177.8 69.85 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 177.8 69.85 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "67e58dd3-8c5a-4e31-8310-759b53db6bbd")
-		)
-		(pin "2"
-			(uuid "59da6d71-799e-40fa-8bbe-d91f0268e2cc")
-		)
-		(instances
-			(project "BLDC_V1.0"
-				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/1bfd0788-fffd-4064-ae06-93bfbcdcc4d1"
-					(reference "R45")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 171.45 74.93 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "3829d07b-222a-4e95-a74a-8c4e0eab3824")
-		(property "Reference" "R46"
-			(at 171.45 77.978 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "100k"
-			(at 171.45 80.518 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 171.45 76.708 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 171.45 74.93 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 171.45 74.93 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "4b51f03e-325b-4730-8a9f-f697fae87c9a")
-		)
-		(pin "2"
-			(uuid "b97b6e66-0324-4d38-b976-2a27fdfac219")
-		)
-		(instances
-			(project "BLDC_V1.0"
-				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/1bfd0788-fffd-4064-ae06-93bfbcdcc4d1"
-					(reference "R46")
 					(unit 1)
 				)
 			)

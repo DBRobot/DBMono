@@ -3596,6 +3596,16 @@
 	)
 	(wire
 		(pts
+			(xy 125.73 82.55) (xy 127 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "48f5744b-cad1-482c-84da-fdb45b9343cd")
+	)
+	(wire
+		(pts
 			(xy 125.73 87.63) (xy 127 87.63)
 		)
 		(stroke
@@ -4186,16 +4196,6 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 82.55) (xy 127 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b1d5b204-ae0a-46d8-9e2d-878e129f9bc0")
-	)
-	(wire
-		(pts
 			(xy 162.56 67.31) (xy 163.83 67.31)
 		)
 		(stroke
@@ -4708,6 +4708,17 @@
 		)
 		(uuid "4c735bfb-d376-4390-93ae-3afe46bb485b")
 	)
+	(hierarchical_label "EXT_TEMP"
+		(shape input)
+		(at 125.73 87.63 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "53317632-b750-4330-8f64-1b6c41a5025f")
+	)
 	(hierarchical_label "SOC"
 		(shape input)
 		(at 163.83 130.81 0)
@@ -4751,17 +4762,6 @@
 			(justify right)
 		)
 		(uuid "64a3e7c1-cf2e-47eb-bd4c-812b678f82bc")
-	)
-	(hierarchical_label "VBUS"
-		(shape input)
-		(at 125.73 82.55 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "65f1a965-3a38-45a4-8109-bd5641d3b94f")
 	)
 	(hierarchical_label "PA1{slash}TIM{slash}ADC"
 		(shape input)
@@ -4839,6 +4839,17 @@
 			(justify left)
 		)
 		(uuid "8580023c-6469-4ad5-97f2-1b70bfad4dc6")
+	)
+	(hierarchical_label "CAL_EN"
+		(shape input)
+		(at 125.73 82.55 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "85d014fa-90a1-4909-8508-da5447385586")
 	)
 	(hierarchical_label "ENCODER_SCLK"
 		(shape input)
@@ -5026,17 +5037,6 @@
 			(justify left)
 		)
 		(uuid "eef6f70d-224d-475a-b7e9-f08795b73e0f")
-	)
-	(hierarchical_label "CAL_EN"
-		(shape input)
-		(at 125.73 87.63 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "f863084d-686c-48ad-ac81-d920cd34ae2e")
 	)
 	(hierarchical_label "PC4{slash}SCL{slash}ADC"
 		(shape input)
