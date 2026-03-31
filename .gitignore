@@ -60,4 +60,12 @@ dkms.conf
 .history/
 *~sch
 *.kicad_pcb-bak
+*.bak
 fp-info-cache
+
+# STM32CubeMX / STM32CubeIDE metadata
+.settings/
+Debug/
+Release/
+.metadata/
+*.launch

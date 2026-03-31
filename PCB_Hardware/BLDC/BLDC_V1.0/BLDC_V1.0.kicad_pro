@@ -496,7 +496,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "KiCAD_template.kicad_pro",
+    "filename": "BLDC_V1.0.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -677,18 +677,66 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "KiCAD_template.kicad_sch",
-        "name": "Root",
+        "filename": "BLDC_V1.0.kicad_sch",
+        "name": "BLDC_V1.0",
         "uuid": "55f9ea03-7b89-4b61-9599-7cac20295fbb"
       }
     ],
-    "used_designators": "",
+    "used_designators": "TH1,J5-10,J14,D5-9,D14,D22-24,C15-36,C42-47,C57,Y2,#PWR26-69,#PWR92-99,R12-28,R56-60,F1-6,U7-9,U14-16,Q3-12",
     "variants": []
   },
   "sheets": [
     [
       "55f9ea03-7b89-4b61-9599-7cac20295fbb",
-      "Root"
+      "BLDC_V1.0"
+    ],
+    [
+      "774e7f9f-7f02-4a60-ab4e-b20cca084806",
+      "MCU"
+    ],
+    [
+      "364afab2-ff10-4915-a537-70fd93822ac8",
+      "Power"
+    ],
+    [
+      "1918d069-07a4-4d13-8140-98b365482b28",
+      "CANFD"
+    ],
+    [
+      "1bfd0788-fffd-4064-ae06-93bfbcdcc4d1",
+      "USBC"
+    ],
+    [
+      "9e3005f0-8cfa-4d51-a6c0-305538037f39",
+      "OR Inputs"
+    ],
+    [
+      "cd88251b-b951-4a45-8014-7eab7e00e9c3",
+      "Motor Driver"
+    ],
+    [
+      "044d02a8-97f1-49f2-ac4a-324d5d62d7f3",
+      "Encoder"
+    ],
+    [
+      "285ef222-eee5-41a1-b831-5d9be58a5227",
+      "Break R"
+    ],
+    [
+      "06418743-fb4d-41a1-b176-44abd8e778ba",
+      "Temp Sense"
+    ],
+    [
+      "8f78cf5e-6507-43d1-b4c9-7c5d1f1c9a78",
+      "Fan"
+    ],
+    [
+      "4ed90f4a-9319-42f4-aa74-161824698181",
+      "GPIO"
+    ],
+    [
+      "8c82480a-69eb-4e57-815e-68aa86fb6e72",
+      "EEPROM"
     ]
   ],
   "text_variables": {},
