@@ -8,11 +8,11 @@ DBCAN is an open-source CAN FD protocol using both standard (11-bit) and extende
 
 Used for: errors, network management, debug, and heartbeat messages. These are always broadcast.
 
-| Bits  | Width | Field        |
-|-------|-------|--------------|
-| 10-9  | 2     | Message Type |
-| 8     | 1     | Reserved     |
-| 7-0   | 8     | Source UID   |
+```
+Bits 10-9:  Message Type    (2 bits)
+Bit 8:      Reserved        (1 bit)
+Bits 7-0:   Source UID      (8 bits)
+```
 
 #### Message Type Encoding
 
@@ -35,14 +35,14 @@ Lower values win CAN arbitration first, so errors have the highest priority, fol
 
 Used for: request/response exchanges between nodes.
 
-| Bits  | Width | Field        |
-|-------|-------|--------------|
-| 28-26 | 3     | Priority     |
-| 25    | 1     | Broadcast    |
-| 24    | 1     | Response     |
-| 23-16 | 8     | Reserved     |
-| 15-8  | 8     | Sender UID   |
-| 7-0   | 8     | Receiver UID |
+```
+Bits 28-26: Priority        (3 bits)
+Bit 25:     Broadcast       (1 bit)
+Bit 24:     Response        (1 bit)
+Bits 23-16: Reserved        (8 bits)
+Bits 15-8:  Sender UID      (8 bits)
+Bits 7-0:   Receiver UID    (8 bits)
+```
 
 #### Priority
 
