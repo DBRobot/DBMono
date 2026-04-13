@@ -1,0 +1,78 @@
+* CAN Split Termination Transient Analysis at 5 Mbps
+* DBCAN_V1.0 - Signal integrity check with 4.7nF split caps
+*
+* Model a CAN-FD dominant/recessive cycle at 5 Mbps (200ns bit time)
+* and check that the split cap midpoint stays within acceptable range.
+*
+* CAN bus levels:
+*   Recessive: CANH = CANL = 2.5V (Vdiff = 0V)
+*   Dominant:  CANH = 3.5V, CANL = 1.5V (Vdiff = 2V)
+*
+* =====================================================================
+* Parameters
+* =====================================================================
+.param Csplit = 4.7n
+.param Rtop = 60
+.param Rbot = 60
+.param Rds_on = 0.06
+.param Vrecessive = 2.5
+.param Vdom_h = 3.5
+.param Vdom_l = 1.5
+.param Tbit = 200n    ; 5 Mbps bit time
+
+* =====================================================================
+* CAN Driver (simplified behavioral)
+* =====================================================================
+* Simulate a burst of dominant bits followed by recessive
+* Pattern: 5 dominant bits then 5 recessive (worst case for cap charging)
+
+V_canh canh 0 PULSE({Vrecessive} {Vdom_h} 0 10n 10n {5*Tbit} {10*Tbit})
+V_canl canl 0 PULSE({Vrecessive} {Vdom_l} 0 10n 10n {5*Tbit} {10*Tbit})
+
+* Bus characteristic impedance (far end)
+R_bus_h canh canh_bus 60
+R_bus_l canl canl_bus 60
+
+* Split termination at our node (MOSFET switches on)
+R_sw1 canh_bus canh_t {Rds_on}
+R_sw2 canl_bus canl_t {Rds_on}
+
+R1 canh_t mid {Rtop}
+R2 canl_t mid {Rbot}
+C1 mid 0 {Csplit} IC=2.5
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.003 ABSTOL=1u VNTOL=1m CHGTOL=1p
+
+.tran 1n 4u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo "=== CAN Split Termination Transient Results ==="
+
+  * Measure midpoint voltage swing
+  meas tran Vmid_max MAX V(mid) from=0 to=4u
+  meas tran Vmid_min MIN V(mid) from=200n to=4u
+  meas tran Vmid_avg AVG V(mid) from=0 to=4u
+
+  * Measure differential voltage at termination
+  let Vdiff = V(canh_t) - V(canl_t)
+  meas tran Vdiff_max MAX Vdiff from=0 to=4u
+  meas tran Vdiff_dom AVG Vdiff from=100n to=900n
+
+  print Vmid_max Vmid_min Vmid_avg Vdiff_max
+
+  wrdata can_split_term_transient.csv V(canh_bus) V(canl_bus) V(mid) Vdiff
+
+  quit
+.endc
+
+.end

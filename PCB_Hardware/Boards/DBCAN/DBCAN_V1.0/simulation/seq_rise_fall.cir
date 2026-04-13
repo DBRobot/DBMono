@@ -1,0 +1,129 @@
+* SEQ Rise/Fall Time Analysis
+* DBCAN_V1.0 - Signal timing with 10k pull-up and ESD capacitance
+*
+* Updated topology (MCU drives SEQ as output, open-drain):
+*   +5V --- R_pullup (10k) --- connector pin --- D_esd (PESD5V0L1UL) --- GND
+*                                    |
+*                               R_series (1k)
+*                                    |
+*                               MCU GPIO (open-drain, FT, no upper clamp)
+*
+* PESD5V0L1UL connection (unidirectional):
+*   Cathode = conn_pin (protected line)
+*   Anode = GND
+*   - Positive overvoltage: reverse breakdown at Vbr clamps
+*   - Negative voltage: forward diode clamps at -0.6V
+*
+* Load capacitance at connector:
+*   - PESD5V0L1UL Cj = 25pF
+*   - Trace + connector ~10pF
+*   - Remote device input + cable ~20pF
+*   Total at connector: ~55pF
+*   Plus MCU side: ~10pF (gpio + trace)
+*
+* Rise: 10k pullup charges total ~65pF -> tau = 650ns, tr(10-90%) ~ 1.43us
+* Fall: ~1k + ~50 ohm Rds into total ~65pF -> tau ~ 68ns, tf ~ 150ns
+*
+* =====================================================================
+
+* +5V supply
+V5 vdd 0 DC 5.0
+
+* 3.3V MCU supply
+V33 vdd_mcu 0 DC 3.3
+
+* Pull-up resistor
+R_pullup vdd conn_pin 10k
+
+* ESD diode (PESD5V0L1UL) - unidirectional
+* Anode=GND, Cathode=conn_pin
+* Provides: reverse breakdown clamp at ~6.8V for positive overvoltage
+*           forward diode clamp at -0.6V for negative voltage
+*           25pF junction capacitance
+.model PESD5V0L1UL D (
++   Is=1p N=1.05 Rs=1.5
++   Bv=6.8 Ibv=1m
++   Cjo=25p Vj=0.7 M=0.5 )
+
+D_esd 0 conn_pin PESD5V0L1UL
+
+* Series resistor with ammeter
+R_series conn_pin rseries_out 1k
+V_am_rs rseries_out mcu_pin DC 0
+
+* STM32G0B1 FT Pin Model: NO upper clamp to VDD
+* Only lower clamp to GND
+.model MCU_CLAMP_DN D (Is=1n N=1.7 Rs=50)
+D_mcu_dn 0 mcu_pin MCU_CLAMP_DN
+
+* MCU pin capacitance
+C_gpio mcu_pin 0 5p
+
+* Trace capacitance at connector side
+C_trace conn_pin 0 10p
+
+* Remote device load (cable + input)
+C_remote conn_pin 0 20p
+
+* =====================================================================
+* MCU open-drain output modeled as voltage-controlled switch
+* Ron = 50 ohm (typical STM32 GPIO output impedance)
+* =====================================================================
+.model SW_OD SW (Vt=1.5 Vh=0.2 Ron=50 Roff=100MEG)
+S_mcu mcu_pin 0 gate_ctrl 0 SW_OD
+
+* Gate control:
+*   0-10us: LOW (switch off, line charges to 5V via pullup)
+*   10us: HIGH (switch on, pulls line LOW through 1k+50ohm)
+*   25us: LOW (switch off, line rises back to 5V)
+*   40us: HIGH again
+V_gate gate_ctrl 0 PULSE(0 3.3 10u 10n 10n 15u 30u)
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.003 VNTOL=1m ABSTOL=1u CHGTOL=1p GMIN=1E-9
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR TRTOL=7
+
+.tran 5n 60u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo ""
+  echo "=== SEQ Rise/Fall Time Analysis ==="
+  echo ""
+
+  * HIGH state (pull-up, before first toggle, t=7-9us)
+  meas tran V_conn_high AVG V(conn_pin) from=7u to=9u
+  meas tran V_mcu_high AVG V(mcu_pin) from=7u to=9u
+
+  * LOW state (MCU driving low, t=12-24us)
+  meas tran V_conn_low AVG V(conn_pin) from=12u to=24u
+  meas tran V_mcu_low AVG V(mcu_pin) from=12u to=24u
+
+  * Fall time at connector (90% to 10% of 5V: 4.5V to 0.5V)
+  meas tran t_fall_conn TRIG V(conn_pin) VAL=4.5 FALL=1 TARG V(conn_pin) VAL=0.5 FALL=1
+
+  * Rise time at connector (10% to 90%: 0.5V to 4.5V)
+  * Use RISE=2 to skip initial charge from 0V
+  meas tran t_rise_conn TRIG V(conn_pin) VAL=0.5 RISE=2 TARG V(conn_pin) VAL=4.5 RISE=2
+
+  * Pullup current when driving LOW
+  echo ""
+  echo "Pullup current when LOW = (5V - V_conn_low) / 10k"
+  echo "VOL at connector = V_conn_low"
+  echo "VOL at MCU pin = V_mcu_low (should be near 0V)"
+  echo ""
+
+  wrdata seq_rise_fall.csv V(conn_pin) V(mcu_pin) v_am_rs#branch
+
+  quit
+.endc
+
+.end

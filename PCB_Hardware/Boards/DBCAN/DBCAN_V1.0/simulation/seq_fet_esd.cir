@@ -1,0 +1,154 @@
+* SEQ N-FET Buffer ESD Analysis
+* DBCAN_V1.0 - IEC 61000-4-2 8kV contact discharge on connector pin
+*
+* Final topology (MCU drives SEQ via N-FET level shifter):
+*   +5V --- R_pullup (10k) --- connector pin --- D_esd (PESD5V0L1UL) --- GND
+*                                    |
+*                               SI2302 drain
+*                               SI2302 source --- GND
+*                               SI2302 gate --- MCU GPIO (3.3V push-pull)
+*
+* ESD event: connector pin hit with 8kV contact discharge
+* FET is OFF (idle state, MCU gate = 0V, connector at 5V)
+*
+* Protection path:
+*   1. PESD5V0L1UL clamps connector to ~7-18V (depending on current)
+*   2. SI2302 drain sees clamped voltage
+*   3. SI2302 gate is at 0V (MCU GPIO low)
+*   4. Vds max = 20V on SI2302
+*   5. Cgd coupling from drain spike to gate
+*
+* KEY QUESTION: Does Cgd (50pF) couple enough voltage to gate
+* to partially turn on the FET or damage the MCU GPIO?
+*
+* =====================================================================
+
+* +5V supply with source impedance
+V5 vdd 0 DC 5.0
+R_supply vdd vdd_local 1
+
+* Pull-up resistor
+R_pullup vdd_local conn_pin 10k
+
+* ESD protection diode (PESD5V0L1UL) - unidirectional
+* Anode=GND, Cathode=conn_pin
+* Rs=0.5 for ESD peak current modeling
+.model PESD5V0L1UL D (
++   Is=1p N=1.05 Rs=0.5
++   Bv=6.8 Ibv=1m
++   Cjo=25p Vj=0.7 M=0.5 )
+
+D_esd 0 esd_a PESD5V0L1UL
+V_am_esd esd_a conn_pin DC 0
+
+* =====================================================================
+* SI2302 N-channel MOSFET
+* =====================================================================
+.model SI2302 NMOS (
++   Level=1 Vto=0.8 Kp=9.0 Lambda=0.02
++   Rd=15m Rs=15m
++   Cgso=240p Cgdo=50p
++   Cbd=30p Cbs=0
++   Is=1e-14 Pb=0.8 )
+
+M1 conn_pin gate 0 0 SI2302 W=1 L=1
+
+* MCU gate drive: LOW (FET OFF, idle state during ESD)
+* MCU GPIO push-pull output impedance ~25-50 ohm
+R_gate mcu_gate gate 25
+V_gate mcu_gate 0 DC 0
+
+* MCU GPIO ESD/clamp protection (simplified)
+* Upper clamp to 3.3V rail
+.model MCU_CLAMP_UP D (Is=1n N=1.5 Rs=20)
+D_mcu_up gate vdd_mcu MCU_CLAMP_UP
+
+* Lower clamp to GND
+.model MCU_CLAMP_DN D (Is=1n N=1.7 Rs=20)
+D_mcu_dn 0 gate MCU_CLAMP_DN
+
+* 3.3V MCU supply
+V33 vdd_mcu 0 DC 3.3
+
+* MCU gate pin capacitance (trace + pad + GPIO)
+C_gate_ext gate 0 5p
+
+* Trace/connector parasitic capacitance
+C_trace conn_pin 0 10p
+
+* =====================================================================
+* IEC 61000-4-2 ESD current pulse (8kV contact discharge)
+* Standard waveform: peak ~24A, rise ~1ns, decay ~30-60ns
+* =====================================================================
+I_esd 0 conn_pin PWL(
++ 0       0
++ 0.2n    0
++ 0.7n    15
++ 1.0n    24
++ 2.0n    18
++ 5.0n    14
++ 10n     11
++ 20n     8
++ 30n     6
++ 60n     3
++ 100n    1.5
++ 200n    0.5
++ 500n    0.1
++ 1u      0 )
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.001 VNTOL=0.1m ABSTOL=1u CHGTOL=0.1p GMIN=1E-9
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR TRTOL=7
+
+.tran 0.1n 2u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo ""
+  echo "=== SEQ N-FET Buffer ESD Analysis (8kV Contact Discharge) ==="
+  echo ""
+
+  * Peak voltage at connector pin (FET drain)
+  meas tran V_drain_peak MAX V(conn_pin) from=0 to=500n
+
+  * Peak voltage at FET gate (Cgd coupling)
+  meas tran V_gate_peak MAX V(gate) from=0 to=500n
+
+  * Peak voltage at MCU GPIO (after gate resistance)
+  meas tran V_mcu_gate_peak MAX V(mcu_gate) from=0 to=200n
+
+  * Peak current through ESD diode
+  meas tran I_esd_peak MAX v_am_esd#branch from=0 to=200n
+
+  * Time connector voltage exceeds 20V (SI2302 Vds max)
+  meas tran T_above_vds_max TRIG V(conn_pin) VAL=20 RISE=1 TARG V(conn_pin) VAL=20 FALL=1
+
+  * Minimum gate voltage (check for negative transient)
+  meas tran V_gate_min MIN V(gate) from=0 to=2u
+
+  * Check if gate voltage exceeds Vth (0.8V) - would mean FET partially ON during ESD
+  meas tran V_gate_above_vth MAX V(gate) from=0 to=500n
+
+  echo ""
+  echo "=== Limits ==="
+  echo "SI2302 Vds max = 20V"
+  echo "SI2302 Vgs(th) = 0.65-1.0V (gate should stay below this during ESD)"
+  echo "MCU GPIO abs max = 3.3V+0.3V = 3.6V (standard pin)"
+  echo "Cgd coupling: dV_gate = Cgd/(Cgd+Cgs+C_ext) * dV_drain"
+  echo "  = 50p/(50p+240p+5p) * dV_drain = 0.17 * dV_drain"
+  echo ""
+
+  wrdata seq_fet_esd.csv V(conn_pin) V(gate) V(mcu_gate) v_am_esd#branch
+
+  quit
+.endc
+
+.end

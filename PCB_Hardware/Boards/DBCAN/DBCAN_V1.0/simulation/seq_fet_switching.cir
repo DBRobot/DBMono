@@ -1,0 +1,152 @@
+* SEQ N-FET Buffer Switching Analysis
+* DBCAN_V1.0 - Rise/fall time, voltage levels at connector pin
+*
+* Final topology (MCU drives SEQ via N-FET level shifter):
+*   +5V --- R_pullup (10k) --- connector pin --- D_esd (PESD5V0L1UL) --- GND
+*                                    |
+*                               SI2302 drain
+*                               SI2302 source --- GND
+*                               SI2302 gate --- MCU GPIO (3.3V push-pull)
+*
+* Operating modes:
+*   MCU HIGH (3.3V) -> FET ON -> connector ~ 0V (inverted)
+*   MCU LOW  (0V)   -> FET OFF -> connector ~ 5V via pull-up (inverted)
+*
+* Load capacitance at connector:
+*   - PESD5V0L1UL Cj = 25pF
+*   - Trace + connector = ~10pF
+*   - Remote device input + cable = ~20pF
+*   Total at connector: ~55pF
+*
+* Rise: FET OFF, 10k pullup charges 55pF -> tau = 550ns, tr(10-90%) ~ 1.2us
+* Fall: FET ON, Rds~60mΩ discharges 55pF -> tau ~ 3.3ns, tf ~ 7ns
+*
+* =====================================================================
+
+* +5V supply
+V5 vdd 0 DC 5.0
+
+* Pull-up resistor
+R_pullup vdd conn_pin 10k
+
+* ESD diode (PESD5V0L1UL) - unidirectional
+* Anode=GND, Cathode=conn_pin
+.model PESD5V0L1UL D (
++   Is=1p N=1.05 Rs=1.5
++   Bv=6.8 Ibv=1m
++   Cjo=25p Vj=0.7 M=0.5 )
+
+D_esd 0 conn_pin PESD5V0L1UL
+
+* Trace/connector parasitic capacitance
+C_trace conn_pin 0 10p
+
+* Remote device load (cable + input)
+C_remote conn_pin 0 20p
+
+* =====================================================================
+* SI2302 N-channel MOSFET (SOT-23)
+* Vgs(th) = 0.65-1.0V (typ 0.8V)
+* Rds(on) = 60mOhm @ Vgs=4.5V, Id=3A
+* Vds(max) = 20V, Id(max) = 2.6A
+* Ciss ~ 240pF, Crss ~ 50pF, Coss ~ 80pF
+*
+* Kp derivation for Rds(on) matching:
+*   Rds(on) = Rd + Rs + 1/(Kp*(Vgs-Vth))
+*   At Vgs=4.5V: 0.06 = 0.03 + 1/(Kp*3.7) -> Kp = 9.0
+*   At Vgs=3.3V: Rds = 0.03 + 1/(9*2.5) = 0.03 + 0.044 = 74mOhm
+*   At Vgs=2.5V: Rds = 0.03 + 1/(9*1.7) = 0.03 + 0.065 = 95mOhm (matches ~100mOhm DS)
+* =====================================================================
+.model SI2302 NMOS (
++   Level=1 Vto=0.8 Kp=9.0 Lambda=0.02
++   Rd=15m Rs=15m
++   Cgso=240p Cgdo=50p
++   Cbd=30p Cbs=0
++   Is=1e-14 Pb=0.8 )
+
+M1 conn_pin gate 0 0 SI2302 W=1 L=1
+
+* Ammeter on drain
+* (Replaced by measuring current through FET directly)
+
+* MCU gate drive: 3.3V push-pull
+* Gate resistance (MCU output impedance + trace)
+R_gate gate_drive gate 10
+
+* Gate capacitance already in MOSFET model (Cgso + Cgdo)
+
+* Gate drive waveform:
+*   0-5us:  HIGH (3.3V) -> FET ON -> connector LOW
+*   5us:    LOW (0V) -> FET OFF -> connector rises to 5V via pullup
+*   20us:   HIGH (3.3V) -> FET ON -> connector falls to 0V
+*   35us:   LOW again -> connector rises
+V_gate gate_drive 0 PULSE(3.3 0 5u 10n 10n 15u 30u)
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.003 VNTOL=1m ABSTOL=1u CHGTOL=1p GMIN=1E-9
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR TRTOL=7
+
+.tran 5n 70u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo ""
+  echo "=== SEQ N-FET Buffer Switching Analysis ==="
+  echo ""
+
+  * LOW state: FET ON, connector near 0V (t=1-4us, gate=3.3V)
+  meas tran V_conn_low AVG V(conn_pin) from=1u to=4u
+  meas tran V_gate_on AVG V(gate) from=1u to=4u
+
+  * HIGH state: FET OFF, pullup drives connector to 5V (t=10-18us)
+  meas tran V_conn_high AVG V(conn_pin) from=10u to=18u
+  meas tran V_gate_off AVG V(gate) from=10u to=18u
+
+  * Rise time at connector: FET turns OFF, 10k pullup charges cap
+  * 10% to 90% of 5V swing: 0.5V to 4.5V
+  meas tran t_rise_conn TRIG V(conn_pin) VAL=0.5 RISE=1 TARG V(conn_pin) VAL=4.5 RISE=1
+
+  * Fall time at connector: FET turns ON, drains cap through Rds(on)
+  * 90% to 10% of 5V: 4.5V to 0.5V
+  meas tran t_fall_conn TRIG V(conn_pin) VAL=4.5 FALL=1 TARG V(conn_pin) VAL=0.5 FALL=1
+
+  * Propagation delay: gate edge to connector edge (50% points)
+  * Gate goes LOW (FET OFF) at 5us -> connector rises
+  meas tran tpd_rise TRIG V(gate) VAL=1.65 FALL=1 TARG V(conn_pin) VAL=2.5 RISE=1
+
+  * Gate goes HIGH (FET ON) at 20us -> connector falls
+  meas tran tpd_fall TRIG V(gate) VAL=1.65 RISE=1 TARG V(conn_pin) VAL=2.5 FALL=1
+
+  * Current through pullup when FET is ON
+  * I = V5/R_pullup (approximately, since Vds ~ 0)
+  echo ""
+  echo "Pullup current when FET ON = ~5V/10k = 0.5mA"
+  echo ""
+
+  * Verify Rds(on) at Vgs=3.3V: Vds = I_pullup * Rds_on
+  * V_conn_low / 0.5mA gives effective Rds
+  echo "Effective Rds(on) at Vgs=3.3V:"
+  echo "  Rds = V_conn_low / (5V/10k) = V_conn_low / 0.5mA"
+  echo ""
+
+  * Gate voltage (verify no coupling from drain)
+  meas tran V_gate_during_rise AVG V(gate) from=5.1u to=10u
+
+  echo "=== Gate Isolation Check ==="
+  echo "V_gate_during_rise should be ~0V (no coupling from connector)"
+  echo ""
+
+  wrdata seq_fet_switching.csv V(conn_pin) V(gate) V(gate_drive)
+
+  quit
+.endc
+
+.end

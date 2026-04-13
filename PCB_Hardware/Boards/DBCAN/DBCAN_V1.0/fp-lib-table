@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "DBRobot") (type "KiCad") (uri "/home/david-bascom/projects/DBMono/PCB_Hardware/libs/DBRobot.pretty") (options "") (descr ""))
+)

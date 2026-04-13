@@ -1,0 +1,92 @@
+* CAN Split Termination Impedance Analysis
+* DBCAN_V1.0 - Verify 4.7nF split caps at 5 Mbps CAN-FD
+*
+* Topology per channel:
+*   CANH ---+--- R_top (60 ohm) ---+--- R_bot (60 ohm) ---+--- CANL
+*           |                       |                       |
+*           |                    C_split                    |
+*           |                    (4.7nF)                    |
+*           |                       |                       |
+*           |                      GND                      |
+*
+* The MOSFET switch (SI2302) is modeled as a small Rds_on when on.
+* Total bus termination = R_top + R_bot = 120 ohm (matches CAN bus Z0)
+* Split cap provides AC ground at the midpoint for common-mode filtering.
+*
+* At 5 Mbps CAN-FD, fundamental frequency = 2.5 MHz
+* Required: Xc << 60 ohm at the fundamental frequency
+*
+* =====================================================================
+* Parameters
+* =====================================================================
+.param Csplit = 4.7n
+.param Rtop = 60
+.param Rbot = 60
+.param Rds_on = 0.06  ; SI2302 Rds(on) ~60 mohm at Vgs=4.5V
+
+* =====================================================================
+* AC Analysis: Impedance vs Frequency
+* =====================================================================
+
+* AC source between CANH and CANL (differential)
+Vac canh_p canl_p AC 1
+
+* MOSFET switch modeled as Rds_on in series with each termination path
+R_sw1 canh_p canh_r {Rds_on}
+R_sw2 canl_p canl_r {Rds_on}
+
+* Split termination network
+R1 canh_r mid {Rtop}
+R2 canl_r mid {Rbot}
+C1 mid 0 {Csplit}
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.ac dec 200 1k 100MEG
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  * Termination impedance = V(canh_p, canl_p) / I(Vac) = 1/I(Vac)
+  * Since Vac = 1V AC, Z = 1/I
+  let z_mag = 1/mag(Vac#branch)
+  let z_db = db(z_mag)
+  let freq_vec = frequency
+
+  * Key frequency measurements
+  * 500 kbps CAN: fundamental ~250 kHz
+  * 1 Mbps CAN-FD: fundamental ~500 kHz
+  * 2 Mbps CAN-FD: fundamental ~1 MHz
+  * 5 Mbps CAN-FD: fundamental ~2.5 MHz
+
+  meas ac Xc_250k FIND z_mag AT=250k
+  meas ac Xc_500k FIND z_mag AT=500k
+  meas ac Xc_1M FIND z_mag AT=1MEG
+  meas ac Xc_2M5 FIND z_mag AT=2.5MEG
+  meas ac Xc_5M FIND z_mag AT=5MEG
+
+  * Capacitor reactance alone (for reference)
+  echo "=== Reference: Xc of 4.7nF cap alone ==="
+  echo "At 250 kHz: Xc = 135 ohm"
+  echo "At 500 kHz: Xc = 67.7 ohm"
+  echo "At 1 MHz:   Xc = 33.9 ohm"
+  echo "At 2.5 MHz: Xc = 13.5 ohm"
+  echo "At 5 MHz:   Xc = 6.8 ohm"
+  echo ""
+  echo "=== Split Termination Total Impedance ==="
+  echo "Target: ~120 ohm DC, approaching 120 ohm at data frequencies"
+  echo ""
+  print Xc_250k Xc_500k Xc_1M Xc_2M5 Xc_5M
+
+  wrdata can_split_term_impedance.csv z_mag
+
+  quit
+.endc
+
+.end

@@ -1,0 +1,34 @@
+{
+    "onEnterRules": [
+        {
+            "beforeText": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$",
+            "afterText": "^\\s*\\*/$",
+            "action": { "indent": "indentOutdent", "appendText": " * " }
+        },
+        {
+            "beforeText": "^\\s*/\\*\\*(?!/)([^\\*]|\\*(?!/))*$",
+            "action": { "indent": "none", "appendText": " * " }
+        },
+        {
+            "beforeText": "^\\s*/\\*(?!\\*)([^\\*]|\\*(?!/))*$",
+            "afterText": "^\\s*\\*/$",
+            "action": { "indent": "indentOutdent", "appendText": " * " }
+        },
+        {
+            "beforeText": "^\\s*/\\*(?!\\*)([^\\*]|\\*(?!/))*$",
+            "action": { "indent": "none", "appendText": " * " }
+        },
+        {
+            "beforeText": "^(\\t|[ ])*[ ]\\*([ ]([^\\*]|\\*(?!/))*)?$",
+            "action": { "indent": "none", "appendText": "* " }
+        },
+        {
+            "beforeText": "^(\\t|[ ])*[ ]\\*/\\s*$",
+            "action": { "indent": "none", "removeText": 1 }
+        },
+        {
+            "beforeText": "^(\\t|[ ])*[ ]\\*[^/]*\\*/\\s*$",
+            "action": { "indent": "none", "removeText": 1 }
+        }
+    ]
+}

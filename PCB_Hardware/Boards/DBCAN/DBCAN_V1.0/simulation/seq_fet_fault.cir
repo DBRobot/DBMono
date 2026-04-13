@@ -1,0 +1,185 @@
+* SEQ N-FET Buffer Sustained Fault Analysis
+* DBCAN_V1.0 - 12V and 24V sustained overvoltage on connector pin
+*
+* Final topology (MCU drives SEQ via N-FET level shifter):
+*   +5V --- R_pullup (10k) --- connector pin --- D_esd (PESD5V0L1UL) --- GND
+*                                    |
+*                               SI2302 drain
+*                               SI2302 source --- GND
+*                               SI2302 gate --- MCU GPIO (3.3V push-pull)
+*
+* Fault scenario: 12V or 24V applied to connector pin through low impedance.
+* FET may be ON or OFF. Test both cases.
+*
+* Case 1: FET OFF (gate=0V, idle state)
+*   - Fault voltage appears at drain
+*   - PESD5V0L1UL clamps if above Vbr=6.8V
+*   - SI2302 Vds max = 20V
+*   - No current path through FET (gate off)
+*
+* Case 2: FET ON (gate=3.3V, driving LOW)
+*   - Fault voltage drives current through pullup AND fault source
+*   - FET is ON with Rds~60mΩ, so large current flows
+*   - FET thermal limit: Pd = I^2 * Rds
+*
+* PESD5V0L1UL sustained power concern:
+*   - SOD-882 thermal: ~250mW sustained
+*   - At 12V fault (1 ohm source): I_esd ~ (12-6.8)/(1+0.5) = 3.47A
+*     P_esd ~ 6.8 * 3.47 = 23.6W -> INSTANT DESTRUCTION
+*   - At 24V: even worse
+*   - KEY: The ESD diode WILL fail under sustained fault.
+*     After failure, full fault voltage appears at FET drain.
+*
+* =====================================================================
+
+* +5V supply
+V5 vdd 0 DC 5.0
+
+* Pull-up resistor
+R_pullup vdd conn_pin 10k
+
+* ESD protection diode (PESD5V0L1UL) - unidirectional
+* Anode=GND, Cathode=conn_pin
+.model PESD5V0L1UL D (
++   Is=1p N=1.05 Rs=0.5
++   Bv=6.8 Ibv=1m
++   Cjo=25p Vj=0.7 M=0.5 )
+
+D_esd 0 esd_a PESD5V0L1UL
+V_am_esd esd_a conn_pin DC 0
+
+* =====================================================================
+* SI2302 N-channel MOSFET
+* =====================================================================
+.model SI2302 NMOS (
++   Level=1 Vto=0.8 Kp=9.0 Lambda=0.02
++   Rd=15m Rs=15m
++   Cgso=240p Cgdo=50p
++   Cbd=30p Cbs=0
++   Is=1e-14 Pb=0.8 )
+
+M1 conn_pin gate 0 0 SI2302 W=1 L=1
+
+* Ammeter on FET drain (measure current into FET)
+* Already measured via V_am_esd and R_pullup
+
+* MCU gate drive: test FET OFF (0V) then FET ON (3.3V)
+* 0-5us:   setup (no fault)
+* 5-25us:  12V fault, FET OFF (gate=0V)
+* 25-30us: transition
+* 30-50us: 12V fault, FET ON (gate=3.3V)
+* 50-55us: transition
+* 55-75us: 24V fault, FET OFF (gate=0V)
+* 75-80us: transition
+* 80-100us: 24V fault, FET ON (gate=3.3V)
+
+R_gate mcu_gpio gate 25
+V_gate mcu_gpio 0 PWL(
++ 0      0
++ 25u    0
++ 25.1u  3.3
++ 50u    3.3
++ 50.1u  0
++ 75u    0
++ 75.1u  3.3
++ 100u   3.3 )
+
+* MCU GPIO clamp diodes (protection)
+.model MCU_CLAMP_UP D (Is=1n N=1.5 Rs=20)
+.model MCU_CLAMP_DN D (Is=1n N=1.7 Rs=20)
+D_mcu_up gate vdd_mcu MCU_CLAMP_UP
+D_mcu_dn 0 gate MCU_CLAMP_DN
+V33 vdd_mcu 0 DC 3.3
+
+* Trace/connector parasitic capacitance
+C_trace conn_pin 0 10p
+
+* =====================================================================
+* Fault source: 1 ohm impedance (worst case)
+* 0-5us:    no fault (0V)
+* 5-50us:   12V fault
+* 50-55us:  transition
+* 55-100us: 24V fault
+* =====================================================================
+R_fault fault_src conn_pin 1
+V_fault fault_src 0 PWL(
++ 0      0
++ 5u     0
++ 5.1u   12
++ 50u    12
++ 50.1u  24
++ 100u   24 )
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.003 VNTOL=1m ABSTOL=1u CHGTOL=1p GMIN=1E-9
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR TRTOL=7
+
+.tran 100n 100u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo ""
+  echo "=== SEQ N-FET Buffer Sustained Fault Analysis ==="
+  echo ""
+
+  * ---- 12V FAULT, FET OFF (10-20us) ----
+  echo "--- 12V Fault, FET OFF ---"
+  meas tran V_drain_12v_off AVG V(conn_pin) from=10u to=20u
+  meas tran V_gate_12v_off AVG V(gate) from=10u to=20u
+  meas tran I_esd_12v_off AVG v_am_esd#branch from=10u to=20u
+
+  * ---- 12V FAULT, FET ON (35-45us) ----
+  echo ""
+  echo "--- 12V Fault, FET ON ---"
+  meas tran V_drain_12v_on AVG V(conn_pin) from=35u to=45u
+  meas tran V_gate_12v_on AVG V(gate) from=35u to=45u
+  meas tran I_esd_12v_on AVG v_am_esd#branch from=35u to=45u
+
+  * ---- 24V FAULT, FET OFF (60-70us) ----
+  echo ""
+  echo "--- 24V Fault, FET OFF ---"
+  meas tran V_drain_24v_off AVG V(conn_pin) from=60u to=70u
+  meas tran V_gate_24v_off AVG V(gate) from=60u to=70u
+  meas tran I_esd_24v_off AVG v_am_esd#branch from=60u to=70u
+
+  * ---- 24V FAULT, FET ON (85-95us) ----
+  echo ""
+  echo "--- 24V Fault, FET ON ---"
+  meas tran V_drain_24v_on AVG V(conn_pin) from=85u to=95u
+  meas tran V_gate_24v_on AVG V(gate) from=85u to=95u
+  meas tran I_esd_24v_on AVG v_am_esd#branch from=85u to=95u
+
+  * Peak values
+  echo ""
+  echo "--- Peak Values ---"
+  meas tran V_drain_peak MAX V(conn_pin) from=0 to=100u
+  meas tran V_gate_peak MAX V(gate) from=0 to=100u
+
+  echo ""
+  echo "=== Power Dissipation Estimates ==="
+  echo "ESD diode at 12V (1 ohm src): I ~ (12-6.8)/1.5 = 3.5A, P ~ 24W -> DESTROYED"
+  echo "ESD diode at 24V (1 ohm src): I ~ (24-6.8)/1.5 = 11.5A, P ~ 79W -> DESTROYED"
+  echo "After ESD diode failure: full fault voltage at drain"
+  echo ""
+  echo "SI2302 Vds max = 20V"
+  echo "12V at drain (FET OFF): Vds=12V < 20V -> SAFE (FET survives)"
+  echo "24V at drain (FET OFF): Vds=24V > 20V -> FET MAY BE DAMAGED"
+  echo "12V at drain (FET ON): I=12/0.06=200A theoretical -> FET DESTROYED"
+  echo "  (But 1 ohm source limits: I~12/1=12A, still exceeds 2.6A Id max)"
+  echo "24V at drain (FET ON): even worse"
+  echo ""
+
+  wrdata seq_fet_fault.csv V(conn_pin) V(gate) V(mcu_gpio) v_am_esd#branch
+
+  quit
+.endc
+
+.end
