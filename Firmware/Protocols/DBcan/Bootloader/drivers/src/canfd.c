@@ -59,18 +59,20 @@ int fdcan_init(const fdcan_config_t *config) {
     uint8_t std_idx = 0;                                                                                                                                            
     uint8_t ext_idx = 0;                                                                                                                                            
                                                                                                                                                                     
-    for (uint8_t i = 0; i < config->num_filters; i++) {                                                                                                             
+    for (uint8_t i = 0; i < config->num_filters; i++) {
         if (config->filters[i].type == 0) {
+            if (std_idx >= 28) return -1;
             std_filter[std_idx++] = FDCAN_SFT_CLASSIC
                                   | FDCAN_SFEC_FIFO0
                                   | (config->filters[i].id << FDCAN_SFID1_Pos)
                                   | (config->filters[i].mask);
         } else {
+            if (ext_idx >= 8) return -1;
             ext_filter[ext_idx * 2]     = FDCAN_EFEC_FIFO0
                                         | (config->filters[i].id);
             ext_filter[ext_idx * 2 + 1] = FDCAN_EFT_CLASSIC
                                         | (config->filters[i].mask);
-            ext_idx++;                                                                                                                                              
+            ext_idx++;
         }
     }                                                                                                                                                               
                                                                     
@@ -110,6 +112,12 @@ int fdcan_init(const fdcan_config_t *config) {
     return 0;
 }
 
+int fdcan_deinit(FDCAN_GlobalTypeDef *instance) {
+    RCC->APB1RSTR1 |= RCC_APB1RSTR1_FDCANRST;
+    RCC->APB1RSTR1 &= ~RCC_APB1RSTR1_FDCANRST;
+
+    return 0;
+}
 
 int fdcan_tx(const fdcan_config_t *config, const fdcan_msg_t *msg) {
 
@@ -120,7 +128,7 @@ int fdcan_tx(const fdcan_config_t *config, const fdcan_msg_t *msg) {
         return -1;
 
     // get next free tx buffer index
-    uint8_t put_idx = (fdcan->TXFQS >> FDCAN_TXFQS_TFQPI_Pos) & (FDCAN_TX_BUF_COUNT - 1);
+    uint8_t put_idx = (fdcan->TXFQS >> FDCAN_TXFQS_TFQPI_Pos) & 0x3;
     uint32_t *tx_buf = (uint32_t *)(SRAMCAN_BASE + FDCAN_TX_BUF_OFF + (put_idx * FDCAN_TX_ELEMENT_SIZE));
 
     // set ID
@@ -151,7 +159,7 @@ int fdcan_rx(const fdcan_config_t *config, fdcan_msg_t *msg) {
         return -1;
 
     // get the read index
-    uint8_t get_idx = (fdcan->RXF0S >> FDCAN_RXF0S_F0GI_Pos) & (FDCAN_RX_FIFO0_COUNT - 1);
+    uint8_t get_idx = (fdcan->RXF0S >> FDCAN_RXF0S_F0GI_Pos) & 0x3;
     uint32_t *rx_buf = (uint32_t *)(SRAMCAN_BASE + FDCAN_RX_FIFO0_OFF + (get_idx * FDCAN_RX_ELEMENT_SIZE));
 
     // read ID

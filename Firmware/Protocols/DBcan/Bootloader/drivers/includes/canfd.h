@@ -11,20 +11,15 @@
 #define FDCAN_STD_FILTER_OFF    0x000
 #define FDCAN_EXT_FILTER_OFF    0x070
 #define FDCAN_RX_FIFO0_OFF      0x0B0
-#define FDCAN_RX_FIFO1_OFF      0x188
-#define FDCAN_TX_EVENT_OFF      0x260
 #define FDCAN_TX_BUF_OFF        0x278
 #define FDCAN_TX_ELEMENT_SIZE   72
 #define FDCAN_RX_ELEMENT_SIZE   72
-#define FDCAN_RX_FIFO0_COUNT    3
-#define FDCAN_TX_BUF_COUNT      3
 
 // Buffer element word 0
 #define FDCAN_BUF_SID_Pos       18
 #define FDCAN_BUF_SID_Msk       0x1FFC0000UL
 #define FDCAN_BUF_EID_Msk       0x1FFFFFFFUL
 #define FDCAN_BUF_XTD           (1UL << 30)
-#define FDCAN_BUF_RTR           (1UL << 29)
 
 // Buffer element word 1
 #define FDCAN_BUF_DLC_Pos       16
@@ -78,9 +73,9 @@ typedef struct
 } fdcan_config_t;
 
 int fdcan_init(const fdcan_config_t *config);
+int fdcan_deinit(FDCAN_GlobalTypeDef *instance);
 
 int fdcan_tx(const fdcan_config_t *config, const fdcan_msg_t *msg);
-
 int fdcan_rx(const fdcan_config_t *config, fdcan_msg_t *msg);
 
 #endif

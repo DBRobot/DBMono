@@ -1,6 +1,6 @@
-[submodule "Firmware/Protocols/libs/cmsis_device_g4"]
-	path = Firmware/Protocols/libs/cmsis_device_g4
-	url = https://github.com/STMicroelectronics/cmsis_device_g4.git
-[submodule "Firmware/Protocols/libs/cmsis_core"]
-	path = Firmware/Protocols/libs/cmsis_core
+[submodule "Firmware/libs/cmsis_core"]
+	path = Firmware/libs/cmsis_core
 	url = https://github.com/STMicroelectronics/cmsis_core.git
+[submodule "Firmware/libs/cmsis_device_g4"]
+	path = Firmware/libs/cmsis_device_g4
+	url = https://github.com/STMicroelectronics/cmsis_device_g4.git
