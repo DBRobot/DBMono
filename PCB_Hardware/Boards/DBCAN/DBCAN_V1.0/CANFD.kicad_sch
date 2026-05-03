@@ -274,6 +274,129 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Connector:TestPoint"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.762)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 5.08 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 5.08 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "DBRobot:TCAN1048AVDMTRQ1"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2093,6 +2216,12 @@
 		(uuid "4bd95b91-4403-474a-b9bb-3d367b3f57d3")
 	)
 	(junction
+		(at 227.33 91.44)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5732b532-5f66-4bf1-a3d4-edb3a5a9000e")
+	)
+	(junction
 		(at 219.71 125.73)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2127,12 +2256,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8da46cdd-2b67-425b-a20c-2aeb6a7c5af3")
-	)
-	(junction
-		(at 232.41 91.44)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b217cc0f-051d-4c61-9076-05cb630e3b9e")
 	)
 	(junction
 		(at 207.01 91.44)
@@ -2218,7 +2341,7 @@
 	)
 	(wire
 		(pts
-			(xy 217.17 91.44) (xy 232.41 91.44)
+			(xy 217.17 91.44) (xy 227.33 91.44)
 		)
 		(stroke
 			(width 0)
@@ -2338,6 +2461,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 166.37) (xy 109.22 166.37)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "211944dc-b996-460e-9a59-e27bdfd86bf8")
+	)
+	(wire
+		(pts
 			(xy 59.69 80.01) (xy 60.96 80.01)
 		)
 		(stroke
@@ -2418,6 +2551,16 @@
 	)
 	(wire
 		(pts
+			(xy 227.33 91.44) (xy 238.76 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "38e21dc4-8c9e-4694-a352-86fd3be743fe")
+	)
+	(wire
+		(pts
 			(xy 74.93 59.69) (xy 74.93 71.12)
 		)
 		(stroke
@@ -2478,6 +2621,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 160.02) (xy 109.22 160.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4d34718d-5bd2-4c9b-9637-ba2bd5a8ff24")
+	)
+	(wire
+		(pts
 			(xy 165.1 71.12) (xy 165.1 72.39)
 		)
 		(stroke
@@ -2518,16 +2671,6 @@
 	)
 	(wire
 		(pts
-			(xy 232.41 91.44) (xy 238.76 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "51e3059f-3ee6-4df0-bd64-6ff7575ad741")
-	)
-	(wire
-		(pts
 			(xy 83.82 111.76) (xy 83.82 113.03)
 		)
 		(stroke
@@ -2558,6 +2701,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 147.32) (xy 109.22 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5ac3b370-a432-4ac2-9d22-a5df4450f69f")
+	)
+	(wire
+		(pts
 			(xy 219.71 76.2) (xy 219.71 74.93)
 		)
 		(stroke
@@ -2568,7 +2721,17 @@
 	)
 	(wire
 		(pts
-			(xy 232.41 105.41) (xy 232.41 106.68)
+			(xy 99.06 140.97) (xy 109.22 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64dc23c9-5ce7-4ca6-ba1e-9c8f8b23c7b0")
+	)
+	(wire
+		(pts
+			(xy 227.33 105.41) (xy 227.33 106.68)
 		)
 		(stroke
 			(width 0)
@@ -2678,7 +2841,7 @@
 	)
 	(wire
 		(pts
-			(xy 232.41 91.44) (xy 232.41 97.79)
+			(xy 227.33 91.44) (xy 227.33 97.79)
 		)
 		(stroke
 			(width 0)
@@ -2765,6 +2928,16 @@
 			(type default)
 		)
 		(uuid "a10848e2-b278-4173-befa-ca2295f23566")
+	)
+	(wire
+		(pts
+			(xy 99.06 134.62) (xy 109.22 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a2fc3b24-8b8f-4520-8278-c03858f2436f")
 	)
 	(wire
 		(pts
@@ -2958,6 +3131,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 153.67) (xy 109.22 153.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d436493e-9438-407d-b63d-ae3fdbd0bf1c")
+	)
+	(wire
+		(pts
 			(xy 87.63 59.69) (xy 87.63 71.12)
 		)
 		(stroke
@@ -3136,6 +3319,26 @@
 		)
 		(uuid "ff966348-48a9-482f-b45a-ffebe15f753c")
 	)
+	(label "SEQ1_PIN"
+		(at 229.87 91.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0d2b8cc3-63da-4337-9152-e8289401ceea")
+	)
+	(label "CANFD2+"
+		(at 99.06 153.67 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "132d541a-6994-49f4-ab1d-1d5ec7f3dae3")
+	)
 	(label "CANFD2-"
 		(at 102.87 96.52 0)
 		(effects
@@ -3166,6 +3369,56 @@
 		)
 		(uuid "8bb5ca96-e1ca-45dc-a267-e433ff02fa14")
 	)
+	(label "SEQ2_PIN"
+		(at 229.87 125.73 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9989a09b-7ddd-4255-b769-81d042d45490")
+	)
+	(label "SEQ1_PIN"
+		(at 99.06 147.32 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b45ad028-5e4e-4577-9cd3-a19248cc5ed8")
+	)
+	(label "CANFD1+"
+		(at 99.06 134.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d3853ce5-2ec0-4c6b-973d-e405bd7f5273")
+	)
+	(label "CANFD1-"
+		(at 99.06 140.97 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "dad22ff2-8159-459f-afa2-f5f91690409c")
+	)
+	(label "SEQ2_PIN"
+		(at 99.06 166.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e7882591-6fec-4cb4-b6f4-3af617b4691c")
+	)
 	(label "CANFD1-"
 		(at 102.87 88.9 0)
 		(effects
@@ -3175,6 +3428,16 @@
 			(justify left bottom)
 		)
 		(uuid "ef8ad3d5-3562-4e3e-ada4-215026066572")
+	)
+	(label "CANFD2-"
+		(at 99.06 160.02 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "fb03ef35-a085-4806-b9e0-bcd796e46475")
 	)
 	(hierarchical_label "SEQ2"
 		(shape input)
@@ -3276,7 +3539,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "004d0b87-4275-45ac-89c4-3fb17eb3bc27")
-		(property "Reference" "D2"
+		(property "Reference" "D5"
 			(at 123.19 99.06 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3329,6 +3592,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.09"
+			(at 123.19 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 123.19 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "Nexperia"
+			(at 123.19 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "PESD1CAN"
+			(at 123.19 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "b92b85cb-7302-41d2-bc86-224079f3fcdb")
 		)
@@ -3341,7 +3648,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "D2")
+					(reference "D5")
 					(unit 1)
 				)
 			)
@@ -3359,7 +3666,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "02207b7b-b4cd-4998-8009-3e0e838febf2")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR032"
 			(at 237.49 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -3420,7 +3727,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR012")
+					(reference "#PWR032")
 					(unit 1)
 				)
 			)
@@ -3438,7 +3745,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "090f3091-66bb-4a9a-b56b-7000f394f581")
-		(property "Reference" "U2"
+		(property "Reference" "U4"
 			(at 89.7733 71.12 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3555,6 +3862,28 @@
 				(justify left top)
 			)
 		)
+		(property "Cost" "2.51"
+			(at 60.96 78.74 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "Digikey"
+			(at 60.96 78.74 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "5"
 			(uuid "d4275f70-ae0c-45f9-8704-4f8ba1a25882")
 		)
@@ -3603,7 +3932,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "U2")
+					(reference "U4")
 					(unit 1)
 				)
 			)
@@ -3611,7 +3940,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 232.41 106.68 0)
+		(at 227.33 106.68 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -3621,8 +3950,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0dd17314-e0e4-4333-b448-38d5e0a54f17")
-		(property "Reference" "#PWR024"
-			(at 232.41 113.03 0)
+		(property "Reference" "#PWR029"
+			(at 227.33 113.03 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3633,7 +3962,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 232.41 111.76 0)
+			(at 227.33 111.76 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3644,7 +3973,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 232.41 106.68 0)
+			(at 227.33 106.68 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3655,7 +3984,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 232.41 106.68 0)
+			(at 227.33 106.68 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3666,7 +3995,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 232.41 106.68 0)
+			(at 227.33 106.68 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3682,7 +4011,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR024")
+					(reference "#PWR029")
 					(unit 1)
 				)
 			)
@@ -3700,7 +4029,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0fdaecda-ed72-4ce7-82ef-f6e690d19c1d")
-		(property "Reference" "C6"
+		(property "Reference" "C16"
 			(at 100.33 63.4999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3755,6 +4084,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0011"
+			(at 96.52 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 96.52 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 96.52 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402KRX7R7BB104"
+			(at 96.52 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "3736d89c-f5e5-4f2f-a7b6-d4dd61df0fbd")
 		)
@@ -3764,7 +4137,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "C6")
+					(reference "C16")
 					(unit 1)
 				)
 			)
@@ -3782,7 +4155,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "221cb5b4-19e9-4d27-8e80-d1a6142d5364")
-		(property "Reference" "#PWR086"
+		(property "Reference" "#PWR021"
 			(at 96.52 75.8784 0)
 			(hide yes)
 			(show_name no)
@@ -3843,7 +4216,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR086")
+					(reference "#PWR021")
 					(unit 1)
 				)
 			)
@@ -3861,7 +4234,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "265a5752-00e8-49f8-8d47-0132795e7c1b")
-		(property "Reference" "D3"
+		(property "Reference" "D6"
 			(at 176.53 125.73 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3914,6 +4287,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.09"
+			(at 176.53 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 176.53 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "Nexperia"
+			(at 176.53 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "PESD1CAN"
+			(at 176.53 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "86e5cbe5-63ef-4869-98d6-d204544e7a6c")
 		)
@@ -3926,7 +4343,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "D3")
+					(reference "D6")
 					(unit 1)
 				)
 			)
@@ -3944,7 +4361,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "477ebb39-f367-42a9-a696-20f32997a927")
-		(property "Reference" "R7"
+		(property "Reference" "R15"
 			(at 213.36 85.09 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3954,7 +4371,7 @@
 				)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "1k"
 			(at 213.36 87.63 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3997,6 +4414,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0009"
+			(at 213.36 91.44 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 213.36 91.44 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 213.36 91.44 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "AC0402JR-071KL"
+			(at 213.36 91.44 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "71d662f9-4490-40ae-b6d7-b365ac034bde")
 		)
@@ -4006,7 +4467,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R7")
+					(reference "R15")
 					(unit 1)
 				)
 			)
@@ -4024,7 +4485,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4a4458c4-678a-4a07-9ad7-bb481d9d9e5b")
-		(property "Reference" "C3"
+		(property "Reference" "C15"
 			(at 67.31 63.4999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4079,6 +4540,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0011"
+			(at 63.5 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 63.5 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 63.5 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402KRX7R7BB104"
+			(at 63.5 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "bf648019-7d24-453a-a080-78a0c7abb5e2")
 		)
@@ -4088,7 +4593,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "C3")
+					(reference "C15")
 					(unit 1)
 				)
 			)
@@ -4106,7 +4611,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4fcff466-6db9-4402-a5a9-049ec03151cf")
-		(property "Reference" "#PWR026"
+		(property "Reference" "#PWR034"
 			(at 219.71 146.05 0)
 			(hide yes)
 			(show_name no)
@@ -4167,7 +4672,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR026")
+					(reference "#PWR034")
 					(unit 1)
 				)
 			)
@@ -4185,7 +4690,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "56fdd98e-3276-44dd-b8c0-624287922c10")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR024"
 			(at 125.73 87.63 0)
 			(hide yes)
 			(show_name no)
@@ -4246,7 +4751,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR013")
+					(reference "#PWR024")
 					(unit 1)
 				)
 			)
@@ -4265,7 +4770,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "605ca301-c574-4c6e-bb0a-bce24a07afac")
-		(property "Reference" "J3"
+		(property "Reference" "J4"
 			(at 245.11 123.1899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4320,6 +4825,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.58"
+			(at 243.84 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 243.84 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "JST"
+			(at 243.84 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "SM04B-PASS-TBT"
+			(at 243.84 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "7562d7c4-cc26-4af4-a0a2-6182b363f558")
 		)
@@ -4335,7 +4884,108 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "J3")
+					(reference "J4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.22 134.62 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "61859498-a58f-4b6b-8922-3fe1bc563fbd")
+		(property "Reference" "TP6"
+			(at 114.3 133.3499 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 135.8899 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.22 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 109.22 134.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" ""
+			(at 109.22 134.62 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" ""
+			(at 109.22 134.62 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e8b6f3b2-fea9-4100-b017-a9d933dba473")
+		)
+		(instances
+			(project "DBCAN_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
+					(reference "TP6")
 					(unit 1)
 				)
 			)
@@ -4353,7 +5003,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6b27e7a6-683e-4af9-a887-23561ef76694")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR033"
 			(at 176.53 143.51 0)
 			(hide yes)
 			(show_name no)
@@ -4414,7 +5064,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR011")
+					(reference "#PWR033")
 					(unit 1)
 				)
 			)
@@ -4487,6 +5137,50 @@
 				)
 			)
 		)
+		(property "Cost" ""
+			(at 204.47 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 204.47 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VISHAY"
+			(at 204.47 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "Si2302CDS-T1-GE3"
+			(at 204.47 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "2ce3a42c-790e-4e70-9dc8-54b4d1916a10")
 		)
@@ -4517,7 +5211,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "70b774c5-cab0-4af6-961d-928c6019213b")
-		(property "Reference" "#PWR085"
+		(property "Reference" "#PWR022"
 			(at 63.5 76.2 0)
 			(hide yes)
 			(show_name no)
@@ -4578,7 +5272,108 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR085")
+					(reference "#PWR022")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.22 160.02 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "70e6630e-8813-43fe-9d32-5b382aeb946d")
+		(property "Reference" "TP10"
+			(at 114.3 158.7499 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 161.2899 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.22 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 165.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 109.22 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" ""
+			(at 109.22 160.02 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" ""
+			(at 109.22 160.02 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d3983ad6-efb0-40ed-bbc7-acef9cec172b")
+		)
+		(instances
+			(project "DBCAN_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
+					(reference "TP10")
 					(unit 1)
 				)
 			)
@@ -4596,7 +5391,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "75a62bc6-ec9c-4d1c-95f2-be1a9386306b")
-		(property "Reference" "R5"
+		(property "Reference" "R13"
 			(at 209.55 78.7399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4651,6 +5446,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0007"
+			(at 207.01 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 207.01 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 207.01 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-1310KL"
+			(at 207.01 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "9745645d-db12-464f-a246-6d74fa710027")
 		)
@@ -4660,7 +5499,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R5")
+					(reference "R13")
 					(unit 1)
 				)
 			)
@@ -4668,7 +5507,7 @@
 	)
 	(symbol
 		(lib_id "Diode:PESD5V0L1UL")
-		(at 232.41 101.6 270)
+		(at 227.33 101.6 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -4677,8 +5516,8 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "762dbd51-3b22-4eca-bdd6-f1afbec37c32")
-		(property "Reference" "D6"
-			(at 234.95 100.3299 90)
+		(property "Reference" "D4"
+			(at 229.87 100.3299 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4689,7 +5528,7 @@
 			)
 		)
 		(property "Value" "PESD5V0L1UL"
-			(at 234.95 102.8699 90)
+			(at 229.87 102.8699 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4700,7 +5539,7 @@
 			)
 		)
 		(property "Footprint" "Diode_SMD:D_SOD-882"
-			(at 227.33 101.6 0)
+			(at 222.25 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4711,7 +5550,7 @@
 			)
 		)
 		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/PESD5V0L1UL.pdf"
-			(at 237.49 101.6 0)
+			(at 232.41 101.6 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4722,7 +5561,51 @@
 			)
 		)
 		(property "Description" "Low capacitance unidirectional ESD protection diode, 5V, SOD-882"
-			(at 240.03 101.6 0)
+			(at 234.95 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" "0.02"
+			(at 227.33 101.6 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 227.33 101.6 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "UMW"
+			(at 227.33 101.6 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "PESD5V0L1UL"
+			(at 227.33 101.6 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4741,7 +5624,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "D6")
+					(reference "D4")
 					(unit 1)
 				)
 			)
@@ -4759,7 +5642,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7d1386a9-8d8e-4e3c-ade5-b6ccbdc1fc27")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR030"
 			(at 123.19 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -4820,7 +5703,108 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR09")
+					(reference "#PWR030")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.22 147.32 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "7f66b8db-518f-4508-b096-f5ff4ed0ab1b")
+		(property "Reference" "TP8"
+			(at 114.3 146.0499 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 148.5899 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.22 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 109.22 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" ""
+			(at 109.22 147.32 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" ""
+			(at 109.22 147.32 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "a4c08e04-e726-40f2-8b8b-8df492f01edb")
+		)
+		(instances
+			(project "DBCAN_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
+					(reference "TP8")
 					(unit 1)
 				)
 			)
@@ -4838,7 +5822,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "88a23512-dd00-4a58-b6d2-c7be20659e33")
-		(property "Reference" "R6"
+		(property "Reference" "R14"
 			(at 222.25 78.7399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4893,6 +5877,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0007"
+			(at 219.71 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 219.71 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 219.71 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-1310KL"
+			(at 219.71 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "f9e980ef-3c9e-4ac9-a195-065fb5efa7b7")
 		)
@@ -4902,7 +5930,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R6")
+					(reference "R14")
 					(unit 1)
 				)
 			)
@@ -4920,7 +5948,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8cead97e-87b4-45cf-b639-d9ce1da66296")
-		(property "Reference" "#PWR084"
+		(property "Reference" "#PWR031"
 			(at 78.74 120.65 0)
 			(hide yes)
 			(show_name no)
@@ -4981,7 +6009,108 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR084")
+					(reference "#PWR031")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.22 153.67 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "92bbd1de-9787-465f-a19a-b945e96a7406")
+		(property "Reference" "TP9"
+			(at 114.3 152.3999 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 154.9399 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.22 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 109.22 153.67 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" ""
+			(at 109.22 153.67 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" ""
+			(at 109.22 153.67 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "9326483d-94e7-437c-9304-247abb2cbaad")
+		)
+		(instances
+			(project "DBCAN_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
+					(reference "TP9")
 					(unit 1)
 				)
 			)
@@ -4999,7 +6128,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9686e550-4c62-432f-8701-9f9af6508df2")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR028"
 			(at 207.01 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -5060,7 +6189,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR023")
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
@@ -5078,7 +6207,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "97ba277f-e303-465e-8804-2b87d240eee9")
-		(property "Reference" "C4"
+		(property "Reference" "C17"
 			(at 129.54 74.9299 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5133,6 +6262,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0012"
+			(at 125.73 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 125.73 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 125.73 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402KRX7R9BB472"
+			(at 125.73 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "75a0ded9-1a66-46e4-938d-2a544741135c")
 		)
@@ -5142,7 +6315,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "C4")
+					(reference "C17")
 					(unit 1)
 				)
 			)
@@ -5160,7 +6333,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9a282123-a5e0-4493-9fa1-7c82ce277b35")
-		(property "Reference" "#PWR07"
+		(property "Reference" "#PWR019"
 			(at 74.93 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -5220,7 +6393,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR07")
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
@@ -5293,6 +6466,50 @@
 				)
 			)
 		)
+		(property "Cost" ""
+			(at 217.17 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 217.17 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VISHAY"
+			(at 217.17 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "Si2302CDS-T1-GE3"
+			(at 217.17 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "cf523ad3-e741-47ac-9ad3-47d5b4888d2f")
 		)
@@ -5323,7 +6540,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a652df1f-31b8-4461-aba6-c3afe3e0b8b1")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR027"
 			(at 237.49 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -5384,7 +6601,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR010")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -5402,7 +6619,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b60f3714-adef-40a9-91a8-417fa91452a5")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR026"
 			(at 40.64 95.25 0)
 			(hide yes)
 			(show_name no)
@@ -5462,7 +6679,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR015")
+					(reference "#PWR026")
 					(unit 1)
 				)
 			)
@@ -5480,7 +6697,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ba3b1da8-d434-4c11-911d-c65437f99a0b")
-		(property "Reference" "R3"
+		(property "Reference" "R11"
 			(at 160.02 64.77 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5490,7 +6707,7 @@
 				)
 			)
 		)
-		(property "Value" "60"
+		(property "Value" "60.4"
 			(at 160.02 67.31 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5533,6 +6750,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0026"
+			(at 160.02 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 160.02 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 160.02 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0805FR-0760R4L"
+			(at 160.02 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "de425df5-360f-416c-bfb8-ebae851f9e02")
 		)
@@ -5542,7 +6803,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R3")
+					(reference "R11")
 					(unit 1)
 				)
 			)
@@ -5560,7 +6821,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "beae0f4e-889a-4d4c-afd8-94860004fe88")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR025"
 			(at 165.1 87.63 0)
 			(hide yes)
 			(show_name no)
@@ -5621,7 +6882,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR014")
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -5639,7 +6900,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c0a87f25-f547-4b99-a796-da3bd9447918")
-		(property "Reference" "#PWR025"
+		(property "Reference" "#PWR035"
 			(at 232.41 147.32 0)
 			(hide yes)
 			(show_name no)
@@ -5700,7 +6961,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR025")
+					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -5771,6 +7032,50 @@
 				)
 			)
 		)
+		(property "Cost" ""
+			(at 180.34 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 180.34 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VISHAY"
+			(at 180.34 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "Si2302CDS-T1-GE3"
+			(at 180.34 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "75839d6e-03d9-4937-a81e-1e60087403fd")
 		)
@@ -5801,7 +7106,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ce66688f-0cf6-4c44-96ba-2769acc1d0f2")
-		(property "Reference" "R1"
+		(property "Reference" "R9"
 			(at 120.65 64.77 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5811,7 +7116,7 @@
 				)
 			)
 		)
-		(property "Value" "60"
+		(property "Value" "60.4"
 			(at 120.65 67.31 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5854,6 +7159,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0026"
+			(at 120.65 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 120.65 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 120.65 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0805FR-0760R4L"
+			(at 120.65 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e9498d30-89c2-4215-ad05-fcd25ab7f95b")
 		)
@@ -5863,7 +7212,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R1")
+					(reference "R9")
 					(unit 1)
 				)
 			)
@@ -5881,7 +7230,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d01b14b2-5cd4-4ea3-ba76-2c9ca950031b")
-		(property "Reference" "D5"
+		(property "Reference" "D7"
 			(at 234.95 134.6199 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5936,6 +7285,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.02"
+			(at 232.41 135.89 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 232.41 135.89 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "UMW"
+			(at 232.41 135.89 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "PESD5V0L1UL"
+			(at 232.41 135.89 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "c9ff43fc-03f1-454e-a8e8-29b2fc42dd4d")
 		)
@@ -5945,7 +7338,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "D5")
+					(reference "D7")
 					(unit 1)
 				)
 			)
@@ -5963,7 +7356,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d52a58ab-cede-4750-b88e-0bf87a43a357")
-		(property "Reference" "C5"
+		(property "Reference" "C18"
 			(at 168.91 74.9299 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6018,6 +7411,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0012"
+			(at 165.1 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 165.1 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 165.1 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402KRX7R9BB472"
+			(at 165.1 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "8813bcf7-4a0b-455a-8960-a38c6b722cb5")
 		)
@@ -6027,7 +7464,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "C5")
+					(reference "C18")
 					(unit 1)
 				)
 			)
@@ -6045,7 +7482,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d884864a-b56c-4357-b99e-defc97cc473e")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR023"
 			(at 207.01 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -6105,7 +7542,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR018")
+					(reference "#PWR023")
 					(unit 1)
 				)
 			)
@@ -6123,7 +7560,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "de496b71-1117-4817-8ff6-00ccf1a6a508")
-		(property "Reference" "R8"
+		(property "Reference" "R16"
 			(at 226.06 119.38 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6133,7 +7570,7 @@
 				)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "1k"
 			(at 226.06 121.92 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6176,6 +7613,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0009"
+			(at 226.06 125.73 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 226.06 125.73 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 226.06 125.73 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "AC0402JR-071KL"
+			(at 226.06 125.73 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "fb3e22f9-9333-4125-b194-7f03a63a5a79")
 		)
@@ -6185,7 +7666,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R8")
+					(reference "R16")
 					(unit 1)
 				)
 			)
@@ -6203,7 +7684,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e36e4ce0-006c-4d48-a5f6-668762396400")
-		(property "Reference" "#PWR08"
+		(property "Reference" "#PWR020"
 			(at 87.63 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -6263,7 +7744,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "#PWR08")
+					(reference "#PWR020")
 					(unit 1)
 				)
 			)
@@ -6334,6 +7815,50 @@
 				)
 			)
 		)
+		(property "Cost" ""
+			(at 140.97 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 140.97 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "VISHAY"
+			(at 140.97 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "Si2302CDS-T1-GE3"
+			(at 140.97 68.58 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "d6fb18bc-336b-48f3-82b9-83bdfa49ccbe")
 		)
@@ -6365,7 +7890,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e81712a5-a9c9-4864-bcc1-cf8fac1b1999")
-		(property "Reference" "J2"
+		(property "Reference" "J3"
 			(at 245.11 88.8999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6420,6 +7945,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.58"
+			(at 243.84 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 243.84 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "JST"
+			(at 243.84 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "SM04B-PASS-TBT"
+			(at 243.84 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4799f334-210e-4810-9cb3-44deb7417f15")
 		)
@@ -6435,7 +8004,108 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "J2")
+					(reference "J3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.22 166.37 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "e9bac139-49cb-47fa-8b73-362f7680bbb0")
+		(property "Reference" "TP11"
+			(at 114.3 165.0999 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 167.6399 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.22 171.45 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 171.45 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 109.22 166.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" ""
+			(at 109.22 166.37 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" ""
+			(at 109.22 166.37 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "73723074-03b5-4e47-bac8-739f5a06d119")
+		)
+		(instances
+			(project "DBCAN_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
+					(reference "TP11")
 					(unit 1)
 				)
 			)
@@ -6453,7 +8123,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ed4f20c1-030c-485e-b3ae-4a4919cad404")
-		(property "Reference" "R2"
+		(property "Reference" "R10"
 			(at 130.81 64.77 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6463,7 +8133,7 @@
 				)
 			)
 		)
-		(property "Value" "60"
+		(property "Value" "60.4"
 			(at 130.81 67.31 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6506,6 +8176,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0026"
+			(at 130.81 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 130.81 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 130.81 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0805FR-0760R4L"
+			(at 130.81 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "a9a9b7ce-c407-499a-87e3-177d52b16881")
 		)
@@ -6515,7 +8229,108 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R2")
+					(reference "R10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.22 140.97 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "f51ec838-f13e-4b03-9fd1-a7c6930d73aa")
+		(property "Reference" "TP7"
+			(at 114.3 139.6999 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 142.2399 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.22 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.22 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "test point"
+			(at 109.22 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Cost" ""
+			(at 109.22 140.97 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" ""
+			(at 109.22 140.97 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0ed59f82-8042-4997-ae4e-8ce5f3c5745a")
+		)
+		(instances
+			(project "DBCAN_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
+					(reference "TP7")
 					(unit 1)
 				)
 			)
@@ -6533,7 +8348,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f6d925b1-0f51-43d7-8c60-1e42623f18a1")
-		(property "Reference" "R4"
+		(property "Reference" "R12"
 			(at 170.18 64.77 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6543,7 +8358,7 @@
 				)
 			)
 		)
-		(property "Value" "60"
+		(property "Value" "60.4"
 			(at 170.18 67.31 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6586,6 +8401,50 @@
 				)
 			)
 		)
+		(property "Cost" "0.0026"
+			(at 170.18 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Source" "LCSC"
+			(at 170.18 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Name" "YAGEO "
+			(at 170.18 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0805FR-0760R4L"
+			(at 170.18 71.12 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e39e7145-f64b-487c-a898-af6825e0f9db")
 		)
@@ -6595,7 +8454,7 @@
 		(instances
 			(project "DBCAN_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/91aba6b2-c795-4f69-b0eb-23c5a10f7a84"
-					(reference "R4")
+					(reference "R12")
 					(unit 1)
 				)
 			)
