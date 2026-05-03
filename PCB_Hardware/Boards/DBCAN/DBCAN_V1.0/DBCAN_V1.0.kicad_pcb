@@ -4341,7 +4341,7 @@
 			(uuid "4c80c321-2b9e-4c34-8f39-49a8948c36bc")
 		)
 		(embedded_fonts no)
-		(model "/home/david-bascom/projects/DBMono/PCB_Hardware/libs/3D_Models/SM04B-PASS-TBT--3DModel-STEP-269445.STEP"
+		(model "${DBMONO_LIBS}/3D_Models/SM04B-PASS-TBT--3DModel-STEP-269445.STEP"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -10743,7 +10743,7 @@
 			(uuid "d0a5b45e-c255-4f30-ba99-2b035471dab0")
 		)
 		(embedded_fonts no)
-		(model "/home/david-bascom/projects/DBMono/PCB_Hardware/libs/3D_Models/SM04B-PASS-TBT--3DModel-STEP-269445.STEP"
+		(model "${DBMONO_LIBS}/3D_Models/SM04B-PASS-TBT--3DModel-STEP-269445.STEP"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -11428,7 +11428,7 @@
 			(uuid "b0e5a9d9-9cda-48ab-af20-126f4bf3c4ab")
 		)
 		(embedded_fonts no)
-		(model "/home/david-bascom/projects/DBMono/PCB_Hardware/libs/3D_Models/TCAN1048AVDMTRQ1.STEP"
+		(model "${DBMONO_LIBS}/3D_Models/TCAN1048AVDMTRQ1.STEP"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -14089,7 +14089,7 @@
 			(uuid "2420e18d-683a-4f4e-9bdd-d037e80d7f60")
 		)
 		(embedded_fonts no)
-		(model "/home/david-bascom/projects/DBMono/PCB_Hardware/libs/3D_Models/ASEMB-8.000MHZ-XY-T--3DModel-STEP-368357.STEP"
+		(model "${DBMONO_LIBS}/3D_Models/ASEMB-8.000MHZ-XY-T--3DModel-STEP-368357.STEP"
 			(offset
 				(xyz 0 0 0)
 			)

@@ -1,3 +1,4 @@
 (sym_lib_table
   (version 7)
+  (lib (name "DBRobot") (type "KiCad") (uri "${DBMONO_LIBS}/DBRobot.kicad_sym") (options "") (descr ""))
 )

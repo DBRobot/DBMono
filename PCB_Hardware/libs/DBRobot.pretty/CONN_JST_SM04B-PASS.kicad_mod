@@ -304,7 +304,7 @@
 		(uuid "b966eab2-f0e9-4453-ad93-0f39f1dbc27a")
 	)
 	(embedded_fonts no)
-	(model "/home/david-bascom/projects/DBMono/PCB_Hardware/libs/3D_Models/SM04B-PASS-TBT--3DModel-STEP-269445.STEP"
+	(model "${DBMONO_LIBS}/3D_Models/SM04B-PASS-TBT--3DModel-STEP-269445.STEP"
 		(offset
 			(xyz 0 0 0)
 		)
