@@ -53,3 +53,22 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# KiCAD
+*-backups/
+*.lck
+.history/
+*~sch
+*.kicad_pcb-bak
+*.bak
+fp-info-cache
+
+# KiCAD fabrication-toolkit auto-backups
+production/backups/
+
+# STM32CubeMX / STM32CubeIDE metadata
+.settings/
+Debug/
+Release/
+.metadata/
+*.launch

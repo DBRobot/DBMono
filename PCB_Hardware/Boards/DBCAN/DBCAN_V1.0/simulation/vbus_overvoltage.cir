@@ -1,0 +1,115 @@
+* DBCAN_V1.0 - VBUS Sustained Overvoltage: 24V applied to USB connector
+*
+* Worst case: someone plugs a 24V industrial supply into the USB-C port.
+* The PTC fuse + TVS must protect the TCAN1048 (6V abs max on VCC).
+* Models the voltage at TCAN1048 VCC during the event until PTC trips.
+*
+* =====================================================================
+* TVS Model (SMAJ5.0A)
+* =====================================================================
+.model DTVS D(BV=6.4 IBV=1m RS=0.165 CJO=400p VJ=0.7 M=0.5 N=1.05 IS=1e-14)
+
+* =====================================================================
+* Source: 5V USB normal, then 24V applied at t=10us
+* Simulates accidental 24V connection via low-impedance source
+* =====================================================================
+V_USB vbus_conn 0 PWL(0 5 10u 5 10.1u 24 50u 24)
+R_source vbus_conn vbus_src 0.1
+
+* =====================================================================
+* PTC Fuse F1 (MF-PSMF050X-2)
+* Cold resistance ~300mOhm, heats up and trips at ~1A
+* Simplified: model as fixed R (PTC thermal response is ~ms, too slow
+* for this timescale — fuse stays cold during the first 50us)
+* =====================================================================
+R_ptc vbus_src n_fused 0.3
+
+* =====================================================================
+* TVS D10 (SMAJ5.0A)
+* =====================================================================
+D_tvs 0 n_fused DTVS
+
+* =====================================================================
+* +5V Rail Caps
+* =====================================================================
+C37 n_fused 0 4.7u IC=5
+R_c37esr n_fused n_5v 0.01
+C38 n_5v 0 100n IC=5
+
+* Trace to TCAN area
+R_trace n_5v n_5v_rail 0.05
+
+* =====================================================================
+* PATH A: Direct to TCAN1048 VCC (no ferrite)
+* =====================================================================
+C3a n_5v_rail 0 100n IC=5
+R_load_a n_5v_rail 0 50
+
+* =====================================================================
+* PATH B: Ferrite bead + bulk cap
+* =====================================================================
+R_fb_dcr n_5v_rail n_fb1 0.1
+L_fb n_fb1 n_fb2 350n
+R_fb_loss n_fb1 n_fb2 220
+C_bulk n_fb2 0 4.7u IC=5
+R_bulk_esr n_fb2 vcc_fb 0.01
+C3b vcc_fb 0 100n IC=5
+R_load_b vcc_fb 0 50
+
+* =====================================================================
+* Simulation
+* =====================================================================
+.OPTIONS RELTOL=0.003 VNTOL=1m ABSTOL=1u CHGTOL=1p
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR RSHUNT=1e9
+
+.tran 10n 50u UIC
+
+.control
+  run
+
+  echo ""
+  echo "========================================================="
+  echo "  VBUS 24V Overvoltage Simulation (sustained fault)"
+  echo "========================================================="
+  echo ""
+
+  * Steady state at 5V
+  meas tran v_dc AVG v(n_5v_rail) from=5u to=9u
+
+  * Peak during 24V event
+  meas tran v_raw_peak MAX v(n_fused) from=10u to=50u
+  meas tran v_direct_peak MAX v(n_5v_rail) from=10u to=50u
+  meas tran v_ferrite_peak MAX v(vcc_fb) from=10u to=50u
+
+  echo ""
+
+  * Current through TVS during event
+  meas tran i_tvs_peak MAX @d_tvs[id] from=10u to=50u
+
+  * Settled voltage during sustained 24V
+  meas tran v_direct_ss AVG v(n_5v_rail) from=30u to=49u
+  meas tran v_ferrite_ss AVG v(vcc_fb) from=30u to=49u
+
+  echo ""
+  echo "--- Results ---"
+  let peak_d = maximum(v(n_5v_rail))
+  let peak_f = maximum(v(vcc_fb))
+  echo "Direct peak:"
+  print peak_d
+  echo "Ferrite peak:"
+  print peak_f
+  echo ""
+  echo "TCAN1048 abs max = 6.0V"
+  let margin_d = 6.0 - peak_d
+  let margin_f = 6.0 - peak_f
+  echo "Direct margin:"
+  print margin_d
+  echo "Ferrite margin:"
+  print margin_f
+
+  wrdata vbus_overvoltage.csv v(n_fused) v(n_5v_rail) v(vcc_fb)
+
+  quit
+.endc
+
+.end

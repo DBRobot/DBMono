@@ -1,0 +1,134 @@
+* DBCAN_V1.0 - VBUS Transient: Does TCAN1048 VCC exceed 6V abs max?
+*
+* Models the USB VBUS power path during a transient/ESD event.
+* Compares TCAN1048 VCC voltage with and without a ferrite bead.
+*
+* Path: USB VBUS -> F1 PTC fuse -> D10 SMAJ5.0A TVS -> +5V rail caps
+*       -> (optional ferrite) -> TCAN1048 VCC + local caps
+*
+* =====================================================================
+* Parameters
+* =====================================================================
+.param Vusb = 5.0
+
+* =====================================================================
+* TVS Diode Model (SMAJ5.0A)
+* Vbr=6.4V, Vc=9.2V at Ipp=17A, Cj=400pF
+* Dynamic resistance Rdyn = (Vc - Vbr) / Ipp = (9.2 - 6.4) / 17 = 0.165 ohm
+* =====================================================================
+.model DTVS D(BV=6.4 IBV=1m RS=0.165 CJO=400p VJ=0.7 M=0.5 N=1.05 IS=1e-14)
+
+* =====================================================================
+* Source: 5V USB supply + IEC 61000-4-2 Contact Discharge (8kV)
+* Simplified double-exponential: Ipeak ~16A, rise ~1ns, fall ~60ns
+* Event occurs at t=10us (after DC steady state)
+* =====================================================================
+V_USB vbus_conn 0 DC {Vusb}
+I_ESD 0 vbus_conn EXP(0 16 10u 0.7n 10.06u 60n)
+
+* =====================================================================
+* PTC Fuse F1 (MF-PSMF050X-2)
+* Ri ~ 300mOhm typical, parasitic inductance ~5nH
+* =====================================================================
+R_ptc vbus_conn n_ptc 0.3
+L_ptc n_ptc n_fused 5n
+
+* =====================================================================
+* TVS D10 (SMAJ5.0A) - anode to GND, cathode to +5V rail
+* =====================================================================
+D_tvs 0 n_fused DTVS
+
+* =====================================================================
+* +5V Rail Capacitors (near USB connector area)
+* C37 = 4.7uF (ESR ~10mOhm), C38 = 100nF (ESR ~20mOhm)
+* =====================================================================
+C37 n_fused 0 4.7u IC={Vusb}
+R_c37esr n_fused n_5v_a 0.01
+C38 n_5v_a 0 100n IC={Vusb}
+
+* =====================================================================
+* Trace impedance from USB area to TCAN1048 area (~2cm, ~50mOhm + 1nH)
+* =====================================================================
+R_trace n_5v_a n_5v_rail 0.05
+L_trace_p n_5v_rail n_5v_b 1n
+
+* =====================================================================
+* PATH A: Direct connection (no ferrite) -> node "vcc_direct"
+* TCAN1048 VCC with only C3=100nF decoupling
+* =====================================================================
+R_trc_a n_5v_b vcc_direct 0.01
+C3a vcc_direct 0 100n IC={Vusb}
+R_load_a vcc_direct 0 50
+
+* =====================================================================
+* PATH B: With ferrite bead + bulk cap -> node "vcc_ferrite"
+* Ferrite bead: BLM18PG221 (220 ohm @ 100MHz)
+*   Model: DCR=100mOhm, L~350nH, parallel R=220 ohm (lossy inductor)
+* =====================================================================
+R_fb_dcr n_5v_b n_fb1 0.1
+L_fb n_fb1 n_fb2 350n
+R_fb_loss n_fb1 n_fb2 220
+
+* Local bulk 4.7uF + existing C3 100nF
+C_bulk vcc_ferrite 0 4.7u IC={Vusb}
+R_bulk_esr n_fb2 vcc_ferrite 0.01
+C3b vcc_ferrite 0 100n IC={Vusb}
+R_load_b vcc_ferrite 0 50
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.003 VNTOL=1m ABSTOL=1u CHGTOL=1p
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR
++ RSHUNT=1e9
+
+.tran 0.5n 15u UIC
+
+.control
+  run
+
+  echo ""
+  echo "========================================================="
+  echo "  DBCAN_V1.0 VBUS Transient Simulation Results"
+  echo "========================================================="
+  echo ""
+
+  * Steady-state (before pulse)
+  meas tran v_5v_dc AVG v(n_5v_b) from=5u to=9u
+  echo ""
+
+  * Peak voltages during transient
+  meas tran v_raw_peak MAX v(n_fused) from=9u to=14u
+  meas tran v_direct_peak MAX v(vcc_direct) from=9u to=14u
+  meas tran v_ferrite_peak MAX v(vcc_ferrite) from=9u to=14u
+  echo ""
+
+  echo "--- PASS/FAIL vs TCAN1048 VCC abs max = 6.0V ---"
+  echo ""
+
+  let peak_d = maximum(v(vcc_direct))
+  let peak_f = maximum(v(vcc_ferrite))
+  let margin_d = 6.0 - peak_d
+  let margin_f = 6.0 - peak_f
+
+  echo "WITHOUT ferrite: peak ="
+  print peak_d
+  echo "WITH    ferrite: peak ="
+  print peak_f
+  echo ""
+  echo "Margin to 6.0V abs max:"
+  echo "WITHOUT ferrite:"
+  print margin_d
+  echo "WITH ferrite:"
+  print margin_f
+
+  echo ""
+  echo "========================================================="
+
+  * Export waveforms for review
+  wrdata vbus_transient.csv v(n_fused) v(vcc_direct) v(vcc_ferrite)
+
+  quit
+.endc
+
+.end

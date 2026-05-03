@@ -1,0 +1,113 @@
+* SEQ Auto-ID Circuit Analysis
+* DBCAN_V1.0 - Verify signal levels for GPIO detection
+*
+* Topology (per SEQ line):
+*   +5V --- R_pullup (10k) --- SEQ_node --- R_series (10k) --- CONNECTOR_PIN
+*                                  |
+*                              D_esd (PESD5V0L1UL, ~1pF)
+*                                  |
+*                                 GND
+*
+* The MCU GPIO (open-drain, 3.3V domain) reads SEQ_node.
+* When nothing is connected: SEQ_node = 5V (pulled up)
+* When next board shorts the connector pin to GND:
+*   SEQ_node = 5V * R_series / (R_pullup + R_series) = 2.5V
+*
+* But the MCU is 3.3V - input threshold is ~1.65V (0.5*VDD).
+* So 2.5V should read as HIGH. Need external pull-down to read LOW.
+*
+* More likely: the daisy-chain protocol uses open-drain on the
+* neighbor's side. When neighbor MCU drives its open-drain LOW:
+*   SEQ_node = 5V * 0 / (10k + Rds_on_neighbor) ~ 0V
+* When neighbor is floating/not connected:
+*   SEQ_node = 5V (pulled up by 10k)
+*
+* Concern: 5V on a 3.3V GPIO pin. Need series resistor protection.
+* The 10k series + internal ESD clamp should limit current.
+*
+* =====================================================================
+
+* +5V supply
+V5 vdd 0 DC 5.0
+
+* Pull-up resistor to 5V
+R_pullup vdd seq_node 10k
+
+* Series resistor to connector
+R_series seq_node conn_pin 10k
+
+* ESD diode (PESD5V0L1UL) - simplified as capacitor + clamp
+* Capacitance ~1pF typ
+C_esd seq_node 0 1p
+
+* =====================================================================
+* Test 1: No neighbor connected (connector floating)
+* =====================================================================
+* Connector pin is floating - just the pull-up
+* SEQ_node should be at 5V
+
+* Model the MCU GPIO input (high impedance with ESD clamp)
+* STM32G0B1 internal ESD clamp to VDD_IO (3.3V)
+V33 vdd_mcu 0 DC 3.3
+
+* Internal protection diode (clamp to VDD when > VDD+0.3V)
+.model CLAMP_D D (Is=1n N=1.7 Rs=100)
+D_clamp seq_node vdd_mcu CLAMP_D
+
+* Input capacitance ~5pF
+C_gpio seq_node 0 5p
+
+* =====================================================================
+* Test 2: Neighbor drives open-drain LOW
+* =====================================================================
+* Model neighbor's open-drain GPIO pulling connector pin to GND
+* Use a switch that turns on at t=2us
+
+.model SW_MODEL SW (Vt=2.5 Vh=0.5 Ron=50 Roff=100MEG)
+S_neighbor conn_pin 0 ctrl 0 SW_MODEL
+V_ctrl ctrl 0 PULSE(0 5 2u 10n 10n 3u 10u)
+
+* =====================================================================
+* Simulation
+* =====================================================================
+.tran 10n 8u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo "=== SEQ Auto-ID Circuit Analysis ==="
+
+  * Measure steady-state voltages
+  * Before neighbor connects (t=0 to 1.5us): should be ~5V at seq_node
+  meas tran V_seq_idle AVG V(seq_node) from=0.5u to=1.5u
+  meas tran V_conn_idle AVG V(conn_pin) from=0.5u to=1.5u
+
+  * After neighbor pulls low (t=3us to 4.5us): check voltage division
+  meas tran V_seq_low AVG V(seq_node) from=3u to=4.5u
+  meas tran V_conn_low AVG V(conn_pin) from=3u to=4.5u
+
+  * Current through clamp diode at idle (5V on 3.3V GPIO)
+  meas tran I_clamp_idle AVG I(D_clamp) from=0.5u to=1.5u
+  meas tran I_clamp_low AVG I(D_clamp) from=3u to=4.5u
+
+  * Current into MCU GPIO pin
+  * At idle: I = (5V - 3.3V - 0.6V) / (10k_series + 100_Rs_diode) ~ 0.11mA
+  echo ""
+  echo "Expected idle: ~5V at seq_node, clamped by internal diode"
+  echo "Expected low:  ~2.5V at seq_node (voltage divider)"
+  echo "MCU VIH threshold (3.3V domain): ~1.65V"
+  echo ""
+
+  print V_seq_idle V_conn_idle V_seq_low V_conn_low I_clamp_idle I_clamp_low
+
+  wrdata seq_autoid.csv V(seq_node) V(conn_pin) I(D_clamp)
+
+  quit
+.endc
+
+.end

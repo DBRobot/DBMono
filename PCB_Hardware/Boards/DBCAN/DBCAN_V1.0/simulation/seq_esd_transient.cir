@@ -1,0 +1,146 @@
+* SEQ ESD Transient Analysis
+* DBCAN_V1.0 - IEC 61000-4-2 8kV contact discharge on connector pin
+*
+* Updated topology (MCU drives SEQ as output, open-drain, 5V tolerant FT):
+*   +5V --- R_pullup (10k) --- connector pin --- D_esd (PESD5V0L1UL) --- GND
+*                                    |
+*                               R_series (1k)
+*                                    |
+*                               MCU GPIO (PB7/PB2, FT, open-drain)
+*
+* STM32 FT pin model:
+*   - NO upper clamp diode to VDD (5V tolerant)
+*   - Lower clamp diode to GND
+*   - Internal ESD: abs max = VDD+4.0V = 7.3V
+*
+* PESD5V0L1UL (unidirectional, anode=GND, cathode=conn_pin):
+*   - Vbr = 6.8V typ
+*   - Vc = 9V @ 1A, Vc = 12V @ 3.5A
+*   - Cj = 25pF
+*   - Dynamic resistance: (12-9)/(3.5-1) = 1.2 ohm at high current
+*   - Model Rs=0.5 (conservative for ESD peak currents)
+*
+* IEC 61000-4-2 8kV contact discharge:
+*   - Peak current ~24A at ~1ns
+*   - At 24A peak: V_clamp ~ 6.8 + 24*0.5 = 18.8V (at diode)
+*   - Voltage at MCU: V_mcu = V_clamp - I*R_series
+*   - But I through 1k is limited: I = (V_clamp - V_mcu_clamp) / 1k
+*
+* =====================================================================
+
+* +5V supply with source impedance
+V5 vdd 0 DC 5.0
+R_supply vdd vdd_local 1
+
+* 3.3V MCU supply
+V33 vdd_mcu 0 DC 3.3
+
+* Pull-up resistor
+R_pullup vdd_local conn_pin 10k
+
+* ESD protection diode (PESD5V0L1UL) - unidirectional
+* Anode=GND, Cathode=conn_pin
+.model PESD5V0L1UL D (
++   Is=1p N=1.05 Rs=0.5
++   Bv=6.8 Ibv=1m
++   Cjo=25p Vj=0.7 M=0.5 )
+
+D_esd 0 esd_a PESD5V0L1UL
+V_am_esd esd_a conn_pin DC 0
+
+* Series resistor to MCU
+R_series conn_pin rseries_out 1k
+V_am_rs rseries_out mcu_pin DC 0
+
+* =====================================================================
+* STM32G0B1 FT Pin Model
+* NO upper clamp to VDD. Internal ESD protection at ~7.3V.
+* =====================================================================
+.model MCU_FT_PROT D (
++   Is=1p N=1.1 Rs=50
++   Bv=7.3 Ibv=100u
++   Cjo=3p Vj=0.7 M=0.5 )
+
+.model MCU_CLAMP_DN D (Is=1n N=1.7 Rs=50)
+
+D_mcu_prot 0 prot_a MCU_FT_PROT
+V_am_prot prot_a mcu_pin DC 0
+
+D_mcu_dn 0 mcu_pin MCU_CLAMP_DN
+
+* MCU pin capacitance
+C_gpio mcu_pin 0 5p
+
+* Trace/connector parasitic capacitance
+C_trace conn_pin 0 10p
+
+* =====================================================================
+* IEC 61000-4-2 ESD current pulse (8kV contact discharge)
+* Standard waveform: peak ~24A, rise ~1ns, decay ~30-60ns
+* =====================================================================
+I_esd 0 conn_pin PWL(
++ 0       0
++ 0.2n    0
++ 0.7n    15
++ 1.0n    24
++ 2.0n    18
++ 5.0n    14
++ 10n     11
++ 20n     8
++ 30n     6
++ 60n     3
++ 100n    1.5
++ 200n    0.5
++ 500n    0.1
++ 1u      0 )
+
+* =====================================================================
+* Simulation Control
+* =====================================================================
+.OPTIONS RELTOL=0.001 VNTOL=0.1m ABSTOL=1u CHGTOL=0.1p GMIN=1E-9
++ ITL1=1000 ITL2=1000 ITL4=500 METHOD=GEAR TRTOL=7
+
+.tran 0.1n 1u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  echo ""
+  echo "=== SEQ ESD Transient Analysis (8kV Contact Discharge) ==="
+  echo ""
+
+  * Peak voltage at connector pin
+  meas tran V_conn_peak MAX V(conn_pin) from=0 to=200n
+
+  * Peak voltage at MCU pin (after 1k series R)
+  meas tran V_mcu_peak MAX V(mcu_pin) from=0 to=200n
+
+  * Peak current through series resistor (into MCU)
+  meas tran I_Rseries_peak MAX v_am_rs#branch from=0 to=200n
+
+  * Peak current through ESD diode breakdown
+  meas tran I_esd_peak MAX v_am_esd#branch from=0 to=200n
+
+  * Peak current into MCU internal protection
+  meas tran I_mcu_prot_peak MAX v_am_prot#branch from=0 to=200n
+
+  * Time above MCU abs max (7.3V)
+  meas tran T_above_max TRIG V(mcu_pin) VAL=7.3 RISE=1 TARG V(mcu_pin) VAL=7.3 FALL=1
+
+  echo ""
+  echo "=== Limits ==="
+  echo "STM32G0B1 FT pin abs max: VDD+4V = 7.3V"
+  echo "FT pins: NO upper clamp to VDD (5V tolerant)"
+  echo ""
+
+  wrdata seq_esd_transient.csv V(conn_pin) V(mcu_pin) v_am_rs#branch v_am_esd#branch v_am_prot#branch
+
+  quit
+.endc
+
+.end
