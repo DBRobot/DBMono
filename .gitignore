@@ -72,3 +72,9 @@ Debug/
 Release/
 .metadata/
 *.launch
+
+# Obsidian vault state
+.obsidian/
+
+# Large simulation waveform exports (regeneratable from .cir + run scripts)
+PCB_Hardware/**/simulation/*.csv

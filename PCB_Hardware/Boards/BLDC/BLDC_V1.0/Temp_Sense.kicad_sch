@@ -1442,7 +1442,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 106.172 106.68 90)
 			(hide yes)
 			(show_name no)
@@ -1688,7 +1688,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_JST:JST_XH_S2B-XH-A-1_1x02_P2.50mm_Horizontal"
 			(at 185.42 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -1848,7 +1848,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 148.082 104.14 90)
 			(hide yes)
 			(show_name no)
@@ -2009,7 +2009,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Fuse:Fuse_0805_2012Metric"
 			(at 180.34 96.52 0)
 			(hide yes)
 			(show_name no)

@@ -1,5 +1,5 @@
-#ifndef CANFD_H
-#define CANFD_H
+#ifndef BOOT_CANFD_H
+#define BOOT_CANFD_H
 
 #include "stm32g4xx.h"
 #include <stdint.h>

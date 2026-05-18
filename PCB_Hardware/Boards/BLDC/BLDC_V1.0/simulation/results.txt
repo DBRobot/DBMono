@@ -1,0 +1,15 @@
+===== V_BUS sweep at 20A, Medium IDRIVE (500/1000 mA) =====
+Vbus=24V, 20A, Med IDRIVE                           P_HS= 0.848W  P_LS= 1.195W  Total= 2.043W
+Vbus=48V, 20A, Med IDRIVE                           P_HS= 0.857W  P_LS= 1.675W  Total= 2.531W
+Vbus=72V, 20A, Med IDRIVE                           P_HS= 0.864W  P_LS= 2.156W  Total= 3.020W
+
+===== IDRIVE sweep at 48V/20A =====
+Vbus=48V, 20A, Slow  (150/300 mA)                   P_HS= 0.000W  P_LS=17.511W  Total=17.511W
+Vbus=48V, 20A, Med   (500/1000 mA)                  P_HS= 0.857W  P_LS= 1.675W  Total= 2.531W
+Vbus=48V, 20A, Fast  (1000/2000 mA)                 P_HS= 0.855W  P_LS= 1.390W  Total= 2.245W
+
+===== Current sweep at 48V, Medium IDRIVE =====
+Vbus=48V, 10A, Med IDRIVE                           P_HS= 0.237W  P_LS= 0.787W  Total= 1.024W
+Vbus=48V, 20A, Med IDRIVE                           P_HS= 0.857W  P_LS= 1.675W  Total= 2.531W
+Vbus=48V, 30A, Med IDRIVE                           P_HS= 1.874W  P_LS= 2.726W  Total= 4.600W
+

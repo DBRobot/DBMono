@@ -1,0 +1,78 @@
+* DBMono BLDC V1.0 — bus capacitor transient response comparison
+*
+* 10A → 30A motor current step. Measures V_bus dip vs time at multiple
+* points to characterize transient response (the only cap-related thing
+* that affects motor control performance per the design priority).
+*
+* Note: steady-state V_bus during 30A load = 60V - 30A × 100mΩ = 57V
+* (set by supply impedance, not caps). The TRANSIENT — how V_bus dips
+* below 57V during the first ~30µs — is what differentiates the configs.
+
+.param vbus = 60
+.param iload_low = 10
+.param iload_high = 30
+.param tstep = 200u           ; load step happens at this time
+.param trise = 100n           ; step rise time (fast — current loop limit)
+.param rsupply = 0.1
+.param lsupply = 3u
+
+* MLCC stack (3× 10µF + 3× 1µF, X7R 100V derated to ~40% at 60V bias)
+.param mlcc_c = 13u
+.param mlcc_esr = 1m
+.param mlcc_esl = 0.3n
+
+* Bulk cap config — overridden via sed by sweep script
+.param bulk_c_per = 150u  bulk_esr_per = 0.20  bulk_esl_per = 12n  bulk_n = 2
+
+.param bulk_c_total = {bulk_c_per * bulk_n}
+.param bulk_esr_eff = {bulk_esr_per / bulk_n}
+.param bulk_esl_eff = {bulk_esl_per / bulk_n}
+
+* Circuit
+Vin VSUPPLY 0 DC {vbus}
+Lsup VSUPPLY VSUP1 {lsupply}
+Rsup VSUP1 VBUS {rsupply}
+
+Cbulk VBUS NB1 {bulk_c_total} IC={vbus}
+Resr_bulk NB1 NB2 {bulk_esr_eff}
+Lesl_bulk NB2 0 {bulk_esl_eff}
+
+Cmlcc VBUS NM1 {mlcc_c} IC={vbus}
+Resr_mlcc NM1 NM2 {mlcc_esr}
+Lesl_mlcc NM2 0 {mlcc_esl}
+
+Iload VBUS 0 PULSE({iload_low} {iload_high} {tstep} {trise} {trise} 1m 5m)
+
+.OPTIONS RELTOL=0.005 VNTOL=10u ABSTOL=10u CHGTOL=1p METHOD=GEAR
++ ITL1=1000 ITL2=1000 ITL4=500 RSHUNT=1e8
+
+.tran 50n 600u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  run
+
+  * Settled V_bus before step (t < 200µs)
+  meas tran vbus_pre FIND v(VBUS) AT=199u
+
+  * Multiple sample points after step to characterize transient curve
+  meas tran vbus_t1us FIND v(VBUS) AT=201u
+  meas tran vbus_t2us FIND v(VBUS) AT=202u
+  meas tran vbus_t5us FIND v(VBUS) AT=205u
+  meas tran vbus_t10us FIND v(VBUS) AT=210u
+  meas tran vbus_t30us FIND v(VBUS) AT=230u
+  meas tran vbus_t100us FIND v(VBUS) AT=300u
+  meas tran vbus_t300us FIND v(VBUS) AT=500u
+
+  * Worst-case V_bus min during the transient
+  meas tran vbus_min MIN v(VBUS) from=200u to=500u
+
+  * Save waveform for plotting
+  wrdata waves.csv v(VBUS) i(Iload)
+.endc
+
+.end

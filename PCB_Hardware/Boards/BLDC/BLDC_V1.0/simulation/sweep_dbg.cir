@@ -1,0 +1,154 @@
+* DBMono BLDC V1.0 — single half-bridge switching cell
+* Verifies per-FET dissipation at the design center vs analytical estimate.
+*
+* Topology:
+*   +Vbus ──[VsenseHS]──[HS FET XQ1]── SW ──[I_LOAD]── GND
+*                                       │
+*                                  [LS FET XQ2]
+*                                       │
+*                                  [VsenseLS]
+*                                       │
+*                                  [Rshunt]── PGND
+*
+* The 0V Vsense sources let us measure FET drain currents directly.
+* Load is constant DC current source representing motor phase current at
+* one operating point (worst case = peak of sine for switching loss).
+*
+* Test 1: 48V bus, 20A load, 30 kHz, ~50% duty, Medium IDRIVE = 500/1000 mA
+
+.include tph3r70apl.lib
+.include drv8353_gate_driver.lib
+
+* =====================================================================
+* Operating point parameters
+* =====================================================================
+.param vbus_v   = 48
+.param iload_a  = 10
+.param fsw_hz   = 30k
+.param duty     = 0.5
+.param dt_s     = 200n
+.param idrivep_a = 500m
+.param idriven_a = 1000m
+.param vcp_v    = 10
+.param vgls_v   = 12
+
+.param tper    = {1/fsw_hz}
+.param thson   = {duty*tper - dt_s}
+.param tlson   = {(1-duty)*tper - dt_s}
+
+* =====================================================================
+* Power circuit
+* =====================================================================
+Vbus VBUS_RAW 0 DC {vbus_v}
+* DC bus bulk + local decoupling (320µF total ≈ 2× 150µF + 11µF MLCC)
+Cbus VBUS_RAW 0 320u IC={vbus_v}
+* Series resistance — tiny, just to break ideal voltage source
+Rbus_esl VBUS_RAW VBUS 1m
+
+* High-side FET, with current sense resistor at drain
+VsenseHS VBUS HSD DC 0
+XQ1 HSD GHS SW TPH3R70APL
+
+* Low-side FET, with current sense resistor at drain (= SW node)
+* And source going through shunt
+XQ2 SW GLS LSS TPH3R70APL
+VsenseLS LSS SHUNT_HI DC 0
+Rshunt SHUNT_HI 0 0.5m
+
+* Load: constant current (representing peak motor phase current)
+Iload SW 0 DC {iload_a}
+
+* =====================================================================
+* Gate drive supplies
+* =====================================================================
+* High-side: VCP referenced to SW (floating source of HS FET)
+Vvcp VCP_NODE SW DC {vcp_v}
+* Low-side: VGLS referenced to ground
+Vvgls VGLS_NODE 0 DC {vgls_v}
+
+* =====================================================================
+* PWM control
+* =====================================================================
+* HS PWM: starts on at t=2µs, off after THSON, period TPER
+Vpwm_hs PWM_HS 0 PULSE(0 5 2u 10n 10n {thson} {tper})
+* LS PWM: complementary with dead time
+Vpwm_ls PWM_LS 0 PULSE(0 5 {2u + thson + dt_s} 10n 10n {tlson} {tper})
+
+* =====================================================================
+* Gate drivers (DRV8353 behavioral)
+* =====================================================================
+XDRVH PWM_HS GHS SW VCP_NODE 0 DRV8353_DRIVER
++ params: IDRIVEP={idrivep_a} IDRIVEN={idriven_a} VGS_TARGET=10
+XDRVL PWM_LS GLS LSS VGLS_NODE 0 DRV8353_DRIVER
++ params: IDRIVEP={idrivep_a} IDRIVEN={idriven_a} VGS_TARGET=10
+
+* Initial conditions: gates off, SW low (LS body diode would conduct)
+.IC V(GHS)=0 V(GLS)=0 V(SW)=0
+
+* =====================================================================
+* Simulation control
+* =====================================================================
+.OPTIONS RELTOL=0.005 VNTOL=10u ABSTOL=10u CHGTOL=1p GMIN=1E-9
++ ITL1=2000 ITL2=2000 ITL4=1000 METHOD=GEAR TRTOL=7
++ RSHUNT=1e8
+
+* Run for 6 PWM cycles after settle
+.tran 1n 220u UIC
+
+.control
+  set ngbehavior=psa
+  set filetype = ascii
+  set wr_singlescale
+  set wr_vecnames
+
+  echo ""
+  echo "==============================================================="
+  echo "Half-bridge sim: VBUS=48V, ILOAD=20A, FSW=30kHz, IDRIVE=Medium"
+  echo "==============================================================="
+
+  run
+
+  * Compute per-FET instantaneous power dissipation
+  * HS FET: V across (HSD,SW) × current into drain (i(VsenseHS))
+  let p_hs = (v(HSD) - v(SW)) * i(VsenseHS)
+  * LS FET: V across (SW,LSS) × current into LS drain
+  * LS drain current = current out of SW going down through LS = i(VsenseLS)
+  * (positive when flowing from SW into LS source path)
+  let p_ls = (v(SW) - v(LSS)) * i(VsenseLS)
+
+  * Average over the last 4 cycles (skip first 2 for transients to settle)
+  meas tran p_hs_avg AVG p_hs from=70u to=200u
+  meas tran p_ls_avg AVG p_ls from=70u to=200u
+
+  * Total power dissipated by FETs
+  let p_fet_total = p_hs + p_ls
+  meas tran p_fet_total_avg AVG p_fet_total from=70u to=200u
+
+  * Switch node behavior — ringing, slew rate
+  meas tran sw_max MAX v(SW) from=70u to=200u
+  meas tran sw_min MIN v(SW) from=70u to=200u
+
+  * Switching transition timing (one rising edge, one falling)
+  meas tran t_rise TRIG v(SW) VAL=4.8 RISE=3 TARG v(SW) VAL=43.2 RISE=3
+  meas tran t_fall TRIG v(SW) VAL=43.2 FALL=3 TARG v(SW) VAL=4.8 FALL=3
+
+  echo ""
+  echo "===== Per-FET dissipation ====="
+  print p_hs_avg
+  print p_ls_avg
+  print p_fet_total_avg
+  echo ""
+  echo "===== SW node ====="
+  print sw_max
+  print sw_min
+  print t_rise
+  print t_fall
+  echo ""
+
+  wrdata waves.csv v(VBUS) v(SW) v(GHS) v(GLS) i(VsenseHS) i(VsenseLS)
+  wrdata power.csv p_hs p_ls
+
+  echo "===== Done ====="
+.endc
+
+.end

@@ -1434,7 +1434,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Diode_SMD:D_SOD-323"
 			(at 119.38 72.39 0)
 			(hide yes)
 			(show_name no)
@@ -1538,7 +1538,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 135.5852 76.2 0)
 			(hide yes)
 			(show_name no)

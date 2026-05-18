@@ -1,0 +1,52 @@
+* Debug slow IDRIVE
+.include tph3r70apl.lib
+.include drv8353_gate_driver.lib
+
+.param vbus_v=48 iload_a=20 fsw_hz=30k
+.param idrivep_a=150m idriven_a=300m
+
+Vbus VBUS 0 DC 48
+XQ1 VBUS GHS SW TPH3R70APL
+XQ2 SW GLS LSS TPH3R70APL
+Rshunt LSS 0 0.5m
+Iload SW 0 DC 20
+
+Vvcp VCP_NODE SW DC 10
+Vvgls VGLS_NODE 0 DC 12
+
+Vpwm_hs PWM_HS 0 PULSE(0 5 2u 10n 10n 16u 33.3u)
+Vpwm_ls PWM_LS 0 0
+
+XDRVH PWM_HS GHS SW VCP_NODE 0 DRV8353_DRIVER
++ params: IDRIVEP=150m IDRIVEN=300m VGS_TARGET=10
+XDRVL PWM_LS GLS LSS VGLS_NODE 0 DRV8353_DRIVER
++ params: IDRIVEP=150m IDRIVEN=300m VGS_TARGET=10
+
+.IC V(GHS)=0 V(GLS)=0 V(SW)=0
+
+.OPTIONS RELTOL=0.005 METHOD=GEAR RSHUNT=1e8
+
+.tran 5n 6u UIC
+
+.control
+  set ngbehavior=psa
+  run
+  echo "GHS at end (V):"
+  print v(ghs)
+  echo "SW at end (V):"
+  print v(sw)
+  echo "GHS-SW at end:"
+  print v(ghs,sw)
+  echo "PWM_HS at end:"
+  print v(pwm_hs)
+  echo ""
+  echo "GHS-SW at t=2.5µs (should be charging):"
+  meas tran ghssw_at_25 FIND v(ghs,sw) AT=2.5u
+  echo "SW at t=2.5µs:"
+  meas tran sw_at_25 FIND v(sw) AT=2.5u
+  echo ""
+  meas tran ghssw_at_5 FIND v(ghs,sw) AT=5u
+  meas tran sw_at_5 FIND v(sw) AT=5u
+  print ghssw_at_25 sw_at_25 ghssw_at_5 sw_at_5
+.endc
+.end

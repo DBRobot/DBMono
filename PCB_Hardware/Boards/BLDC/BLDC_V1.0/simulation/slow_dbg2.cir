@@ -1,0 +1,35 @@
+.include tph3r70apl.lib
+.include drv8353_gate_driver.lib
+Vbus VBUS 0 DC 48
+XQ1 VBUS GHS SW TPH3R70APL
+XQ2 SW GLS LSS TPH3R70APL
+Rshunt LSS 0 0.5m
+Iload SW 0 DC 20
+Vvcp VCP_NODE SW DC 10
+Vvgls VGLS_NODE 0 DC 12
+Vpwm_hs PWM_HS 0 PULSE(0 5 2u 10n 10n 16u 33.3u)
+Vpwm_ls PWM_LS 0 0
+XDRVH PWM_HS GHS SW VCP_NODE 0 DRV8353_DRIVER
++ params: IDRIVEP=150m IDRIVEN=300m VGS_TARGET=10
+XDRVL PWM_LS GLS LSS VGLS_NODE 0 DRV8353_DRIVER
++ params: IDRIVEP=150m IDRIVEN=300m VGS_TARGET=10
+.IC V(GHS)=0 V(GLS)=0 V(SW)=0
+.OPTIONS RELTOL=0.005 METHOD=GEAR RSHUNT=1e8
+.tran 5n 6u UIC
+.control
+  set ngbehavior=psa
+  run
+  meas tran ghs_at_25 FIND v(ghs) AT=2.5u
+  meas tran sw_at_25 FIND v(sw) AT=2.5u
+  meas tran vcp_at_25 FIND v(vcp_node) AT=2.5u
+  meas tran ghs_at_5 FIND v(ghs) AT=5u
+  meas tran sw_at_5 FIND v(sw) AT=5u
+  meas tran ghs_max MAX v(ghs) from=2u to=6u
+  meas tran sw_max MAX v(sw) from=2u to=6u
+  print ghs_at_25 sw_at_25 vcp_at_25 ghs_at_5 sw_at_5 ghs_max sw_max
+  echo "Internal driver nodes at 2.5µs:"
+  meas tran pwmf_25 FIND v(xdrvh.pwm_filt) AT=2.5u
+  meas tran hifilt_25 FIND v(xdrvh.hi_filt) AT=2.5u
+  print pwmf_25 hifilt_25
+.endc
+.end
