@@ -23,3 +23,8 @@ with open(path, 'w') as f: json.dump(d, f, indent=2)
 print(f"  set DBMONO_LIBS={libs} in {path}")
 PY
 done
+
+# VS Code C block comment extension (/* + Enter auto-continues with *)
+EXT_DIR="$HOME/.vscode/extensions/local.c-block-comment-rules-1.0.0"
+ln -sfn "$REPO_ROOT/tools/vscode-c-block-comment" "$EXT_DIR"
+echo "VS Code block comment extension linked"

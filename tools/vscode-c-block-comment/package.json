@@ -1,0 +1,20 @@
+{
+    "name": "c-block-comment-rules",
+    "displayName": "C Block Comment Rules",
+    "description": "Adds block comment continuation on Enter for C/C++",
+    "version": "1.0.0",
+    "publisher": "local",
+    "engines": { "vscode": "^1.75.0" },
+    "contributes": {
+        "languages": [
+            {
+                "id": "c",
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "cpp",
+                "configuration": "./language-configuration.json"
+            }
+        ]
+    }
+}
