@@ -1,0 +1,49 @@
+* DRV8353 — behavioral gate driver model
+* Source: TI DRV8353 datasheet SLVSDY6A (June 2019).
+*
+* TI does not publish a SPICE model for the DRV8353. This is a behavioral
+* approximation that captures the IDRIVEP/IDRIVEN current-source gate-drive
+* behavior, with a high-side gate clamp at ~11V (VGS_CLAMP).
+*
+* Each driver is a smoothed controlled current source:
+*   - When PWM input is high, source IDRIVE_P from internal supply into gate
+*     until gate voltage reaches V_GATE_HI (~10 V).
+*   - When PWM input is low, sink IDRIVE_N from gate to source/PGND
+*     until gate is below ~0.3 V.
+*
+* Smoothing uses tanh() to avoid timestep-too-small convergence failures
+* at hard transitions. Transition smoothness ~50 mV.
+*
+* Pin order: PWM_IN GATE_OUT SOURCE_KELVIN VCP_OR_VGLS GND
+
+.subckt DRV8353_DRIVER PWM GATE SRC VSUP GND
++ params: IDRIVEP=500m IDRIVEN=1000m VGS_TARGET=10
+
+* Smoothed PWM logic (gentler tanh — eases solver convergence)
+B_pwm pwm_int 0 V = 0.5 + 0.5*tanh(8*(V(PWM,GND)-1.5))
+
+* Smoothed gate-voltage gates (gentler — 0.2V transition width)
+B_hiroom hi_room 0 V = 0.5 - 0.5*tanh(10*(V(GATE,SRC) - VGS_TARGET))
+B_loroom lo_room 0 V = 0.5 + 0.5*tanh(10*(V(GATE,SRC) - 0.3))
+
+* Source current: from VSUP into GATE when PWM high AND gate has room
+* Use filtered control signals to ease convergence
+B_source VSUP GATE I = {IDRIVEP} * V(pwm_filt) * V(hi_filt)
+
+* Sink current: from GATE into SRC when PWM low AND gate has room
+B_sink GATE SRC I = {IDRIVEN} * (1 - V(pwm_filt)) * V(lo_filt)
+
+* High-side gate clamp at +11.5V (smoothed, modest gain)
+B_clamp_pos GATE SRC I = 10 * (V(GATE,SRC) - 11.5) * (0.5 + 0.5*tanh(5*(V(GATE,SRC) - 11.5)))
+* Negative clamp at -0.7V (smoothed)
+B_clamp_neg SRC GATE I = 10 * (-0.7 - V(GATE,SRC)) * (0.5 + 0.5*tanh(5*(-0.7 - V(GATE,SRC))))
+
+* Stronger RC filter on internal nodes — eases convergence at fast edges
+R_pwm_f pwm_int pwm_filt 100
+C_pwm_f pwm_filt 0 200p
+R_hi_f hi_room hi_filt 100
+C_hi_f hi_filt 0 200p
+R_lo_f lo_room lo_filt 100
+C_lo_f lo_filt 0 200p
+
+.ends DRV8353_DRIVER
