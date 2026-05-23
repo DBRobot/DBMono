@@ -4826,7 +4826,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22n"
+		(property "Value" "33n"
 			(at 195.58 140.9699 0)
 			(show_name no)
 			(do_not_autoplace no)
