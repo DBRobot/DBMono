@@ -1,4 +1,7 @@
 (sym_lib_table
   (version 7)
-  (lib (name "DBRobot") (type "KiCad") (uri "${DBMONO_LIBS}/DBRobot.kicad_sym") (options "") (descr ""))
+  (lib (name "DBRobot_Motor_Controller") (type "KiCad") (uri "${DBMONO_LIBS}/DBRobot_Motor_Controller.kicad_sym") (options "") (descr "Motor drivers and controllers"))
+  (lib (name "DBRobot_Buck_Converter") (type "KiCad") (uri "${DBMONO_LIBS}/DBRobot_Buck_Converter.kicad_sym") (options "") (descr "DC-DC buck converters"))
+  (lib (name "DBRobot_Magnetic_Encoder") (type "KiCad") (uri "${DBMONO_LIBS}/DBRobot_Magnetic_Encoder.kicad_sym") (options "") (descr "Magnetic encoders and position sensors"))
+  (lib (name "DBRobot_CAN_Transceiver") (type "KiCad") (uri "${DBMONO_LIBS}/DBRobot_CAN_Transceiver.kicad_sym") (options "") (descr "CAN transceivers"))
 )

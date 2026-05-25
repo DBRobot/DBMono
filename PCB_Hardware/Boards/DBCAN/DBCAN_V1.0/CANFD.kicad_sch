@@ -397,7 +397,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "DBRobot:TCAN1048AVDMTRQ1"
+		(symbol "DBRobot_CAN_Transceiver:TCAN1048AVDMTRQ1"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3734,7 +3734,7 @@
 		)
 	)
 	(symbol
-		(lib_id "DBRobot:TCAN1048AVDMTRQ1")
+		(lib_id "DBRobot_CAN_Transceiver:TCAN1048AVDMTRQ1")
 		(at 60.96 78.74 0)
 		(unit 1)
 		(body_style 1)

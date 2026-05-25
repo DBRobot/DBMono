@@ -2443,7 +2443,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "DBRobot:SOP AdvanceN_TOS"
 			(at 163.83 96.52 0)
 			(hide yes)
 			(show_name no)

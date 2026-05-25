@@ -6,7 +6,7 @@ compatibility: opencode
 
 # Schematic Design Review
 
-Orchestrates a comprehensive design review of a KiCad schematic using 9 domain-specialist agents that review in parallel and produce a consolidated checklist.
+Orchestrates a comprehensive design review of a KiCad schematic using 10 domain-specialist agents that review in parallel and produce a consolidated checklist.
 
 ## Workflow Overview
 
@@ -14,8 +14,9 @@ Orchestrates a comprehensive design review of a KiCad schematic using 9 domain-s
 Phase 1: Project Discovery → Find and confirm the KiCad project
 Phase 2: Data Extraction   → Export netlist/BOM via kicad-cli or parse .kicad_sch directly
 Phase 3: Requirements       → Functional Requirements agent asks user what the board should do
-Phase 4: Parallel Review    → 8 specialist agents review simultaneously
-Phase 5: Consolidation      → Merge all findings into single severity-sorted checklist
+Phase 4: Parallel Review    → 10 specialist agents review simultaneously (ALL sims run, written to /tmp)
+Phase 5: Consolidation      → Merge findings into report saved to /tmp/sch_review_report.md
+Phase 6: Walkthrough        → Present issues one at a time, check them off the report as resolved
 ```
 
 ## Phase 1: Project Discovery
@@ -33,6 +34,15 @@ Use that path directly. Verify it points to a `.kicad_pro` or `.kicad_sch` file.
 2. Find all `(sheet ...)` blocks to identify hierarchical sub-sheets
 3. Build the complete list of `.kicad_sch` files to review
 4. Report to user: "Found [N] schematic sheets: [list sheet names]"
+
+### Read existing documentation FIRST:
+Before proceeding, search for and read any project documentation:
+1. `Glob("**/README*")` — read every README found in the project tree
+2. `Glob("**/*requirements*")` — read any requirements documents
+3. `Glob("**/*spec*")` — read any specification documents
+4. `Glob("**/*.pdf")` within the project directory — list any PDFs found
+
+Extract all technical requirements, design intent, specifications, and constraints from these documents. Pass this information to the Functional Requirements agent so it can avoid re-asking questions already answered in the docs.
 
 ## Phase 2: Data Extraction
 
@@ -53,6 +63,9 @@ Create a structured inventory of:
 - All power rails
 - All connectors
 
+### Critical: All agents MUST use the netlist for connection tracing
+The netlist XML (`/tmp/sch_review_netlist.xml`) is the **authoritative source for component interconnections**. Agents MUST reference it to determine what each pin connects to. Do NOT attempt to trace wire segments in `.kicad_sch` files — those are complex S-expression trees and agents frequently misread them. Use the netlist `<net>` entries to find all nodes on a given net, and `<comp>` entries for component details. The `.kicad_sch` files should only be used for component positions, property values, and net labels that supplement the netlist.
+
 ## Phase 3: Functional Requirements (Sequential)
 
 **This phase runs FIRST and ALONE because it requires user interaction.**
@@ -68,15 +81,19 @@ Create a structured inventory of:
 
 ## Phase 4: Specialist Review (Parallel)
 
-**Spawn all 8 remaining agents in a SINGLE message (parallel execution).**
+**Spawn all 10 remaining agents in a SINGLE message (parallel execution).**
 
 For each agent, read its instruction file and spawn it with the Agent tool. Include the kicad-cli skill path (`.claude/skills/kicad-cli/SKILL.md`) in every agent prompt so they can do additional data extraction if needed.
+
+### Mandatory Simulation Rule
+Any agent whose instruction file references SPICE simulations (Analog Systems, Protection, Component Rating, Footprint Audit) **MUST run every simulation described in their instructions**. Do not skip, defer, or note "for future simulation." Run them now. Write each simulation to `/tmp/sch_review_sim_[agent]_[name].cir` and log results. If a sim fails due to missing models, note the missing model and provide a download link to the user, but still run every sim you can.
 
 ### Agent 1: Power & Thermal
 - Read instructions: `agents/power-thermal.md`
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Reference file path: `references/power-design-rules.md`
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
   - Component inventory from Phase 2
@@ -86,6 +103,7 @@ For each agent, read its instruction file and spawn it with the Agent tool. Incl
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Reference file path: `references/protection-guidelines.md`
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
   - Connector inventory from Phase 2
@@ -95,6 +113,7 @@ For each agent, read its instruction file and spawn it with the Agent tool. Incl
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Reference file path: `references/signal-integrity-rules.md`
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
   - Net/bus inventory from Phase 2
@@ -104,6 +123,7 @@ For each agent, read its instruction file and spawn it with the Agent tool. Incl
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Path to .ioc file (if exists)
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
   - Full component inventory from Phase 2
@@ -113,6 +133,7 @@ For each agent, read its instruction file and spawn it with the Agent tool. Incl
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Path to spice-sim skill: `.opencode/skills/spice-sim/SKILL.md`
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
   - Analog component inventory from Phase 2
@@ -122,6 +143,7 @@ For each agent, read its instruction file and spawn it with the Agent tool. Incl
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
   - Full component inventory from Phase 2
 
@@ -130,18 +152,38 @@ For each agent, read its instruction file and spawn it with the Agent tool. Incl
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Full component inventory from Phase 2
   - Ask user about firmware size, config data, and logging requirements
 
-### Agent 8: ERC Analysis
+### Agent 8: Footprint Audit
+- Read instructions: `agents/footprint-audit.md`
+- Include in prompt:
+  - Full agent instructions
+  - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
+  - Full component inventory from Phase 2
+  - Path to any `.kicad_pcb` file (if available)
+
+### Agent 9: ERC Analysis
 - Read instructions: `agents/erc-analysis.md`
 - Include in prompt:
   - Full agent instructions
   - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
   - Path to ERC report: `/tmp/sch_review_erc.json`
   - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
 
-## Phase 5: Consolidation
+### Agent 10: Common Gotchas (boundary-scan agent)
+- Read instructions: `agents/common-gotchas.md`
+- Include in prompt:
+  - Full agent instructions
+  - All schematic file paths
+  - Netlist path: `/tmp/sch_review_netlist.xml` — **MUST use this for connection tracing**
+  - Component inventory from Phase 2 (BOM / netlist)
+  - kicad-cli skill path: `.claude/skills/kicad-cli/SKILL.md`
+
+## Phase 5: Consolidation — Save Report to /tmp
 
 ### Collect all agent outputs
 Each agent returns findings in the format:
@@ -153,16 +195,19 @@ WARNING: ...
 INFO: ...
 SUGGESTION: ...
 ---
+
+SIMULATIONS:
+- /tmp/sch_review_sim_[name].cir: [PASS/FAIL] — [summary]
 ```
 
 ### Parse and merge
-1. Extract all findings from all 9 agents
+1. Extract all findings from all 10 agents
 2. Tag each finding with its source agent/category
 3. Sort by severity: CRITICAL first, then WARNING, INFO, SUGGESTION
 4. Within each severity, group by category
 
-### Generate consolidated checklist
-Display the final report in the terminal:
+### Write report to file
+Write the complete report to `/tmp/sch_review_report.md`. This file survives context loss. The report format:
 
 ```markdown
 # Schematic Design Review: [Project Name]
@@ -200,8 +245,10 @@ Display the final report in the terminal:
 - Total violations: N | Real issues: X | False positives: Y | Needs clarification: Z | Excluded: W
 
 ## Simulations Run
-- ...
+- [file] — PASS/FAIL — [summary]
 ```
+
+After writing, display the Summary table and first issue to the user to begin Phase 6.
 
 ## Severity Definitions
 
@@ -211,6 +258,31 @@ Display the final report in the terminal:
 | WARNING    | May cause issues under certain operating conditions | Should fix, evaluate risk |
 | INFO       | Best practice deviation, not necessarily a problem  | Acknowledge and document |
 | SUGGESTION | Optimization opportunity for cost, reliability, or performance | Consider for next revision |
+
+## Phase 6: Walkthrough — One Issue at a Time
+
+After the report is saved to `/tmp/sch_review_report.md`, present issues to the user **one at a time**, starting with CRITICAL items first.
+
+For each issue:
+
+1. **Read** the current report from `/tmp/sch_review_report.md`
+2. **Present** the single issue to the user with context:
+   - What the finding is
+   - Which component(s) and sheet(s) are involved
+   - What the datasheet says vs what the schematic shows
+   - Any relevant simulation result
+3. **Ask** the user: "Fix this issue, acknowledge it, or skip for now?"
+4. **If user fixes it** — re-read the relevant schematic file to confirm the fix, then update `/tmp/sch_review_report.md` by changing `[ ]` to `[x]` for that item. If the fix introduces new concerns (e.g., changing a resistor value affects a simulation), re-run the relevant sim.
+5. **If user acknowledges** — change `[ ]` to `[x]` with note `(acknowledged)`
+6. **If user skips** — leave as `[ ]` and move on
+7. **After each issue** — re-display the updated summary so the user sees progress:
+
+```
+Progress: [X] of [N] issues resolved
+CRITICAL: [done/total] | WARNING: [done/total] | INFO: [done/total] | SUGGESTION: [done/total]
+```
+
+Continue until all issues have been visited or the user ends the session.
 
 ## Agent Rule: Requesting External Files
 If ANY agent cannot retrieve a file itself (datasheet PDF, SPICE model, footprint file, etc.):
@@ -223,5 +295,6 @@ If ANY agent cannot retrieve a file itself (datasheet PDF, SPICE model, footprin
 
 - **Datasheets are the source of truth.** Every pin, value, and rating must be verified against the component datasheet. If a datasheet cannot be found, the Pin Verification agent will ask the user to provide it.
 - **No guessing.** If an agent cannot verify something, it flags it rather than assuming it's correct.
-- **SPICE simulations** are generated in `/tmp/` and are disposable. They verify analog circuit behavior using actual component values from the schematic.
+- **SPICE simulations** are MANDATORY, not optional. Any agent with simulation instructions must run them. All simulations go to `/tmp/sch_review_sim_*.cir` — they are disposable and can be re-run if the schematic changes.
+- **The report lives at `/tmp/sch_review_report.md`** — it persists across context windows. If the session resets, read this file to resume the walkthrough.
 - **The review is schematic-only.** PCB layout concerns (trace routing, copper pours, stackup) are noted as INFO items but cannot be fully verified from the schematic alone.

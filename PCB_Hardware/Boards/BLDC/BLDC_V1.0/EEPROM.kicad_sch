@@ -1143,107 +1143,6 @@
 		(uuid "f9cd2a9d-5688-483f-9445-d0eff0c12faa")
 	)
 	(symbol
-		(lib_id "Memory_EEPROM:CAT24C256")
-		(at 161.29 102.87 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "49eb2056-8989-4384-ba91-ec105b3caf6f")
-		(property "Reference" "U16"
-			(at 164.4081 92.71 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "CAT24C256"
-			(at 164.4081 95.25 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 161.29 102.87 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "https://www.onsemi.cn/PowerSolutions/document/CAT24C256-D.PDF"
-			(at 161.29 102.87 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "256 kb CMOS Serial EEPROM, DIP-8/SOIC-8/TSSOP-8/DFN-8"
-			(at 161.29 102.87 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "3"
-			(uuid "72b55d84-fe24-47a9-b906-a35446b193f0")
-		)
-		(pin "6"
-			(uuid "01743248-cb4b-4e5c-9bad-2ff4f7ba2f3b")
-		)
-		(pin "1"
-			(uuid "dce336b7-447d-400b-a59a-fd19e3a6f31c")
-		)
-		(pin "7"
-			(uuid "c1bf7429-8cab-48e0-9c16-512e2abc9f09")
-		)
-		(pin "5"
-			(uuid "266f3bf1-8a6e-47a3-972b-295f4fedd094")
-		)
-		(pin "2"
-			(uuid "9fffa519-e3cc-4128-a50e-229e0c137e0e")
-		)
-		(pin "4"
-			(uuid "9ea28a5b-24df-4231-b357-0c35f7c750dc")
-		)
-		(pin "8"
-			(uuid "7d182525-40df-429a-8214-f364c959f34d")
-		)
-		(instances
-			(project "BLDC_V1.0"
-				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/8c82480a-69eb-4e57-815e-68aa86fb6e72"
-					(reference "U16")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 139.7 88.9 0)
 		(unit 1)
@@ -1326,6 +1225,106 @@
 		)
 	)
 	(symbol
+		(lib_id "Memory_EEPROM:CAT24C256")
+		(at 161.29 102.87 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "87bf5e06-e298-4136-9ef4-5f311b20965a")
+		(property "Reference" "U16"
+			(at 165.608 92.71 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "CAT24C512C8UTR"
+			(at 178.562 94.996 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "DBRobot:CAT24C512C8UTR"
+			(at 161.29 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.onsemi.cn/PowerSolutions/document/CAT24C256-D.PDF"
+			(at 161.29 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "256 kb CMOS Serial EEPROM, DIP-8/SOIC-8/TSSOP-8/DFN-8"
+			(at 161.29 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "5"
+			(uuid "f11a3b20-5efd-4de9-bad2-70257f6ab5f0")
+		)
+		(pin "4"
+			(uuid "08104c43-e7b7-4677-b898-e3fff8be0dc1")
+		)
+		(pin "6"
+			(uuid "cff23339-6b53-40ef-96ca-11f0c7322669")
+		)
+		(pin "7"
+			(uuid "856546cd-ce39-4e92-9f75-65fb15d08624")
+		)
+		(pin "3"
+			(uuid "0481204d-16ea-49c5-91f4-4f9d87aeb426")
+		)
+		(pin "1"
+			(uuid "a0ea18ab-7c42-4abf-9d44-17cf57636550")
+		)
+		(pin "2"
+			(uuid "9dab4110-e8c9-472a-a54d-19a0b82c0a5a")
+		)
+		(pin "8"
+			(uuid "6132ee6d-a774-4c10-9403-09d1797c1511")
+		)
+		(instances
+			(project "BLDC_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/8c82480a-69eb-4e57-815e-68aa86fb6e72"
+					(reference "U16")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3V3")
 		(at 161.29 82.55 0)
 		(unit 1)
@@ -1335,7 +1334,6 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "92ba217a-9296-4448-ab7c-d8b301029bef")
 		(property "Reference" "#PWR068"
 			(at 161.29 86.36 0)
@@ -1348,14 +1346,15 @@
 				)
 			)
 		)
-		(property "Value" "+3V3"
-			(at 161.29 77.47 0)
+		(property "Value" "+3.3V"
+			(at 158.496 77.47 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" ""

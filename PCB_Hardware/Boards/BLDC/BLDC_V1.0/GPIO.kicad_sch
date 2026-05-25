@@ -3780,6 +3780,16 @@
 	)
 	(wire
 		(pts
+			(xy 208.28 135.89) (xy 208.28 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d8a0e9e-e24d-499b-a852-f0079e183161")
+	)
+	(wire
+		(pts
 			(xy 127 137.16) (xy 129.54 137.16)
 		)
 		(stroke
@@ -4107,6 +4117,16 @@
 			(type default)
 		)
 		(uuid "cca82eda-89e1-4891-a97a-58818da7141a")
+	)
+	(wire
+		(pts
+			(xy 208.28 109.22) (xy 208.28 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cffe60a5-02cc-4069-ae2d-e9a68960e71e")
 	)
 	(wire
 		(pts
@@ -4528,6 +4548,103 @@
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
 					(reference "#PWR064")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Analog_Switch:TS5A3159ADBVR")
+		(at 208.28 123.19 0)
+		(mirror y)
+		(unit 2)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "094f4e98-3d44-463e-8b91-8345f8db1d28")
+		(property "Reference" "U15"
+			(at 213.36 121.9199 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "TS5A3159ADBVR"
+			(at 213.36 124.4599 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+			(at 207.645 136.525 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ts5a3159a.pdf"
+			(at 207.645 134.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Description" "Single SPDT Analog Switch, 1.65-V to 5.5-V Single-Supply Operation, 1Ohm Ron, SOT-23-6"
+			(at 208.28 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "5"
+			(uuid "921ce9f0-7ca8-469d-a4cf-901e945d8686")
+		)
+		(pin "4"
+			(uuid "1fb67647-92d9-491c-b93e-fe066d6f9ead")
+		)
+		(pin "3"
+			(uuid "e738f8b5-ea22-4233-965e-dec44f6ff746")
+		)
+		(pin "6"
+			(uuid "f1060be2-29a5-4160-a591-1367be28efbc")
+		)
+		(pin "2"
+			(uuid "439f494e-6f8e-44dc-ade4-f62ca0699e9d")
+		)
+		(pin "1"
+			(uuid "9fc0dc5b-1a3e-496b-bb82-9dfda7dc0d20")
+		)
+		(instances
+			(project "BLDC_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
+					(reference "U15")
+					(unit 2)
 				)
 			)
 		)
@@ -5047,7 +5164,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal"
 			(at 175.26 137.16 0)
 			(hide yes)
 			(show_name no)
@@ -5520,103 +5637,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Analog_Switch:TS5A3159ADBVR")
-		(at 168.91 123.19 270)
-		(mirror x)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8f752a61-0f7a-4441-874f-0d4ca0cb6c43")
-		(property "Reference" "U15"
-			(at 175.26 121.9199 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TS5A3159ADBVR"
-			(at 175.26 124.4599 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
-			(at 155.575 122.555 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ts5a3159a.pdf"
-			(at 157.48 122.555 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Description" "Single SPDT Analog Switch, 1.65-V to 5.5-V Single-Supply Operation, 1Ohm Ron, SOT-23-6"
-			(at 168.91 123.19 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "767de90e-fbd8-48e6-8cd0-e7d36b1105c0")
-		)
-		(pin "5"
-			(uuid "61f55c19-6571-4203-ae98-a5999048ebdb")
-		)
-		(pin "2"
-			(uuid "4d0cebd8-5596-4215-8f4a-14e151539feb")
-		)
-		(pin "6"
-			(uuid "78876ebd-e7b6-4e4c-87ad-d2f4d3788833")
-		)
-		(pin "4"
-			(uuid "44e477b4-587f-49c7-a734-3dc8a6da0d10")
-		)
-		(pin "3"
-			(uuid "5238c26b-e41a-4fb5-8499-989287475d93")
-		)
-		(instances
-			(project "BLDC_V1.0"
-				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
-					(reference "U15")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 88.9 49.53 0)
 		(unit 1)
@@ -5775,6 +5795,84 @@
 			(project "BLDC_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
 					(reference "D14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 208.28 109.22 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ac13f003-f735-4d38-8707-ec6720db196d")
+		(property "Reference" "#PWR072"
+			(at 208.28 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 208.28 104.14 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 208.28 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 208.28 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 208.28 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "4102588c-fd8c-435b-9f01-15832c865ad1")
+		)
+		(instances
+			(project "BLDC_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
+					(reference "#PWR072")
 					(unit 1)
 				)
 			)
@@ -6270,6 +6368,103 @@
 		)
 	)
 	(symbol
+		(lib_id "Analog_Switch:TS5A3159ADBVR")
+		(at 168.91 123.19 270)
+		(mirror x)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d694cc19-87ac-4600-a292-18b5638c3950")
+		(property "Reference" "U15"
+			(at 175.26 121.9199 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TS5A3159ADBVR"
+			(at 175.26 124.4599 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+			(at 155.575 122.555 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/ts5a3159a.pdf"
+			(at 157.48 122.555 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Description" "Single SPDT Analog Switch, 1.65-V to 5.5-V Single-Supply Operation, 1Ohm Ron, SOT-23-6"
+			(at 168.91 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "5"
+			(uuid "921ce9f0-7ca8-469d-a4cf-901e945d8687")
+		)
+		(pin "4"
+			(uuid "1fb67647-92d9-491c-b93e-fe066d6f9eae")
+		)
+		(pin "3"
+			(uuid "e738f8b5-ea22-4233-965e-dec44f6ff747")
+		)
+		(pin "6"
+			(uuid "f1060be2-29a5-4160-a591-1367be28efbd")
+		)
+		(pin "2"
+			(uuid "439f494e-6f8e-44dc-ade4-f62ca0699e9e")
+		)
+		(pin "1"
+			(uuid "9fc0dc5b-1a3e-496b-bb82-9dfda7dc0d21")
+		)
+		(instances
+			(project "BLDC_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
+					(reference "U15")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Power_Protection:SRV05-4")
 		(at 184.15 85.09 0)
 		(unit 1)
@@ -6489,7 +6684,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_JST:JST_PUD_S12B-PUDSS-1_2x06_P2.00mm_Horizontal"
 			(at 157.48 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -6719,6 +6914,85 @@
 			(project "BLDC_V1.0"
 				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
 					(reference "#PWR062")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 208.28 137.16 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ebdeb76f-7352-4617-8bc8-642d5bfd8cd0")
+		(property "Reference" "#PWR071"
+			(at 208.28 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 208.28 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 208.28 137.16 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 208.28 137.16 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 208.28 137.16 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8753e160-e537-48e7-8d79-dd7f00bad327")
+		)
+		(instances
+			(project "BLDC_V1.0"
+				(path "/55f9ea03-7b89-4b61-9599-7cac20295fbb/4ed90f4a-9319-42f4-aa74-161824698181"
+					(reference "#PWR071")
 					(unit 1)
 				)
 			)
