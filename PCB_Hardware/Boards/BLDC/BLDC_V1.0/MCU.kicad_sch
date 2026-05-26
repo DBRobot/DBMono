@@ -3024,6 +3024,10 @@
 		(color 0 0 0 0)
 		(uuid "fd292c48-00b1-4653-8abb-83e47d812f9c")
 	)
+	(no_connect
+		(at 214.63 82.55)
+		(uuid "2c58f175-1b0c-4a70-ade5-c11eac232a66")
+	)
 	(wire
 		(pts
 			(xy 162.56 130.81) (xy 163.83 130.81)
@@ -3976,16 +3980,6 @@
 	)
 	(wire
 		(pts
-			(xy 208.28 82.55) (xy 214.63 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "abb86ae1-7703-4d28-bec8-1cfafc09e2af")
-	)
-	(wire
-		(pts
 			(xy 111.76 62.23) (xy 113.03 62.23)
 		)
 		(stroke
@@ -4323,16 +4317,6 @@
 			(justify left bottom)
 		)
 		(uuid "9c87a6b6-dac6-4335-a770-1fa23567ee55")
-	)
-	(label "NRST"
-		(at 208.28 82.55 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "a183eb29-21cc-4121-a2ad-e2333caeb18f")
 	)
 	(label "SWDIO"
 		(at 208.28 90.17 0)

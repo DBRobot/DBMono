@@ -6684,7 +6684,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_PUD_S12B-PUDSS-1_2x06_P2.00mm_Horizontal"
+		(property "Footprint" "Connector_JST:JST_PUD_B12B-PUDSS_2x06_P2.00mm_Vertical"
 			(at 157.48 53.34 0)
 			(hide yes)
 			(show_name no)

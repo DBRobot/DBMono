@@ -5472,7 +5472,7 @@
 				)
 			)
 		)
-		(property "Value" "68u SRN5040TA-680K"
+		(property "Value" "68u SRN4018-680M"
 			(at 306.578 104.14 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5482,7 +5482,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Inductor_SMD:L_Bourns-SRN4018"
 			(at 300.99 106.68 0)
 			(hide yes)
 			(show_name no)
