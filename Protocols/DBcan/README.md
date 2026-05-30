@@ -198,37 +198,4 @@ host-side simulation, etc.). The contract that every port must satisfy:
 
 ---
 
-## Outstanding TODOs
 
-The following items are known gaps in the current transport / FDCAN port and
-are tracked for future work.
-
-### Frame timestamps
-- Add a `timestamp` field to `can_frame_t` (32-bit, software-extended).
-- Configure and enable the FDCAN timestamp counter at init.
-- Implement `HAL_FDCAN_TimestampWraparoundCallback` to extend the hardware's
-  16-bit counter into a 32-bit running value.
-- Populate `msg->timestamp` in `canfd_receive()` and in the ISR path.
-- Optional: TX timestamps via the TX event FIFO and
-  `HAL_FDCAN_TxEventFifoCallback` for senders that need transmit timing.
-
-### Filter types
-- Filter type is currently hard-coded to `FDCAN_FILTER_MASK` in `add_filter`.
-  Extend `transport_filter_t` to support range and dual-ID filter modes when
-  use cases appear.
-
-### Filter clear performance
-- `canfd_clear_filters()` issues one HAL call per slot. On vendors where the
-  filter region is a contiguous block of message RAM, a single `memset()` in
-  init mode is faster.
-
-### TX completion path
-- Currently `send()` is fully synchronous: enqueue or return `TP_BUSY`. If
-  asynchronous TX completion notifications become useful (e.g. for ISO-TP
-  throughput), implement `HAL_FDCAN_TxBufferCompleteCallback` and surface a
-  `TX_DONE`-style event.
-
-### Runtime bitrate / auto-baud
-- `transport_config_t` currently does not carry timing. If runtime bitrate
-  selection or auto-baud detection are needed, add the fields and a
-  port-side computation from peripheral clock to prescaler / segment values.

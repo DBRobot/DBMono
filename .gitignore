@@ -74,3 +74,8 @@ Release/
 
 # Obsidian vault state
 .obsidian/
+
+# clangd / LSP tooling
+.clangd
+.cache/
+compile_commands.json

@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "STM32G474",
-      "compilerPath": "${env:HOME}/snap/code/current/.local/share/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gcc",
+      "compilerPath": "arm-none-eabi-gcc",
       "compilerArgs": [
         "-mcpu=cortex-m4",
         "-mfpu=fpv4-sp-d16",
@@ -11,9 +11,13 @@
         "-mthumb"
       ],
       "includePath": [
-        "${workspaceFolder}/Protocols/drivers/includes",
-        "${workspaceFolder}/Protocols/libs/cmsis_core/CMSIS/Core/Include",
-        "${workspaceFolder}/Protocols/libs/cmsis_device_g4/Include"
+        "${workspaceFolder}/../Protocols/DBcan/core/inc",
+        "${workspaceFolder}/../Protocols/DBcan/transports/inc",
+        "${workspaceFolder}/../Protocols/DBcan/Bootloader/drivers/inc",
+        "${workspaceFolder}/libs/cmsis_core/CMSIS/Core/Include",
+        "${workspaceFolder}/libs/cmsis_device_g4/Include",
+        "${workspaceFolder}/libs/stm32g4xx_hal_driver/Inc",
+        "${workspaceFolder}/Boards/BLDC/Inc"
       ],
       "defines": [
         "STM32G474xx"
