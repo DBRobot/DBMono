@@ -64,7 +64,7 @@
           "min_island_area": 10.0,
           "min_thickness": 0.25,
           "pad_connection": 2,
-          "remove_islands": 1,
+          "remove_islands": 0,
           "thermal_relief_gap": 0.5,
           "thermal_relief_spoke_width": 0.5
         }
@@ -165,7 +165,7 @@
         "min_text_thickness": 0.1,
         "min_through_hole_diameter": 0.2,
         "min_track_width": 0.1,
-        "min_via_annular_width": 0.45,
+        "min_via_annular_width": 0.15,
         "min_via_diameter": 0.2,
         "solder_mask_to_copper_clearance": 0.0,
         "use_height_for_length_calcs": true
