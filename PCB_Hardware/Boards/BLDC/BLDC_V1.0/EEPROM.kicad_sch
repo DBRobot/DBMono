@@ -1209,6 +1209,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CQ02WGF4701TCE"
+			(at 139.7 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "ca7f3b94-8ae9-4f1b-b19b-be909e58f34a")
 		)
@@ -1281,6 +1292,17 @@
 			)
 		)
 		(property "Description" "256 kb CMOS Serial EEPROM, DIP-8/SOIC-8/TSSOP-8/DFN-8"
+			(at 161.29 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CAT24C512C8UTR"
 			(at 161.29 102.87 0)
 			(hide yes)
 			(show_name no)
@@ -1627,6 +1649,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 151.13 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 151.13 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "7246cdf3-6753-4838-bcf9-887e7600efbc")
 		)
@@ -1699,6 +1743,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 129.54 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CQ02WGF4701TCE"
 			(at 129.54 88.9 0)
 			(hide yes)
 			(show_name no)

@@ -5010,6 +5010,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " GRM21BD72A225ME01L"
+			(at 233.68 107.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "a3470e34-cbba-4d51-9b9e-3c672cef6a61")
 		)
@@ -5092,6 +5103,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " 0402WGF1213TCE"
+			(at 294.64 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "43fa1aa4-ab07-4eca-922a-bc4cbf6b941c")
 		)
@@ -5162,6 +5184,17 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x02, script generated"
+			(at 88.9 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "XT30PW-M30.G.Y"
 			(at 88.9 102.87 0)
 			(hide yes)
 			(show_name no)
@@ -5436,6 +5469,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402MRX7R7BB333"
+			(at 222.25 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0025"
+			(at 222.25 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "b6dbf77f-0531-46bf-b7f3-82ae546f4fd3")
 		)
@@ -5506,6 +5561,17 @@
 		)
 		(property "Description" "Inductor"
 			(at 300.99 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "SRN4018-680M"
+			(at 300.99 106.68 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5676,6 +5742,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "0402WGJ0222TCE"
+			(at 190.5 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "81a287a5-f3f1-4eba-9220-ab67d733854a")
 		)
@@ -5827,6 +5904,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 342.9 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "0402WGJ0222TCE"
 			(at 342.9 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -6233,6 +6321,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402KRX7R7BB332"
+			(at 307.34 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "06189859-b489-4081-b435-cfe5d76ac262")
 		)
@@ -6305,6 +6404,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 250.19 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "GRM155R62A104KE14D"
+			(at 250.19 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.013"
 			(at 250.19 91.44 0)
 			(hide yes)
 			(show_name no)
@@ -6397,6 +6518,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "0805W8J0303T5E"
+			(at 144.78 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "f60f8b84-6c5f-4c7b-a6d0-6c8a9c4783d4")
 		)
@@ -6469,6 +6601,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 123.19 107.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "JMK107BJ106KA-T"
+			(at 123.19 107.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0111"
 			(at 123.19 107.95 0)
 			(hide yes)
 			(show_name no)
@@ -6561,6 +6715,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0603ZRY5V6BB105"
+			(at 265.43 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0065"
+			(at 265.43 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "6f57aa16-7394-4e5d-8f83-2fa459710f76")
 		)
@@ -6643,6 +6819,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "0805W8F1133T5E"
+			(at 134.62 120.65 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "9898d0d1-12ec-4e79-a6b9-bcf60a077744")
 		)
@@ -6680,7 +6867,7 @@
 				)
 			)
 		)
-		(property "Value" "TLV70233_SOT23-5"
+		(property "Value" "TLV70233"
 			(at 252.73 191.77 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6714,6 +6901,17 @@
 			)
 		)
 		(property "Description" "300mA Low Dropout Voltage Regulator, Fixed Output 3.3V, SOT-23-5"
+			(at 252.73 198.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "TLV70233"
 			(at 252.73 198.12 0)
 			(hide yes)
 			(show_name no)
@@ -6824,6 +7022,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "XINGLIGHT XL-1608SURC-06"
+			(at 336.55 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "024f2d68-a175-4a1d-8739-8e4ba83aef96")
 		)
@@ -6896,6 +7105,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 229.87 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 229.87 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 229.87 200.66 0)
 			(hide yes)
 			(show_name no)
@@ -7225,6 +7456,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "0603WAF3032T5S"
+			(at 238.76 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "7a21b056-b432-4e1d-8e8d-1d0143141629")
 		)
@@ -7297,6 +7539,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 320.04 132.08 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "0402WGF1433TCE"
 			(at 320.04 132.08 0)
 			(hide yes)
 			(show_name no)
@@ -7468,6 +7721,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " CC0805KRX7R0BB681"
+			(at 330.2 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e2d82ce1-0f13-4605-9d3c-aefc3b7700ad")
 		)
@@ -7540,6 +7804,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 278.13 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "0402WGJ0222TCE"
 			(at 278.13 200.66 0)
 			(hide yes)
 			(show_name no)
@@ -7624,6 +7899,17 @@
 		)
 		(property "Description" "300A Id, 100V Vds, OptiMOS N-Channel Power MOSFET, 1.5mOhm Ron, Qg (typ) 169.0nC, PG-HSOF-8"
 			(at 203.2 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "IPT015N10N5"
+			(at 203.2 105.41 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7874,6 +8160,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "XT30PW-M30.G.Y"
+			(at 88.9 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "207c17cb-5d1e-4426-afa7-c7b5180e926a")
 		)
@@ -7912,7 +8209,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "49"
+		(property "Value" "49.9"
 			(at 170.18 109.2199 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7946,6 +8243,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 167.64 107.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "0805W8F499JT5E"
 			(at 167.64 107.95 0)
 			(hide yes)
 			(show_name no)
@@ -8030,6 +8338,17 @@
 		)
 		(property "Description" "300A Id, 100V Vds, OptiMOS N-Channel Power MOSFET, 1.5mOhm Ron, Qg (typ) 169.0nC, PG-HSOF-8"
 			(at 217.17 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "IPT015N10N5"
+			(at 217.17 105.41 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8279,6 +8598,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "AMS1117-3.3"
+			(at 165.1 195.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "776371f2-1ab5-4949-9287-7a423a550bfc")
 		)
@@ -8451,6 +8781,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "XINGLIGHT XL-1608SURC-06"
+			(at 271.78 195.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "075439d0-9e8b-45ad-84b5-e9d2d9f551fc")
 		)
@@ -8531,6 +8872,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " WSL2512L5000FEA18"
+			(at 189.23 102.87 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "150b7cc0-41f7-4b48-962a-bd373ff85069")
 		)
@@ -8602,6 +8954,17 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 289.56 102.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402MRX7R6BB222"
+			(at 289.56 102.87 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8702,6 +9065,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "XINGLIGHT XL-1608SURC-06"
+			(at 184.15 195.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "6742e677-cfb4-4136-919a-d720f1394758")
 		)
@@ -8774,6 +9148,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 320.04 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CRCW0402453KFKED"
 			(at 320.04 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -8866,6 +9251,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "JMK107BJ106KA-T"
+			(at 156.21 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0111"
+			(at 156.21 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "b8709b01-cb40-4168-a749-b618256ff5df")
 		)
@@ -8938,6 +9345,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 148.59 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " CC0805KRX7R0BB681"
 			(at 148.59 200.66 0)
 			(hide yes)
 			(show_name no)
@@ -9030,6 +9448,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " CQ02WGF3901TCE"
+			(at 233.68 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "c83b69c6-1c10-4042-9639-1d0195796261")
 		)
@@ -9112,6 +9541,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "0805W8F1023T5E"
+			(at 144.78 120.65 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "96357aba-d44e-4e5c-867f-5208925f8045")
 		)
@@ -9183,6 +9623,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 233.68 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CQ03WAJ0104T5E"
+			(at 233.68 86.36 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9352,6 +9803,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " 0805W8J0392T5E"
+			(at 134.62 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "55382d49-4ecc-4aad-8537-b160a3a8be51")
 		)
@@ -9424,6 +9886,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 250.19 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402FR-0724K9L"
 			(at 250.19 115.57 0)
 			(hide yes)
 			(show_name no)
@@ -9516,6 +9989,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " CC0805KRX7R0BB681"
+			(at 177.8 200.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "043415c0-cbad-451c-beae-78b954c9bea7")
 		)
@@ -9598,6 +10082,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "LM5069MM-2"
+			(at 200.66 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "10"
 			(uuid "a75bd687-858f-4ccc-90de-c7a8d2decf41")
 		)
@@ -9647,10 +10142,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "ed90bdc6-31ce-4ce2-8fae-0913ec6ffbc9")
 		(property "Reference" "U4"
-			(at 270.51 97.79 0)
+			(at 270.51 96.52 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9659,8 +10153,8 @@
 				)
 			)
 		)
-		(property "Value" ""
-			(at 259.08 100.33 0)
+		(property "Value" "LM5168"
+			(at 270.256 98.806 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9692,6 +10186,17 @@
 			)
 		)
 		(property "Description" ""
+			(at 259.08 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "LM5168"
 			(at 259.08 100.33 0)
 			(hide yes)
 			(show_name no)
@@ -9805,6 +10310,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402GRNPO9BN560"
+			(at 300.99 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4fa2a963-f761-4dbb-a532-277396428b86")
 		)
@@ -9877,6 +10393,17 @@
 		)
 		(property "Description" "Zener diode"
 			(at 167.64 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "BZG05C75-M3-08"
+			(at 167.64 118.11 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

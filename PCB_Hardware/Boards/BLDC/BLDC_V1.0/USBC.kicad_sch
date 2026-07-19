@@ -2319,6 +2319,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CL10A475MQ8NNNC"
+			(at 152.4 69.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "9c6b0c2e-4c70-4054-9cb9-1cea855a3fda")
 		)
@@ -2471,6 +2482,17 @@
 		)
 		(property "Description" "Dual-Channel High-Speed ESD Protection, SC-70"
 			(at 149.86 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "TPD2E2U06DCK"
+			(at 149.86 111.76 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2805,6 +2827,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 165.1 69.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 165.1 69.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "fb1d3d36-a751-473d-9f7d-d77f2fe2d9f4")
 		)
@@ -2876,6 +2920,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 135.89 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-075K1L"
+			(at 135.89 86.36 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2965,6 +3020,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "RC0402JR-075K1L"
+			(at 146.05 88.9 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e3b1f906-274c-452d-a054-9a93f67c3d9c")
 		)
@@ -3035,6 +3101,17 @@
 			)
 		)
 		(property "Description" "USB 2.0-only 16P Type-C Receptacle connector"
+			(at 115.57 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "GT-USB-7010ASV"
 			(at 115.57 96.52 0)
 			(hide yes)
 			(show_name no)

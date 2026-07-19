@@ -300,3 +300,9 @@ $$
 | 48V | 163µs | 485µs | 3.0× |
 | 72V | 245µs | 485µs | 2.0× |
 | 72V, I_timer max (110µA) | 245µs | 375µs | 1.5× |
+
+
+## Change Notes
+
+ - C14/C24 - footprint size needs to get larger. 10uF caps dont exist in that size
+ - 

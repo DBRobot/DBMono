@@ -1489,6 +1489,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "SD05T1G"
+			(at 119.38 72.39 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "dcaf5c96-5b3f-4e1c-a8c4-d5316f76b2fd")
 		)
@@ -1561,6 +1572,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 134.62 72.39 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 134.62 72.39 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 134.62 72.39 0)
 			(hide yes)
 			(show_name no)
@@ -1879,6 +1912,17 @@
 			)
 		)
 		(property "Description" "21bit absolute magnetic encoder"
+			(at 132.08 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "MT6835GT-STD"
 			(at 132.08 82.55 0)
 			(hide yes)
 			(show_name no)

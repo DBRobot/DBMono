@@ -3616,7 +3616,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "RC0402JR-1310KL"
+		(property "Manufacturer_Part_Number" " HP02WAJ0103TCE"
 			(at 184.15 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -3699,6 +3699,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 193.04 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "0402WGJ0182TCE"
 			(at 193.04 91.44 0)
 			(hide yes)
 			(show_name no)
@@ -3822,7 +3833,7 @@
 				)
 			)
 		)
-		(property "Manufacturer_Part_Number" "AC0402JR-071KL"
+		(property "Manufacturer_Part_Number" "CQ02WGJ0102TCE"
 			(at 194.31 123.19 90)
 			(hide yes)
 			(show_name no)
@@ -3906,6 +3917,17 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x04, script generated"
+			(at 214.63 120.65 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "JST SM04B-PASS-TB(LF)(SN)"
 			(at 214.63 120.65 0)
 			(hide yes)
 			(show_name no)
@@ -4071,6 +4093,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 134.62 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CQ05W8F604JT5E"
+			(at 134.62 66.04 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4323,6 +4356,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 87.63 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 87.63 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "7fd1f97a-c60f-40ae-ba44-881eda82d8e8")
 		)
@@ -4485,6 +4540,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "JST SM04B-PASS-TB(LF)(SN)"
+			(at 214.63 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "03e0f953-b93d-4505-821d-27070b693aab")
 		)
@@ -4573,6 +4639,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 114.3 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 114.3 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "08e4c922-d937-4b0a-a37f-7aee9be3b26c")
 		)
@@ -4645,6 +4733,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 193.04 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " RC0402JR-073K3L"
 			(at 193.04 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -4895,6 +4994,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TCAN1044VDR"
+			(at 91.44 74.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "a2a5e24f-316f-4994-a68a-8c3808ae00d8")
 		)
@@ -4984,6 +5094,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 144.78 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CQ05W8F604JT5E"
+			(at 144.78 66.04 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5147,6 +5268,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 139.7 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402JRX7R6BB473"
+			(at 139.7 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0034"
 			(at 139.7 71.12 0)
 			(hide yes)
 			(show_name no)
@@ -5392,6 +5535,17 @@
 		)
 		(property "Description" "-4.4A Id, -40V Vds, P-Channel MOSFET, SOT-23"
 			(at 154.94 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "Si2302CDS-T1-GE3"
+			(at 154.94 63.5 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

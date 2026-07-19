@@ -4506,6 +4506,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
+			(at 205.74 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "fa2fceea-fe68-4cea-a387-87d078587e5e")
 		)
@@ -4764,6 +4775,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "C0805C104K1RACAUTO"
+			(at 166.37 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "ab3f58e0-d272-4aca-b0e8-ed487992a1b0")
 		)
@@ -4836,6 +4858,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 109.22 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0603ZRY5V6BB105"
+			(at 109.22 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0065"
 			(at 109.22 63.5 0)
 			(hide yes)
 			(show_name no)
@@ -4928,6 +4972,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CQ02WGJ0102TCE"
+			(at 21.59 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "e9a739bd-529a-44f5-9978-9f33019293b0")
 		)
@@ -5010,6 +5065,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "LR122WF100NT4E"
+			(at 170.18 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "d6c104b7-2823-4428-9cea-2538866ec452")
 		)
@@ -5082,6 +5148,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 208.28 151.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "LR122WF100NT4E"
 			(at 208.28 151.13 0)
 			(hide yes)
 			(show_name no)
@@ -5514,6 +5591,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
+			(at 167.64 57.15 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "81eec310-bb8d-4fda-99cd-1d4bb2bce8b7")
 		)
@@ -5604,6 +5692,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 46.99 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " CL05A105MQ5NNNC"
 			(at 46.99 93.98 0)
 			(hide yes)
 			(show_name no)
@@ -5765,6 +5864,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 134.62 171.45 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " CL05A105MQ5NNNC"
 			(at 134.62 171.45 0)
 			(hide yes)
 			(show_name no)
@@ -6018,6 +6128,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CQ02WGJ0102TCE"
+			(at 35.56 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "352567d6-90e7-4f23-b6c0-19863ffebfd6")
 		)
@@ -6261,6 +6382,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " GRM21BD72A225ME01L"
+			(at 153.67 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "27a8adb5-a0d0-42ea-b56f-a6fe741122d0")
 		)
@@ -6343,6 +6475,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " GRM21BD72A225ME01L"
+			(at 140.97 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "f8ff5108-b353-4ba6-a8bb-349ad3b0c50e")
 		)
@@ -6415,6 +6558,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 148.59 171.45 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " CL05A105MQ5NNNC"
 			(at 148.59 171.45 0)
 			(hide yes)
 			(show_name no)
@@ -6586,6 +6740,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "LR122WF100NT4E"
+			(at 189.23 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "eaf3fb38-d28c-4092-93a0-5791f760f9fe")
 		)
@@ -6668,6 +6833,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CL21B473KCFNNNE"
+			(at 109.22 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0192"
+			(at 109.22 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "2665e16e-0f4a-451c-81e1-8aff2478dd7b")
 		)
@@ -6740,6 +6927,17 @@
 			)
 		)
 		(property "Description" "N-MOSFET transistor"
+			(at 205.74 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
 			(at 205.74 127 0)
 			(hide yes)
 			(show_name no)
@@ -6916,6 +7114,17 @@
 			)
 		)
 		(property "Description" ""
+			(at 119.38 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "DRV8353SRTAR"
 			(at 119.38 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -7125,6 +7334,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
+			(at 167.64 69.85 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "94c0862a-7fe3-4f4c-b8a3-c79936e2c0cf")
 		)
@@ -7297,6 +7517,17 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 128.27 36.83 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " GRM21BD72A225ME01L"
 			(at 128.27 36.83 0)
 			(hide yes)
 			(show_name no)
@@ -7569,6 +7800,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "RC0402JR-130RL"
+			(at 102.87 99.06 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "321f6693-798a-4b4d-bd2b-2eaec923e8bf")
 		)
@@ -7719,6 +7961,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 80.01 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-130RL"
+			(at 80.01 93.98 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7971,6 +8224,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
+			(at 186.69 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "02eb1f1d-069f-4c56-823f-aaa56ca8c267")
 		)
@@ -8060,6 +8324,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 91.44 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-130RL"
+			(at 91.44 96.52 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8334,6 +8609,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
+			(at 186.69 92.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "c23f8d59-218d-4e5a-9245-3375762f2bdb")
 		)
@@ -8434,6 +8720,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "GRM155R62A104KE14D"
+			(at 96.52 60.96 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.013"
+			(at 96.52 60.96 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "6fe5ce0f-61ce-4cc8-858c-1e99860b58b8")
 		)
@@ -8506,6 +8814,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 58.42 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 58.42 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 58.42 93.98 0)
 			(hide yes)
 			(show_name no)

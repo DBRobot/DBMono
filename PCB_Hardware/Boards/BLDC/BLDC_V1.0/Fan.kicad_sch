@@ -2298,6 +2298,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 137.16 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 137.16 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "31d53b43-5cac-4c53-9c4d-6fbe7fa14c4b")
 		)
@@ -2369,6 +2391,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 106.68 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-13100RL"
+			(at 106.68 106.68 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2528,6 +2561,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 157.48 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CQ02WGJ0102TCE"
+			(at 157.48 97.79 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2933,6 +2977,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " HP02WAJ0103TCE"
+			(at 147.32 92.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "f27361f2-9ef2-4f86-819c-ff010cfdd208")
 		)
@@ -3176,6 +3231,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "MF-PSMF050X-2"
+			(at 186.69 87.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "55722048-d328-4901-9eaf-e4a223b46fb1")
 		)
@@ -3248,6 +3314,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 111.76 113.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " CQ02WGJ0104TCE"
 			(at 111.76 113.03 0)
 			(hide yes)
 			(show_name no)
@@ -3670,6 +3747,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 121.92 95.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " HP02WAJ0103TCE"
 			(at 121.92 95.25 0)
 			(hide yes)
 			(show_name no)

@@ -1475,6 +1475,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " HP02WAJ0103TCE"
+			(at 107.95 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "63af4879-7310-406b-9420-5781c815181b")
 		)
@@ -1881,6 +1892,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" " HP02WAJ0103TCE"
+			(at 149.86 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "7b13d5ba-96e3-43f7-b208-0350d6f75847")
 		)
@@ -2033,6 +2055,17 @@
 			)
 		)
 		(property "Description" "Resettable fuse, polymeric positive temperature coefficient"
+			(at 179.07 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "MF-PSMF050X-2"
 			(at 179.07 91.44 0)
 			(hide yes)
 			(show_name no)

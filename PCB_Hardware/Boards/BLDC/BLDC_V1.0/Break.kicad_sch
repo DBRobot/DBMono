@@ -1887,6 +1887,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "SS10150"
+			(at 161.29 87.63 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "4c515b6e-118a-4d59-9261-6c4c1526d2e8")
 		)
@@ -1958,6 +1969,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 148.59 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "0402WGJ047JTCE"
+			(at 148.59 99.06 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2476,6 +2498,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "TPH3R70APL"
+			(at 158.75 99.06 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "4"
 			(uuid "6fa8c329-9c83-40bc-ac2b-b85737c9fc29")
 		)
@@ -2574,6 +2607,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CQ02WGJ0102TCE"
+			(at 124.46 105.41 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "def9f38e-02cc-4a30-b093-4ba00403fa25")
 		)
@@ -2646,6 +2690,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 137.16 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" " HP02WAJ0103TCE"
 			(at 137.16 93.98 0)
 			(hide yes)
 			(show_name no)

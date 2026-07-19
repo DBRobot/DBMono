@@ -5012,6 +5012,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402JRNPO8BN180"
+			(at 73.66 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "69511665-15bd-4da4-816d-909243ca6dc2")
 		)
@@ -5408,6 +5419,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 101.6 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 101.6 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "90bf31cf-1c8d-4830-bfb4-64c5f89a8551")
 		)
@@ -5601,6 +5634,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402JRNPO8BN180"
+			(at 91.44 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "3bce8094-7c18-464b-9407-b78082f30e83")
 		)
@@ -5673,6 +5717,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 157.48 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 157.48 43.18 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 157.48 43.18 0)
 			(hide yes)
 			(show_name no)
@@ -5765,6 +5831,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 88.9 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 88.9 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "a6173e33-0172-4ac6-9f65-7befa6582af7")
 		)
@@ -5837,6 +5925,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 114.3 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 114.3 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 114.3 41.91 0)
 			(hide yes)
 			(show_name no)
@@ -5999,6 +6109,17 @@
 			)
 		)
 		(property "Description" "STMicroelectronics Arm Cortex-M4 MCU, 512KB flash, 128KB RAM, 170 MHz, 1.71-3.6V, 52 GPIO, LQFP64"
+			(at 144.78 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "STM32G474RET6"
 			(at 144.78 97.79 0)
 			(hide yes)
 			(show_name no)
@@ -6356,6 +6477,28 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 127 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 127 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "f3dc5832-76e5-41da-94be-6aa300f070c3")
 		)
@@ -6513,6 +6656,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "XXGBBCNANF-25.000000MHZ"
+			(at 82.55 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "58089bd9-49c2-40e0-8764-d060e55178dd")
 		)
@@ -6591,6 +6745,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 54.61 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 54.61 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 54.61 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -6683,6 +6859,17 @@
 				)
 			)
 		)
+		(property "Manufacturer_Part_Number" "CL10A475MQ8NNNC"
+			(at 63.5 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "bd362ead-401f-49a2-939d-f97d5e0c2023")
 		)
@@ -6753,6 +6940,28 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 116.84 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 116.84 62.23 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
+			(at 116.84 62.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6944,7 +7153,7 @@
 		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "efebfbfe-1ac3-4ece-8dc3-0ed5d4947368")
 		(property "Reference" "J7"
@@ -7086,6 +7295,28 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 76.2 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "CC0402ZRY5V6BB104"
+			(at 76.2 41.91 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Price" "0.0015"
 			(at 76.2 41.91 0)
 			(hide yes)
 			(show_name no)
@@ -7246,6 +7477,17 @@
 		)
 		(property "Description" "Resistor"
 			(at 104.14 67.31 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "RC0402JR-130RL"
+			(at 104.14 67.31 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
