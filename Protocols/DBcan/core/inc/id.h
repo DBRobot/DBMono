@@ -43,7 +43,7 @@ typedef enum {
 } msg_t;
 
 typedef struct {
-    uint8_t     msg_type;
+    msg_t       msg_type;
     bool        responce_flag;
     uint8_t     src_uid;
 } short_id_t;
