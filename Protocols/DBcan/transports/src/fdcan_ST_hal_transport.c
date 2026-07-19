@@ -1,5 +1,4 @@
 #include "stm32g4xx_hal.h"
-#include "fdcan_ST_hal_transport.h"
 #include "transport_port.h"
 #include <string.h>
 
@@ -689,6 +688,7 @@ void HAL_FDCAN_TimestampWraparoundCallback(FDCAN_HandleTypeDef *handle) {
 
 
 static const transport_ops_t fdcan_st_hal_ops = {
+    .get_ctx              = canfd_get_ctx,
     .init                 = canfd_init,
     .deinit               = canfd_deinit,
     .start                = canfd_start,
@@ -702,5 +702,4 @@ static const transport_ops_t fdcan_st_hal_ops = {
     .set_rx_cb            = canfd_set_rx_cb,
     .set_fifo_event_cb    = canfd_set_fifo_event_cb,
     .set_bus_event_cb     = canfd_set_bus_event_cb,
-    .get_ctx              = canfd_get_ctx,
 };

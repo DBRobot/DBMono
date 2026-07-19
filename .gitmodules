@@ -7,3 +7,6 @@
 [submodule "Firmware/libs/stm32g4xx_hal_driver"]
 	path = Firmware/libs/stm32g4xx_hal_driver
 	url = https://github.com/STMicroelectronics/stm32g4xx_hal_driver.git
+[submodule "Protocols/DBcan/libs/libsocketcan"]
+	path = Protocols/DBcan/libs/libsocketcan
+	url = https://github.com/linux-can/libsocketcan.git

@@ -45,4 +45,17 @@ static const uint8_t bytes_to_dlc[65] = {
     [49 ... 64] = 15,
 };
 
+/*
+ * Port init functions — include this header and define the appropriate port macro
+ * in your build system to get the right init_transport declaration.
+ * The protocol layer never calls these; only platform integration code does.
+ */
+#ifdef TRANSPORT_PORT_ST_FDCAN
+transport_error_t init_transport(transport_t *transport, uint8_t bus);
+#endif
+
+#ifdef TRANSPORT_PORT_SOCKETCAN
+transport_error_t init_transport(transport_t *transport, const char *iface);
+#endif
+
 #endif

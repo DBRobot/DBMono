@@ -38,12 +38,14 @@ typedef enum {
     TP_BUSY,
     TP_TIMEOUT,
     TP_EMPTY,
+    TP_OVERFLOW,
     TP_INVALID_ARG,
     TP_NOT_INIT,
     TP_BUS_ERR,
     TP_BUS_OFF,
     TP_RX_OVERRUN,
     TP_TX_ABORT,
+    TP_TX_OVERRUN,
     TP_HW_FAULT,
     TP_ERR_MAX,     /**< Sentinel — not a valid error code. */
 } transport_error_t;
