@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 
 /*
  * 11 bit frames:
@@ -18,6 +19,8 @@
 
 #define DBCAN_11BIT_ID_MTYPE_Pos            9u
 #define DBCAN_11BIT_ID_MTYPE_Mask           (0x03u << DBCAN_11BIT_ID_MTYPE_Pos)
+#define DBCAN_11BIT_ID_RESP_Pos             8u
+#define DBCAN_11BIT_ID_RESP_Mask            (0x01u << DBCAN_11BIT_ID_RESP_Pos)
 #define DBCAN_11BIT_ID_UID_Pos              0u
 #define DBCAN_11BIT_ID_UID_Mask             (0xFFu << DBCAN_11BIT_ID_UID_Pos)
 
@@ -34,6 +37,7 @@
 
 typedef struct {
     uint8_t     msg_type;
+    bool        responce_flag;
     uint8_t     src_uid;
 } short_id_t;
 
@@ -58,6 +62,49 @@ typedef struct {
     } u;
 } dbcan_id_t;
 
-dbcan_id_t pack_id();
+static inline uint32_t pack_id(const dbcan_id_t *id) {
+    switch(id->kind) {
+        case DBCAN_ID_SHORT: {
+            const short_id_t s = id->u.short_id;
+            return ((uint32_t)s.msg_type            << DBCAN_11BIT_ID_MTYPE_Pos)
+                 | ((uint32_t)s.responce_flag       << DBCAN_11BIT_ID_RESP_Pos)
+                 | ((uint32_t)s.src_uid             << DBCAN_11BIT_ID_UID_Pos);
+        }
+        case DBCAN_ID_LONG: {
+            const long_id_t l = id->u.long_id;
+            return ((uint32_t)l.prio                << DBCAN_29BIT_ID_PRIO_Pos)
+                 | ((uint32_t)l.bcast_flag          << DBCAN_29BIT_ID_BCAST_Pos)
+                 | ((uint32_t)l.responce_flag       << DBCAN_29BIT_ID_RESP_Pos)
+                 | ((uint32_t)l.sender_uid          << DBCAN_29BIT_ID_SUID_Pos)
+                 | ((uint32_t)l.reciever_uid        << DBCAN_29BIT_ID_RUID_Pos);
+        }
+        default:
+            assert(false);
+            return 0;
+    }
+}
+
+static inline dbcan_id_t unpack_id(const uint32_t raw, bool is_ext) {
+    dbcan_id_t id;
+    if(is_ext) {
+        id.kind = DBCAN_ID_LONG;
+        id.u.long_id = (long_id_t){
+            .prio               = (raw & DBCAN_29BIT_ID_PRIO_Mask) >> DBCAN_29BIT_ID_PRIO_Pos,
+            .bcast_flag         = (raw & DBCAN_29BIT_ID_BCAST_Mask) >> DBCAN_29BIT_ID_BCAST_Pos,
+            .responce_flag      = (raw & DBCAN_29BIT_ID_RESP_Mask) >> DBCAN_29BIT_ID_RESP_Pos,
+            .sender_uid         = (raw & DBCAN_29BIT_ID_SUID_Mask) >> DBCAN_29BIT_ID_SUID_Pos,
+            .reciever_uid       = (raw & DBCAN_29BIT_ID_RUID_Mask) >> DBCAN_29BIT_ID_RUID_Pos,
+        };
+    } else {
+        id.kind = DBCAN_ID_SHORT;
+        id.u.short_id = (short_id_t){
+            .msg_type           = (raw & DBCAN_11BIT_ID_MTYPE_Mask) >> DBCAN_11BIT_ID_MTYPE_Pos,
+            .responce_flag      = (raw & DBCAN_11BIT_ID_RESP_Mask) >> DBCAN_11BIT_ID_RESP_Pos,
+            .src_uid            = (raw & DBCAN_11BIT_ID_UID_Mask) >> DBCAN_11BIT_ID_UID_Pos,
+        };
+    }
+
+    return id;
+}
 
 #endif
