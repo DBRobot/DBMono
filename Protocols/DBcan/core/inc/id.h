@@ -35,6 +35,13 @@
 #define DBCAN_29BIT_ID_RUID_Pos             0U
 #define DBCAN_29BIT_ID_RUID_Mask            (0xFFu << DBCAN_29BIT_ID_RUID_Pos)
 
+typedef enum {
+    DBCAN_ERROR,
+    DBCAN_NET_MANAGEMENT,
+    DBCAN_DEBUG,
+    DBCAN_HEARTBEAT,
+} msg_t;
+
 typedef struct {
     uint8_t     msg_type;
     bool        responce_flag;
