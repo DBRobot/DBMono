@@ -11,3 +11,8 @@
 # ...but keep editor/tool config out of the stats.
 **/.vscode/**                    linguist-detectable=false
 fabrication-toolkit-options.json linguist-detectable=false
+
+# ST-generated CMSIS/HAL drivers, checked in per-board by CubeMX. ~10 MB, or
+# 98% of the repo's code -- it drowns out everything actually written here.
+# (The submodules under Firmware/libs/ are already excluded automatically.)
+Firmware/Boards/*/Drivers/** linguist-vendored
