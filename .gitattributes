@@ -1,0 +1,13 @@
+# GitHub Linguist configuration
+#
+# Linguist only counts languages typed `programming` or `markup` in the repo
+# language bar. JSON and YAML are typed `data`, so they are hidden by default.
+# Opt them in, since the DBcan register definitions live there.
+
+*.json linguist-detectable=true
+*.yaml linguist-detectable=true
+*.yml  linguist-detectable=true
+
+# ...but keep editor/tool config out of the stats.
+**/.vscode/**                    linguist-detectable=false
+fabrication-toolkit-options.json linguist-detectable=false
