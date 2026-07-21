@@ -1,0 +1,120 @@
+{
+    "$ref": "#/definitions/group",
+    "definitions": {
+        "primitive": {
+            "type": "object",
+            "properties": {
+                "name":         { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32},
+                "dtype":        { "type": "string", "enum": ["bool", "uint", "int", "float", "string", "enum", "struct"] },
+                "bits":         { "type": "integer", "minimum": 1 },
+                "array_size":   { "type": "integer", "minimum": 1, "default": 0 }, 
+                "min_value":    { "type": "number" },
+                "max_value":    { "type": "number" },
+                "resolution":   { "type": "number", "default": 1},
+                "units":        { "type": "string" },
+                "offset":       { "type": "number" },
+                "default":      { "type": ["number", "boolean", "string"], "default": 0 },
+                "persist":      { "type": "boolean", "default": false },
+                "errors":       {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "code":        { "type": "integer", "minimum": 64 },
+                            "name":        { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                            "description": { "type": "string" }
+                        },
+                        "required": ["code", "name"],
+                        "additionalProperties": false
+                    }
+                },
+                "description":  { "type": "string" },
+                "values":       {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+                            "additionalProperties": { "type": "integer", "minimum": 0 },
+                            "minProperties": 1
+                        },
+                        { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                        {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name":   { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32 },
+                                    "dtype":  { "type": "string", "enum": ["bool", "uint", "int", "float", "enum"] },
+                                    "bits":   { "type": "integer", "minimum": 1 },
+                                    "values": {
+                                        "anyOf": [
+                                            {
+                                                "type": "object",
+                                                "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+                                                "additionalProperties": { "type": "integer", "minimum": 0 },
+                                                "minProperties": 1
+                                            },
+                                            { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+                                        ]
+                                    }
+                                },
+                                "required": ["name", "dtype", "bits"],
+                                "additionalProperties": false
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": ["name"],
+            "allOf": [
+                {
+                    "if": {
+                        "properties": { "dtype": { "enum": ["uint", "int", "float", "string", "enum"] } },
+                        "required": ["dtype"]
+                    },
+                    "then": {
+                        "required": ["bits"]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "dtype": { "enum": ["enum", "struct"] } },
+                        "required": ["dtype"]
+                    },
+                    "then": {
+                        "required": ["values"]
+                    }
+                }
+            ],
+            "additionalProperties": false
+        },
+        "group": {
+            "type": "object",
+            "properties": {
+                "name":     { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32},
+                "count":    { "type": "integer", "minimum": 1, "default": 1 },
+                "permissions":  { "type": "string", "enum": ["R", "W", "RW", "CMD", "ANY"] },
+                "children": { "type": "array" }
+            },
+            "required": ["name", "permissions", "children"],
+            "allOf": [
+                {
+                    "if": {
+                        "properties": { "permissions": { "const": "CMD" } },
+                        "required": ["permissions"]
+                    },
+                    "then": { "properties": { "children": { "items": { "oneOf": [
+                        { "$ref": "#/definitions/group" },
+                        { "$ref": "#/definitions/primitive" }
+                    ]}}}},
+                    "else": { "properties": { "children": { "items": { "oneOf": [
+                        { "$ref": "#/definitions/group" },
+                        { "allOf": [ { "$ref": "#/definitions/primitive" }, { "required": ["dtype"] } ] }
+                    ]}}}}
+                }
+            ],
+            "additionalProperties": false
+        }
+    }
+}

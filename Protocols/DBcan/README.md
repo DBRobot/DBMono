@@ -8,136 +8,156 @@ carries it over real hardware.
 
 ## Protocol Specification
 
-DBCAN is an open-source CAN FD protocol using both standard (11-bit) and extended (29-bit) identifiers. The frame format itself encodes the first-level message type distinction: 11-bit frames carry infrastructure traffic, 29-bit frames carry data traffic. 11-bit frames inherently win CAN arbitration over 29-bit frames, ensuring infrastructure messages always take priority.
+DBcan uses both standard (11-bit) and extended (29-bit) CAN FD frames. The
+frame format encodes the addressing model:
 
-### CAN ID Layout
+- **11-bit frames are broadcast.** The ID identifies the sender. There is no
+  receiver field — every frame is physically broadcast, and consumption is a
+  receiver-side filtering decision.
+- **29-bit frames are point-to-point.** The ID identifies both endpoints.
 
-#### 11-Bit Frames (Infrastructure)
+### One Shared Arbitration Space
 
-Used for: errors, network management, debug, and heartbeat messages. These are always broadcast.
+CAN arbitration compares the first 11 bits on the wire — the full ID of a
+standard frame, bits 28–18 of an extended frame — bit for bit; lower value
+wins. An extended frame loses to a standard frame only on an exact tie of
+those 11 bits (its SRR bit is recessive).
 
-```
-Bits 10-9:  Message Type    (2 bits)
-Bit 8:      Response        (1 bit)
-Bits 7-0:   Source UID      (8 bits)
-```
+Neither frame type inherently outranks the other. The top 11 bits of all
+frames therefore form **one shared arbitration space**, and ID allocation
+must be planned globally across both frame types. How broadcast and PTP
+traffic interleave is set entirely by the prio plan (open question).
 
-##### Message Type Encoding
+### Priority Field
 
-| Value | Name                | Description                          |
-|-------|---------------------|--------------------------------------|
-| 0b00  | Error               | Fault announcements                  |
-| 0b01  | Network Management  | NMT commands (reset, sync, etc.)     |
-| 0b10  | Debug               | Diagnostic and debug traffic         |
-| 0b11  | Heartbeat           | Periodic health and presence         |
+The first 3 bits transmitted — bits 10–8 of a broadcast frame, bits 28–26 of
+a PTP frame — occupy the same arbitration position and form a single **prio
+field** shared by both frame types. It partitions the arbitration space into
+8 priority levels.
 
-Lower values win CAN arbitration first, so errors have the highest priority, followed by NMT, debug, and heartbeat.
-
-##### Response Flag
-
-| Value | Meaning  |
-|-------|----------|
-| 0     | Request  |
-| 1     | Response |
-
-##### Source UID
-
-8-bit unique identifier of the node that sent the frame. Must be unique on the bus.
-
----
-
-#### 29-Bit Frames (Data)
-
-Used for: request/response exchanges between nodes.
+A prio level is a property of a *message class*, assigned at allocation time — not
+a per-frame knob the sender turns. A node cannot transmit traffic at a
+priority for which it holds no allocated ID.
 
 ```
-Bits 28-26: Priority        (3 bits)
-Bit 25:     Broadcast       (1 bit)
-Bit 24:     Response        (1 bit)
-Bits 23-16: Reserved        (8 bits)
-Bits 15-8:  Sender UID      (8 bits)
-Bits 7-0:   Receiver UID    (8 bits)
+prio 0   emergency        faults, e-stop
+prio 1   NMT + SYNC       network control, cycle sync
+prio 2   cyclic control   commands + feedback
+prio 3   events           limits, mode changes, warnings
+prio 4   telemetry        periodic status, heartbeat
+prio 5   service          register access, request/response
+prio 6   debug            developer traffic
+prio 7   bulk             firmware, segmented transfers
 ```
 
-##### Priority
+Prio levels rank by consequence-of-delay, not importance. Prio 7 is a pure
+scavenger class: bulk transfers can never interfere with traffic above them,
+by construction. ID allocation within each prio level is TBD.
 
-3-bit priority field. Lower values win CAN arbitration first.
+### 11-Bit Frames (Broadcast)
 
-| Value | Name        |
-|-------|-------------|
-| 0     | Highest     |
-| 1     |             |
-| 2     |             |
-| 3     |             |
-| 4     |             |
-| 5     |             |
-| 6     |             |
-| 7     | Lowest      |
+```
+ 10  9  8   7  6  5  4  3  2  1  0
+[--PRIO--] [-------SRC UID-------]
+```
 
-##### Broadcast Flag
+- **Bits 10–8 — Prio.** Priority level (see above).
+- **Bits 7–0 — Source UID.** 8-bit unique ID of the sending node.
 
-| Value | Meaning                                        |
-|-------|------------------------------------------------|
-| 0     | Targeted — Receiver UID specifies the destination |
-| 1     | Broadcast — all nodes should receive this frame   |
+### 29-Bit Frames (Point-to-Point)
 
-##### Response Flag
+```
+ 28 27 26   25 ........... 16   15 ........ 8   7 ......... 0
+[--PRIO--] [------TBD-------] [--SENDER UID--] [-RECEIVER UID-]
+```
 
-| Value | Meaning  |
-|-------|----------|
-| 0     | Request  |
-| 1     | Response |
+- **Bits 28–26 — Prio.** Priority level, arbitration-aligned with the
+  broadcast prio field.
+- **Bits 25–16 — Reserved (10 bits).** Transmit as zero. Bits 25–18 are
+  arbitration-visible, so any future allocation must account for its effect
+  on within-prio ordering. Candidate future use: random discriminator for
+  anonymous ID-claim frames.
+- **Bits 15–8 — Sender UID.** 8-bit unique ID of the sending node.
+- **Bits 7–0 — Receiver UID.** 8-bit unique ID of the intended recipient.
 
-##### Sender UID
+### ID Uniqueness
 
-8-bit unique identifier of the node that sent the frame.
-
-##### Receiver UID
-
-8-bit unique identifier of the intended recipient. Interpretation depends on the broadcast flag.
-
----
-
-### Data Payload
-
-CAN FD provides up to 64 bytes of data payload. The following fields are carried in the data payload, not in the CAN ID:
-
-- Device class and board type (sender/receiver identification)
-- Command or register ID
-- Request ID (for matching responses to requests)
-- Multi-frame segmentation metadata
-- Board version
-
-The data payload format is TBD.
-
----
+Every frame ID embeds its sender's UID, so no two nodes ever transmit the
+same ID. Broadcast IDs are unique per (bits 10–8, sender); PTP IDs are
+unique per (bits 28–16, sender, receiver). Arbitration therefore always
+resolves without error, and worst-case latency is computable per ID.
 
 ### Addressing
 
-Node UIDs are 8-bit values (0-255) and must be globally unique on the bus.
+Node UIDs are 8-bit values and must be unique on the bus. Reserved UID
+values (e.g. 0x00, 0xFF) are an open question.
 
-Both sender and receiver UIDs are present in 29-bit frames, which:
-- Enables hardware filtering on both source and destination
-- Guarantees unique CAN IDs (no collision between simultaneous transmitters)
-- Allows any node to identify both parties in an exchange
+### Data Payload
 
-11-bit frames always identify the source node. All 11-bit messages are broadcast.
+CAN FD provides up to 64 bytes of payload. Format TBD. Candidates for
+payload-carried fields:
 
----
+- Command / register ID
+- Request ID (matching responses to requests — replaces an ID-level
+  response flag)
+- Multi-frame segmentation metadata
+- Device class, board type, board version (discovery)
 
-### Arbitration Summary
+### Required Functions (Inventory)
 
-CAN arbitration is bitwise — lower values win. The overall priority ordering is:
+Everything the protocol must provide, independent of bit layouts. Status:
+[x] agreed, [~] partially designed, [ ] not yet designed.
 
-1. **11-bit Error** (highest — infrastructure frame, type 0b00)
-2. **11-bit NMT** (infrastructure frame, type 0b01)
-3. **11-bit Debug** (infrastructure frame, type 0b10)
-4. **11-bit Heartbeat** (infrastructure frame, type 0b11)
-5. **29-bit Priority 0** (highest data priority)
-6. ...
-7. **29-bit Priority 7** (lowest data priority)
+**Core transport of meaning**
+- [x] Node addressing — 8-bit UIDs, unique on bus
+- [x] Priority policy — prio field, allocation-time assignment
+- [x] Broadcast process data — 11-bit, sender-keyed
+- [x] PTP messaging — 29-bit, both endpoints in ID
+- [ ] Payload layout definition — how a receiver knows what bytes mean
+      (mapping/config, layout versioning)
+- [ ] Multi-frame transfer — payloads > 64 B (segmentation, reassembly,
+      transfer CRC)
 
-Within the same 29-bit priority level, non-broadcast frames (broadcast=0) win over broadcast frames (broadcast=1). Within the same broadcast setting, requests (response=0) win over responses (response=1).
+**Time & determinism**
+- [ ] Cycle sync — SYNC broadcast, cycle counter, sample/actuate convention
+- [ ] Time distribution — shared clock / timestamping (needed beyond cycle
+      sync? open)
+- [ ] Bandwidth budgeting — per-prio-level load accounting so worst-case latency
+      is provable
+
+**Network management**
+- [~] Node ID assignment — ID claim chain drafted in global_reg.yaml;
+      bootstrap problem open (how does a node transmit before it has a UID?)
+- [ ] Node states & transitions — boot / operational / stopped, and who may
+      command them in masterless topologies
+- [ ] Discovery & identification — enumerate nodes, device class, board
+      type, versions
+- [ ] Health monitoring — heartbeat/liveness, timeout policy
+- [ ] Error reporting — fault broadcast, error codes, severity
+
+**Services**
+- [~] Register access — read/write/command, permissions, dtypes (register
+      system in development)
+- [ ] Request/response semantics — request ID matching, timeouts, error
+      responses
+- [~] Firmware update — bootloader exists; protocol integration undefined
+
+**Explicitly deferred / undecided scope**
+- [ ] Babbling-idiot protection (TX budget enforcement)
+- [ ] Redundant bus support
+- [ ] Bus bridging / multi-segment routing
+- [ ] Security / authentication
+
+### Open Questions
+
+1. Broadcast ID allocation: one ID per node per prio level — is that enough,
+   or do slot bits need to come out of the UID field?
+2. Command/setpoint traffic at control rates: broadcast (function-keyed IDs,
+   or aggregated into the controller's output frame) vs PTP. Trade-off: PTP
+   carries endpoint addressing but costs ~18 extra bit times in the
+   arbitration phase (which cannot use the FD fast bitrate) on every frame.
+3. Reserved UID values.
+4. Payload format.
 
 ---
 

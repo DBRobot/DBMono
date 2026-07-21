@@ -1,0 +1,285 @@
+
+# This file describes the global registers that all boards of this protocol must share 
+
+name: global_registers
+permissions: ANY
+children:
+
+# hardware description:
+
+  - name: hardware
+    permissions: R
+    children:
+      - name: board_type
+        dtype: string
+        bits: 256
+        default: unprovisioned
+
+      - name: board_name
+        dtype: string
+        bits: 256
+        default: unprovisioned
+
+      - name: major_version
+        dtype: uint
+        bits: 64
+        
+      - name: minor_version
+        dtype: uint
+        bits: 64
+
+      - name: patch_version
+        dtype: uint
+        bits: 64
+
+      - name: mcu_uid
+        dtype: uint
+        bits: 96
+
+# firmware description:
+# differentiates the bootloader, protocol, and application version
+
+  - name: firmware
+    permissions: ANY
+    children:
+      - name: boot
+        permissions: R
+        children:
+          - name: major_version
+            dtype: uint
+            bits: 64
+
+          - name: minor_version
+            dtype: uint
+            bits: 64
+
+          - name: patch_version
+            dtype: uint
+            bits: 64
+
+      - name: protocol
+        permissions: R
+        children:
+          - name: major_version
+            dtype: uint
+            bits: 64
+
+          - name: minor_version
+            dtype: uint
+            bits: 64
+
+          - name: patch_version
+            dtype: uint
+            bits: 64
+
+      - name: app
+        permissions: R
+        children:
+          - name: major_version
+            dtype: uint
+            bits: 64
+
+          - name: minor_version
+            dtype: uint
+            bits: 64
+
+          - name: patch_version
+            dtype: uint
+            bits: 64
+
+# 0 prio - Faults
+
+  - name: faults
+    permissions: ANY
+    children:
+      - name: ctrl
+        permissions: CMD
+        children:
+          - name: clear_faults
+          - name: clear_log
+
+      - name: data
+        permissions: R
+        children:
+        - name: health
+          dtype: enum
+          bits: 2
+          values: { ok: 0, passive_fault: 1, blocking_fault: 2, damaged_hardware: 3}
+
+        - name: active_codes
+          dtype: enum
+          bits: 16
+          array_size: 32
+          values: faults
+
+        - name: fault_log
+          dtype: struct
+          array_size: 32
+          values:
+            - { name: timestamp, dtype: uint, bits: 32 }
+            - { name: code, dtype: enum, bits: 16, values: faults }
+
+      - name: behavior
+        permissions: RW
+        children:
+          - name: report_on_event
+            dtype: bool
+            default: true
+            persist: true
+
+          - name: report_on_interval
+            dtype: bool
+            default: true
+            persist: true
+
+          - name: interval
+            dtype: uint
+            bits: 8
+            resolution: 100
+            units: ms
+            default: 1000
+            persist: true
+            
+          - name: response
+            dtype: enum
+            bits: 2
+            values: { report_only: 0, stop_outputs: 1, safe_hold: 2}
+            default: 1
+            persist: true
+
+# 1 prio - NMT + SYNC
+
+  - name: id
+    permissions: ANY
+    children:
+      - name: value
+        permissions: RW
+        children:
+          - name: uid
+            dtype: uint
+            bits: 8
+            default: 0
+
+          - name: lowest_available_id
+            dtype: uint
+            bits: 8
+            default: 0
+
+          - name: persists
+            dtype: bool
+            default: true
+
+          - name: auto_id_meathod
+            dtype: enum
+            bits: 2
+            value: { disabled: 0, gpio_select: 1, dynamic: 2}
+            default: 1
+
+      - name: auto_id_
+        permissions: CMD
+        children:
+          - name: select_next
+          - name: select_previous
+
+  - name: node_state
+    permissions: ANY
+    children:
+      - name: change
+        permissions: CMD
+        children:
+          - name: reboot
+          - name: enter_boot
+          - name: start
+          - name: stop
+          - name: sleep
+          - name: deep_sleep
+          - name: wakeup
+          - name: no_id
+      
+      - name: current
+        permissions: R
+        children:
+          - name: state
+            dtype: enum
+            bits: 3
+            values: { initalizing: 0, in_boot: 1, running: 2, stopped: 3, sleeping: 4, deep_sleep: 5, no_id: 6}
+
+          - name: reason_in_boot
+            dtype: enum
+            bits: 3
+            values: { not_in_boot: 0, requested: 1, failed_to_jump: 2, waiting_for_jump_cmd: 3, no_app: 4}
+            default: 4
+
+          - name: reason_stopped
+            dtype: enum
+            bits: 2
+            values: { not_stopped: 0, requested: 1, fault: 2}
+
+          - name: reason_sleeping
+            dtype: enum
+            bits: 2
+            values: { not_sleeping: 0, requested: 1, timer_trigger: 2, inactivity: 3}
+
+          - name: reason_deep_sleeping
+            dtype: enum
+            bits: 2
+            values: { not_sleeping: 0, requested: 1, timer_trigger: 2, inactivity: 3}
+
+      - name: behavior
+        permissions: RW
+        children:
+          - name: auto_jump
+            dtype: bool
+            default: true
+
+          - name: wake_on_timer
+            dtype: bool
+
+          - name: sleep_when_inactive
+            dtype: bool
+
+          - name: deep_sleep_when_inactive
+            dtype: bool
+
+          - name: wake_timer_period
+            dtype: uint
+            bits: 32
+            units: ms
+
+          - name: inactive_time
+            dtype: uint
+            bits: 16
+            units: ms
+
+      - name: heartbeat
+        permissions: RW
+        children:
+        - name: my_broadcast
+          dtype: bool
+          default: true
+
+        - name: require_recieve
+          dtype: uint
+          bits: 4
+
+        - name: time_to_act
+          dtype: uint
+          bits: 8
+          resolution: 10
+          units: ms
+          default: 100
+
+        - name: dehavior_on_loose
+          dtype: enum
+          bits: 2
+          values: { warning: 0, fault: 1, stop: 2, emergency: 3}
+          default: 1
+
+
+
+
+
+
+
+
+ 
