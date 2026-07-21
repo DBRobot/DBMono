@@ -14,13 +14,16 @@
         "${workspaceFolder}/../Protocols/DBcan/core/inc",
         "${workspaceFolder}/../Protocols/DBcan/transports/inc",
         "${workspaceFolder}/../Protocols/DBcan/Bootloader/drivers/inc",
-        "${workspaceFolder}/libs/cmsis_core/CMSIS/Core/Include",
-        "${workspaceFolder}/libs/cmsis_device_g4/Include",
-        "${workspaceFolder}/libs/stm32g4xx_hal_driver/Inc",
-        "${workspaceFolder}/Boards/BLDC/Inc"
+        "${workspaceFolder}/Boards/BLDC/Core/Inc",
+        "${workspaceFolder}/Boards/BLDC/Inc",
+        "${workspaceFolder}/Boards/BLDC/Drivers/STM32G4xx_HAL_Driver/Inc",
+        "${workspaceFolder}/Boards/BLDC/Drivers/STM32G4xx_HAL_Driver/Inc/Legacy",
+        "${workspaceFolder}/Boards/BLDC/Drivers/CMSIS/Device/ST/STM32G4xx/Include",
+        "${workspaceFolder}/Boards/BLDC/Drivers/CMSIS/Include"
       ],
       "defines": [
-        "STM32G474xx"
+        "STM32G474xx",
+        "USE_HAL_DRIVER"
       ],
       "cStandard": "c11",
       "intelliSenseMode": "linux-gcc-arm"
