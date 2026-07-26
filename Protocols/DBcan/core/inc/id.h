@@ -8,13 +8,17 @@
 /*
  * 11 bit frames (broadcast):
  *
- *  10  9  8  7  6  5  4  3  2  1  0
- * [-PRIO--][-------SRC UID--------]
+ * 10  9  8  7  6  5  4  3  2  1  0
+ * [-PRIO--][-------SRC UID-------]
  *
  * 29 bit frames (point-to-point):
  *
  * 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1  0
- * [-PRIO--][--------Unallocated---------][------Sender UID------] [----Receiver UID-----]
+ * [-PRIO--][R][------Unallocated--------][------Sender UID------] [----Receiver UID-----]
+ *
+ * R = ROLE: 0 = response, 1 = request. Response is dominant, so completing
+ * transactions win arbitration within a priority level. Sits above the sender
+ * UID so the split holds regardless of who is talking. See header.h.
 */
 
 #define DBCAN_11BIT_ID_PRIO_Pos             8u
@@ -24,6 +28,8 @@
 
 #define DBCAN_29BIT_ID_PRIO_Pos             26U
 #define DBCAN_29BIT_ID_PRIO_Mask            (0x07u << DBCAN_29BIT_ID_PRIO_Pos)
+#define DBCAN_29BIT_ID_ROLE_Pos             25U
+#define DBCAN_29BIT_ID_ROLE_Mask            (0x01u << DBCAN_29BIT_ID_ROLE_Pos)
 #define DBCAN_29BIT_ID_SUID_Pos             8U
 #define DBCAN_29BIT_ID_SUID_Mask            (0xFFu << DBCAN_29BIT_ID_SUID_Pos)
 #define DBCAN_29BIT_ID_RUID_Pos             0U
@@ -40,6 +46,11 @@ typedef enum {
     DBCAN_PRIO_BULK         = 7,
 } prio_t;
 
+typedef enum {
+    DBCAN_ROLE_RESPONSE = 0,    
+    DBCAN_ROLE_REQUEST  = 1,
+} role_t;
+
 typedef struct {
     prio_t      prio;
     uint8_t     src_uid;
@@ -47,6 +58,7 @@ typedef struct {
 
 typedef struct {
     prio_t      prio;
+    role_t      role;
     uint8_t     sender_uid;
     uint8_t     receiver_uid;
 } ptp_id_t;
@@ -74,6 +86,7 @@ static inline uint32_t pack_id(const dbcan_id_t *id) {
         case DBCAN_ID_PTP: {
             const ptp_id_t p = id->u.ptp_id;
             return (((uint32_t)p.prio           << DBCAN_29BIT_ID_PRIO_Pos) & DBCAN_29BIT_ID_PRIO_Mask)
+                 | (((uint32_t)p.role           << DBCAN_29BIT_ID_ROLE_Pos) & DBCAN_29BIT_ID_ROLE_Mask)
                  | (((uint32_t)p.sender_uid     << DBCAN_29BIT_ID_SUID_Pos) & DBCAN_29BIT_ID_SUID_Mask)
                  | (((uint32_t)p.receiver_uid   << DBCAN_29BIT_ID_RUID_Pos) & DBCAN_29BIT_ID_RUID_Mask);
         }
@@ -89,6 +102,7 @@ static inline dbcan_id_t unpack_id(const uint32_t raw, bool is_ext) {
         id.kind = DBCAN_ID_PTP;
         id.u.ptp_id = (ptp_id_t){
             .prio               = (raw & DBCAN_29BIT_ID_PRIO_Mask) >> DBCAN_29BIT_ID_PRIO_Pos,
+            .role               = (raw & DBCAN_29BIT_ID_ROLE_Mask) >> DBCAN_29BIT_ID_ROLE_Pos,
             .sender_uid         = (raw & DBCAN_29BIT_ID_SUID_Mask) >> DBCAN_29BIT_ID_SUID_Pos,
             .receiver_uid       = (raw & DBCAN_29BIT_ID_RUID_Mask) >> DBCAN_29BIT_ID_RUID_Pos,
         };

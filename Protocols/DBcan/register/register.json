@@ -4,7 +4,8 @@
         "primitive": {
             "type": "object",
             "properties": {
-                "name":         { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32},
+                "name":         { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32,
+                                  "description": "Register name. For dtype:enum registers the name must be unique across the entire map (it prefixes the generated C value constants). Enforced by the compiler, not this schema." },
                 "dtype":        { "type": "string", "enum": ["bool", "uint", "int", "float", "string", "enum", "struct"] },
                 "bits":         { "type": "integer", "minimum": 1 },
                 "array_size":   { "type": "integer", "minimum": 1, "default": 0 }, 
@@ -17,14 +18,14 @@
                 "persist":      { "type": "boolean", "default": false },
                 "errors":       {
                     "type": "array",
+                    "description": "Per-register error names. The compiler assigns codes (>= 64) by index; the author never writes a code.",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "code":        { "type": "integer", "minimum": 64 },
                             "name":        { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
                             "description": { "type": "string" }
                         },
-                        "required": ["code", "name"],
+                        "required": ["name"],
                         "additionalProperties": false
                     }
                 },

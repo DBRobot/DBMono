@@ -67,13 +67,18 @@ by construction. ID allocation within each prio level is TBD.
 ### 29-Bit Frames (Point-to-Point)
 
 ```
- 28 27 26   25 ........... 16   15 ........ 8   7 ......... 0
-[--PRIO--] [------TBD-------] [--SENDER UID--] [-RECEIVER UID-]
+ 28 27 26  25   24 ...... 16   15 ........ 8   7 ......... 0
+[--PRIO--] [R] [----TBD-----] [--SENDER UID--] [-RECEIVER UID-]
 ```
 
 - **Bits 28–26 — Prio.** Priority level, arbitration-aligned with the
   broadcast prio field.
-- **Bits 25–16 — Reserved (10 bits).** Transmit as zero. Bits 25–18 are
+- **Bit 25 — Role.** `0` = response, `1` = request. Response is dominant, so a
+  completing transaction wins arbitration against a new request at the same
+  prio, freeing requester state under load. Sits above the sender UID so the
+  request/response split holds regardless of who is talking, and lets a
+  receiver hardware-filter requests and responses into separate RX FIFOs.
+- **Bits 24–16 — Reserved (9 bits).** Transmit as zero. Bits 24–18 are
   arbitration-visible, so any future allocation must account for its effect
   on within-prio ordering. Candidate future use: random discriminator for
   anonymous ID-claim frames.
@@ -94,14 +99,111 @@ values (e.g. 0x00, 0xFF) are an open question.
 
 ### Data Payload
 
-CAN FD provides up to 64 bytes of payload. Format TBD. Candidates for
-payload-carried fields:
+There are two payload shapes, one per frame type. Both are little-endian
+(LSB first) and packed with no padding. Neither carries a length or a type
+tag: register widths are fixed by the register map, and both ends share that
+map (see *Register Map & Numbering* below).
 
-- Command / register ID
-- Request ID (matching responses to requests — replaces an ID-level
-  response flag)
-- Multi-frame segmentation metadata
-- Device class, board type, board version (discovery)
+#### Service payload (29-bit / PTP)
+
+Register access — read, write, command — as a request/response transaction.
+See `core/inc/header.h`.
+
+```
+byte 0        header
+byte 1..2     register id, 16-bit          (request frames only)
+byte 3..N     value, register-width bits    (writes and read replies)
+```
+
+Header byte:
+
+```
+ 7    6   5   4   3   2   1   0
+[-] [A/E] [S] [------REQ_ID------]
+```
+
+- **Bit 7 — Reserved**, must be 0.
+- **Bit 6 — A/E.** Role comes from the CAN ID, not here. On a request
+  (ROLE=1) it is **A**: ack requested — a reply is wanted. On a response
+  (ROLE=0) it is **E**: this is an error, and the payload carries a
+  structured `{code, name}` instead of a value.
+- **Bit 5 — S.** Segmented: this is part of a multi-frame value.
+- **Bits 4–0 — REQ_ID.** Matches a reply to its request; scoped per peer
+  pair, so 32 outstanding is ample. Rejects a stale reply that arrives after
+  a timeout-and-retry. Ignored when A=0 (fire-and-forget); send 0. The
+  receiver also remembers the last REQ_ID it acted on per peer, so a retried
+  command is re-acked but not re-executed.
+
+**The operation is implied, not encoded.** The target register's permission
+class is resolved first:
+
+- **CMD register** → command (value ignored)
+- else **0 value bytes** → read
+- else **N value bytes** → write
+
+A reply omits the register id — REQ_ID already identifies what it answers.
+
+```
+op           ROLE  A/E  S   bytes
+read   req    1     1   0   [hdr][id]
+read   rsp    0     0   0   [hdr][value]
+write  req    1    0/1  0   [hdr][id][value]
+write  ack    0     0   0   [hdr]
+cmd    req    1    0/1  0   [hdr][id]
+cmd    ack    0     0   0   [hdr]
+error  rsp    0     1   0   [hdr][code]
+```
+
+**Multi-frame** (S=1): segments of one transfer share a CAN ID, so they
+arrive in send order — no sequence number needed. Both ends know the total
+width from the map, so there is no length field either: completion is when
+the assembled bytes reach the declared register width. A short count at
+timeout means retransmit the whole transfer. (Bulk/firmware transfers at
+prio 7 are a separate scheme with its own sequencing and flow control.)
+
+#### Data payload (11-bit / broadcast)
+
+Cyclic process data — a node publishing its own state. There is **no payload
+header**: the 11-bit ID (prio + sender) is the entire identity, and the rest
+of the frame is packed register values back to back.
+
+The frame is the **broadcast projection of the register map**. A node's
+*publish mapping* lists which of its registers go into its frame at a given
+prio; the values are packed in that order. A subscriber's *subscribe mapping*
+lists which source UIDs it consumes (this list is also the hardware
+acceptance filter), decodes each frame against the publisher's layout, and
+mirrors the values into local registers. Both mappings are runtime-
+configurable registers (PDO-style), expressed in register numbers.
+
+- One broadcast frame per node per prio (the ID has no spare bits for a
+  sub-index), capped at 64 bytes — the compiler can enforce the ceiling.
+- Broadcast **rate** is a register. Broadcast **phase alignment** across
+  nodes — everyone sampling/actuating on one edge — requires a shared SYNC
+  and is only needed for coordinated multi-node control.
+- A **setpoint** is just a register write on the service plane; it needs no
+  special data-plane mechanism. Broadcasting setpoints is only an
+  optimization for one controller commanding many nodes at rate.
+- A **mapping-version** counter lets a subscriber cache a publisher's layout
+  and detect reconfiguration, so a layout change can't be silently
+  misdecoded.
+
+### Register Map & Numbering
+
+Registers are addressed on the wire by a 16-bit number, assigned by the
+schema compiler from a deterministic walk of the register map — not authored
+by hand. Discovery (`_children[i]`) reports each register's name alongside
+its number, so name strings appear on the wire only during discovery, never
+in normal traffic.
+
+`firmware.reg_map_hash` is a global register holding a CRC over the map's
+*definitions*. A peer reads it once on first contact and again when the peer
+reboots (never polled); a mismatch against its own compiled constant means
+the two were built from different maps and every cached number is suspect.
+This is what makes auto-numbering safe: numbers may be freely reassigned
+across firmware versions because the hash turns any skew into a hard fault
+rather than a silent misread. **There is intentionally no wire compatibility
+across map versions** — updating one node's firmware requires rebuilding the
+peers that talk to it.
 
 ### Required Functions (Inventory)
 
@@ -113,13 +215,15 @@ Everything the protocol must provide, independent of bit layouts. Status:
 - [x] Priority policy — prio field, allocation-time assignment
 - [x] Broadcast process data — 11-bit, sender-keyed
 - [x] PTP messaging — 29-bit, both endpoints in ID
-- [ ] Payload layout definition — how a receiver knows what bytes mean
-      (mapping/config, layout versioning)
-- [ ] Multi-frame transfer — payloads > 64 B (segmentation, reassembly,
-      transfer CRC)
+- [~] Payload layout definition — service header + broadcast projection of
+      the register map defined; mapping registers still to design
+- [~] Multi-frame transfer — service-plane SEG scheme defined (length from
+      map, no SEQ); prio-7 bulk scheme with sequencing/flow control open
 
 **Time & determinism**
 - [ ] Cycle sync — SYNC broadcast, cycle counter, sample/actuate convention
+      (only needed for coordinated multi-node phase alignment; per-node rate
+      is a register)
 - [ ] Time distribution — shared clock / timestamping (needed beyond cycle
       sync? open)
 - [ ] Bandwidth budgeting — per-prio-level load accounting so worst-case latency
@@ -136,10 +240,10 @@ Everything the protocol must provide, independent of bit layouts. Status:
 - [ ] Error reporting — fault broadcast, error codes, severity
 
 **Services**
-- [~] Register access — read/write/command, permissions, dtypes (register
-      system in development)
-- [ ] Request/response semantics — request ID matching, timeouts, error
-      responses
+- [~] Register access — read/write/command implied by permission class;
+      16-bit compiler-assigned numbers, map CRC; register system in development
+- [~] Request/response semantics — REQ_ID matching, configurable acks,
+      duplicate suppression defined; timeout policy value still open
 - [~] Firmware update — bootloader exists; protocol integration undefined
 
 **Explicitly deferred / undecided scope**
@@ -150,14 +254,24 @@ Everything the protocol must provide, independent of bit layouts. Status:
 
 ### Open Questions
 
-1. Broadcast ID allocation: one ID per node per prio level — is that enough,
-   or do slot bits need to come out of the UID field?
-2. Command/setpoint traffic at control rates: broadcast (function-keyed IDs,
-   or aggregated into the controller's output frame) vs PTP. Trade-off: PTP
-   carries endpoint addressing but costs ~18 extra bit times in the
-   arbitration phase (which cannot use the FD fast bitrate) on every frame.
+1. ~~Broadcast ID allocation~~ — resolved: one broadcast frame per node per
+   prio; the publish mapping decides which registers fill it. The 11-bit ID
+   has no spare bits for a sub-index.
+2. Broadcast-setpoint optimization: a setpoint is a register write (PTP), but
+   one controller commanding many nodes at rate is N writes/cycle. A single
+   broadcast could replace them — an optimization, not a missing mechanism.
+   PTP costs ~18 extra bit times in the arbitration phase (no FD fast
+   bitrate) per frame.
 3. Reserved UID values.
-4. Payload format.
+4. SYNC / cycle mechanism — needed only for coordinated multi-node
+   sample/actuate alignment; per-node broadcast rate is a plain register.
+5. Timeout policy — the value/derivation of the request timeout that
+   stale-reply rejection and multi-frame completion depend on.
+6. `_describe` convention — whether discovery also exposes units / resolution
+   / min / max so generic tooling can render engineering values, or decode
+   only.
+7. Bulk/firmware transfer (prio 7) — its own segmented scheme with sequence
+   numbers and flow control, distinct from the service-plane SEG bit.
 
 ---
 

@@ -1,5 +1,6 @@
 
-# This file describes the global registers that all boards of this protocol must share 
+# yaml-language-server: $schema=./register.json
+# This file describes the global registers that all boards of this protocol must share
 
 name: global_registers
 permissions: ANY
@@ -172,10 +173,10 @@ children:
           - name: auto_id_meathod
             dtype: enum
             bits: 2
-            value: { disabled: 0, gpio_select: 1, dynamic: 2}
+            values: { disabled: 0, gpio_select: 1, dynamic: 2}
             default: 1
 
-      - name: auto_id_
+      - name: auto_id
         permissions: CMD
         children:
           - name: select_next

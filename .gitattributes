@@ -16,3 +16,8 @@ fabrication-toolkit-options.json linguist-detectable=false
 # 98% of the repo's code -- it drowns out everything actually written here.
 # (The submodules under Firmware/libs/ are already excluded automatically.)
 Firmware/Boards/*/Drivers/** linguist-vendored
+
+# Same deal for middleware CubeMX pulls in when you enable FreeRTOS / USB /
+# FatFS / LwIP. Nothing here yet -- this is pre-emptive so the first .ioc
+# feature that generates it doesn't swamp the stats again.
+Firmware/Boards/*/Middlewares/** linguist-vendored
