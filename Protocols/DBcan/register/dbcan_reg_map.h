@@ -12,7 +12,8 @@
 #define DBCAN_REG_MAP_HASH 0xB52C1F50
 #define REG_COUNT 70
 #define REG_STORE_BYTES 456
-static uint8_t reg_store[REG_STORE_BYTES];
+static uint8_t reg_store[REG_STORE_BYTES] = { [0] = 0x75, [1] = 0x6E, [2] = 0x70, [3] = 0x72, [4] = 0x6F, [5] = 0x76, [6] = 0x69, [7] = 0x73, [8] = 0x69, [9] = 0x6F, [10] = 0x6E, [11] = 0x65, [12] = 0x64, [32] = 0x75, [33] = 0x6E, [34] = 0x70, [35] = 0x72, [36] = 0x6F, [37] = 0x76, [38] = 0x69, [39] = 0x73, [40] = 0x69, [41] = 0x6F, [42] = 0x6E, [43] = 0x65, [44] = 0x64, [429] = 0x01, [430] = 0x01, [431] = 0x0A, [432] = 0x01, [435] = 0x01, [436] = 0x01, [438] = 0x04, [442] = 0x01, [452] = 0x01, [454] = 0x0A, [455] = 0x01 };
+
 
 typedef enum {
     REG_R   = 1u << 0,
@@ -118,6 +119,7 @@ typedef struct {
     dtype_t     dtype;
     reg_perm_t  perms;
     uint16_t    offset;
+    bool        persist;
 } reg_desc_t;
 
 typedef enum {
@@ -196,76 +198,76 @@ typedef struct {
 
 
 static const reg_desc_t reg_table[] = {
-	[REG_HARDWARE] = { .width_bytes = 100, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 0 },
-	[REG_HARDWARE_BOARD_TYPE] = { .width_bytes = 32, .dtype = DTYPE_STRING, .perms = REG_R, .offset = 0 },
-	[REG_HARDWARE_BOARD_NAME] = { .width_bytes = 32, .dtype = DTYPE_STRING, .perms = REG_R, .offset = 32 },
-	[REG_HARDWARE_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 64 },
-	[REG_HARDWARE_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 72 },
-	[REG_HARDWARE_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 80 },
-	[REG_HARDWARE_MCU_UID] = { .width_bytes = 12, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 88 },
-	[REG_FIRMWARE] = { .width_bytes = 72, .dtype = DTYPE_NONE, .perms = 0, .offset = 100 },
-	[REG_FIRMWARE_BOOT] = { .width_bytes = 24, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 100 },
-	[REG_FIRMWARE_BOOT_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 100 },
-	[REG_FIRMWARE_BOOT_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 108 },
-	[REG_FIRMWARE_BOOT_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 116 },
-	[REG_FIRMWARE_PROTOCOL] = { .width_bytes = 24, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 124 },
-	[REG_FIRMWARE_PROTOCOL_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 124 },
-	[REG_FIRMWARE_PROTOCOL_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 132 },
-	[REG_FIRMWARE_PROTOCOL_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 140 },
-	[REG_FIRMWARE_APP] = { .width_bytes = 24, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 148 },
-	[REG_FIRMWARE_APP_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 148 },
-	[REG_FIRMWARE_APP_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 156 },
-	[REG_FIRMWARE_APP_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 164 },
-	[REG_FAULTS] = { .width_bytes = 261, .dtype = DTYPE_NONE, .perms = 0, .offset = 172 },
-	[REG_FAULTS_CTRL] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 172 },
-	[REG_FAULTS_CTRL_CLEAR_FAULTS] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 172 },
-	[REG_FAULTS_CTRL_CLEAR_LOG] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 172 },
-	[REG_FAULTS_DATA] = { .width_bytes = 257, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 172 },
-	[REG_FAULTS_DATA_HEALTH] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 172 },
-	[REG_FAULTS_DATA_ACTIVE_CODES] = { .width_bytes = 64, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 173 },
-	[REG_FAULTS_DATA_FAULT_LOG] = { .width_bytes = 192, .dtype = DTYPE_STRUCT, .perms = REG_R, .offset = 237 },
-	[REG_FAULTS_BEHAVIOR] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 429 },
-	[REG_FAULTS_BEHAVIOR_REPORT_ON_EVENT] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 429 },
-	[REG_FAULTS_BEHAVIOR_REPORT_ON_INTERVAL] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 430 },
-	[REG_FAULTS_BEHAVIOR_INTERVAL] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 431 },
-	[REG_FAULTS_BEHAVIOR_RESPONSE] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R | REG_W, .offset = 432 },
-	[REG_ID] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = 0, .offset = 433 },
-	[REG_ID_VALUE] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 433 },
-	[REG_ID_VALUE_UID] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 433 },
-	[REG_ID_VALUE_LOWEST_AVAILABLE_ID] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 434 },
-	[REG_ID_VALUE_PERSISTS] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 435 },
-	[REG_ID_VALUE_AUTO_ID_MEATHOD] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R | REG_W, .offset = 436 },
-	[REG_ID_AUTO_ID] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_ID_AUTO_ID_SELECT_NEXT] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_ID_AUTO_ID_SELECT_PREVIOUS] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE] = { .width_bytes = 19, .dtype = DTYPE_NONE, .perms = 0, .offset = 437 },
-	[REG_NODE_STATE_CHANGE] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_REBOOT] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_ENTER_BOOT] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_START] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_STOP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_SLEEP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_DEEP_SLEEP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_WAKEUP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CHANGE_NO_ID] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437 },
-	[REG_NODE_STATE_CURRENT] = { .width_bytes = 5, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 437 },
-	[REG_NODE_STATE_CURRENT_STATE] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 437 },
-	[REG_NODE_STATE_CURRENT_REASON_IN_BOOT] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 438 },
-	[REG_NODE_STATE_CURRENT_REASON_STOPPED] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 439 },
-	[REG_NODE_STATE_CURRENT_REASON_SLEEPING] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 440 },
-	[REG_NODE_STATE_CURRENT_REASON_DEEP_SLEEPING] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 441 },
-	[REG_NODE_STATE_BEHAVIOR] = { .width_bytes = 10, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 442 },
-	[REG_NODE_STATE_BEHAVIOR_AUTO_JUMP] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 442 },
-	[REG_NODE_STATE_BEHAVIOR_WAKE_ON_TIMER] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 443 },
-	[REG_NODE_STATE_BEHAVIOR_SLEEP_WHEN_INACTIVE] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 444 },
-	[REG_NODE_STATE_BEHAVIOR_DEEP_SLEEP_WHEN_INACTIVE] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 445 },
-	[REG_NODE_STATE_BEHAVIOR_WAKE_TIMER_PERIOD] = { .width_bytes = 4, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 446 },
-	[REG_NODE_STATE_BEHAVIOR_INACTIVE_TIME] = { .width_bytes = 2, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 450 },
-	[REG_NODE_STATE_HEARTBEAT] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 452 },
-	[REG_NODE_STATE_HEARTBEAT_MY_BROADCAST] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 452 },
-	[REG_NODE_STATE_HEARTBEAT_REQUIRE_RECIEVE] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 453 },
-	[REG_NODE_STATE_HEARTBEAT_TIME_TO_ACT] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 454 },
-	[REG_NODE_STATE_HEARTBEAT_DEHAVIOR_ON_LOOSE] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R | REG_W, .offset = 455 },
+	[REG_HARDWARE] = { .width_bytes = 100, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 0, .persist = false },
+	[REG_HARDWARE_BOARD_TYPE] = { .width_bytes = 32, .dtype = DTYPE_STRING, .perms = REG_R, .offset = 0, .persist = false },
+	[REG_HARDWARE_BOARD_NAME] = { .width_bytes = 32, .dtype = DTYPE_STRING, .perms = REG_R, .offset = 32, .persist = false },
+	[REG_HARDWARE_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 64, .persist = false },
+	[REG_HARDWARE_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 72, .persist = false },
+	[REG_HARDWARE_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 80, .persist = false },
+	[REG_HARDWARE_MCU_UID] = { .width_bytes = 12, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 88, .persist = false },
+	[REG_FIRMWARE] = { .width_bytes = 72, .dtype = DTYPE_NONE, .perms = 0, .offset = 100, .persist = false },
+	[REG_FIRMWARE_BOOT] = { .width_bytes = 24, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 100, .persist = false },
+	[REG_FIRMWARE_BOOT_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 100, .persist = false },
+	[REG_FIRMWARE_BOOT_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 108, .persist = false },
+	[REG_FIRMWARE_BOOT_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 116, .persist = false },
+	[REG_FIRMWARE_PROTOCOL] = { .width_bytes = 24, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 124, .persist = false },
+	[REG_FIRMWARE_PROTOCOL_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 124, .persist = false },
+	[REG_FIRMWARE_PROTOCOL_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 132, .persist = false },
+	[REG_FIRMWARE_PROTOCOL_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 140, .persist = false },
+	[REG_FIRMWARE_APP] = { .width_bytes = 24, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 148, .persist = false },
+	[REG_FIRMWARE_APP_MAJOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 148, .persist = false },
+	[REG_FIRMWARE_APP_MINOR_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 156, .persist = false },
+	[REG_FIRMWARE_APP_PATCH_VERSION] = { .width_bytes = 8, .dtype = DTYPE_UINT, .perms = REG_R, .offset = 164, .persist = false },
+	[REG_FAULTS] = { .width_bytes = 261, .dtype = DTYPE_NONE, .perms = 0, .offset = 172, .persist = false },
+	[REG_FAULTS_CTRL] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 172, .persist = false },
+	[REG_FAULTS_CTRL_CLEAR_FAULTS] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 172, .persist = false },
+	[REG_FAULTS_CTRL_CLEAR_LOG] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 172, .persist = false },
+	[REG_FAULTS_DATA] = { .width_bytes = 257, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 172, .persist = false },
+	[REG_FAULTS_DATA_HEALTH] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 172, .persist = false },
+	[REG_FAULTS_DATA_ACTIVE_CODES] = { .width_bytes = 64, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 173, .persist = false },
+	[REG_FAULTS_DATA_FAULT_LOG] = { .width_bytes = 192, .dtype = DTYPE_STRUCT, .perms = REG_R, .offset = 237, .persist = false },
+	[REG_FAULTS_BEHAVIOR] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 429, .persist = false },
+	[REG_FAULTS_BEHAVIOR_REPORT_ON_EVENT] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 429, .persist = true },
+	[REG_FAULTS_BEHAVIOR_REPORT_ON_INTERVAL] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 430, .persist = true },
+	[REG_FAULTS_BEHAVIOR_INTERVAL] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 431, .persist = true },
+	[REG_FAULTS_BEHAVIOR_RESPONSE] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R | REG_W, .offset = 432, .persist = true },
+	[REG_ID] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = 0, .offset = 433, .persist = false },
+	[REG_ID_VALUE] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 433, .persist = false },
+	[REG_ID_VALUE_UID] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 433, .persist = false },
+	[REG_ID_VALUE_LOWEST_AVAILABLE_ID] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 434, .persist = false },
+	[REG_ID_VALUE_PERSISTS] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 435, .persist = false },
+	[REG_ID_VALUE_AUTO_ID_MEATHOD] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R | REG_W, .offset = 436, .persist = false },
+	[REG_ID_AUTO_ID] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_ID_AUTO_ID_SELECT_NEXT] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_ID_AUTO_ID_SELECT_PREVIOUS] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE] = { .width_bytes = 19, .dtype = DTYPE_NONE, .perms = 0, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_REBOOT] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_ENTER_BOOT] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_START] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_STOP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_SLEEP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_DEEP_SLEEP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_WAKEUP] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CHANGE_NO_ID] = { .width_bytes = 0, .dtype = DTYPE_NONE, .perms = REG_CMD, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CURRENT] = { .width_bytes = 5, .dtype = DTYPE_NONE, .perms = REG_R, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CURRENT_STATE] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 437, .persist = false },
+	[REG_NODE_STATE_CURRENT_REASON_IN_BOOT] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 438, .persist = false },
+	[REG_NODE_STATE_CURRENT_REASON_STOPPED] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 439, .persist = false },
+	[REG_NODE_STATE_CURRENT_REASON_SLEEPING] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 440, .persist = false },
+	[REG_NODE_STATE_CURRENT_REASON_DEEP_SLEEPING] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R, .offset = 441, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR] = { .width_bytes = 10, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 442, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR_AUTO_JUMP] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 442, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR_WAKE_ON_TIMER] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 443, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR_SLEEP_WHEN_INACTIVE] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 444, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR_DEEP_SLEEP_WHEN_INACTIVE] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 445, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR_WAKE_TIMER_PERIOD] = { .width_bytes = 4, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 446, .persist = false },
+	[REG_NODE_STATE_BEHAVIOR_INACTIVE_TIME] = { .width_bytes = 2, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 450, .persist = false },
+	[REG_NODE_STATE_HEARTBEAT] = { .width_bytes = 4, .dtype = DTYPE_NONE, .perms = REG_R | REG_W, .offset = 452, .persist = false },
+	[REG_NODE_STATE_HEARTBEAT_MY_BROADCAST] = { .width_bytes = 1, .dtype = DTYPE_BOOL, .perms = REG_R | REG_W, .offset = 452, .persist = false },
+	[REG_NODE_STATE_HEARTBEAT_REQUIRE_RECIEVE] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 453, .persist = false },
+	[REG_NODE_STATE_HEARTBEAT_TIME_TO_ACT] = { .width_bytes = 1, .dtype = DTYPE_UINT, .perms = REG_R | REG_W, .offset = 454, .persist = false },
+	[REG_NODE_STATE_HEARTBEAT_DEHAVIOR_ON_LOOSE] = { .width_bytes = 1, .dtype = DTYPE_ENUM, .perms = REG_R | REG_W, .offset = 455, .persist = false },
 };
 
 typedef enum {
@@ -327,6 +329,23 @@ typedef enum {
 	NO_ID_ERROR_SUCCESS = 0,
 	NO_ID_ERROR_FAILED = 1,
 } node_state_change_no_id_error_t;
+
+
+static inline int32_t faults_behavior_interval_to_ms(uint8_t raw) {
+	return (int32_t)(raw * 100 + 0);
+}
+
+static inline uint8_t faults_behavior_interval_from_ms(int32_t eng) {
+	return (uint8_t)((eng - 0) / 100);
+}
+
+static inline int32_t node_state_heartbeat_time_to_act_to_ms(uint8_t raw) {
+	return (int32_t)(raw * 10 + 0);
+}
+
+static inline uint8_t node_state_heartbeat_time_to_act_from_ms(int32_t eng) {
+	return (uint8_t)((eng - 0) / 10);
+}
 
 
 #endif

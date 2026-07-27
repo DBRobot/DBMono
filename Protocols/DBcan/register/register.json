@@ -45,9 +45,12 @@
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "name":   { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32 },
-                                    "dtype":  { "type": "string", "enum": ["bool", "uint", "int", "float", "enum"] },
-                                    "bits":   { "type": "integer", "minimum": 1 },
+                                    "name":       { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32 },
+                                    "dtype":      { "type": "string", "enum": ["bool", "uint", "int", "float", "enum"] },
+                                    "bits":       { "type": "integer", "minimum": 1 },
+                                    "resolution": { "type": "number", "default": 1 },
+                                    "units":      { "type": "string" },
+                                    "offset":     { "type": "number", "default": 0 },
                                     "values": {
                                         "anyOf": [
                                             {

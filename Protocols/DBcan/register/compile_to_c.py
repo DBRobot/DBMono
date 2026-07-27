@@ -1,6 +1,7 @@
 import yaml
 import json
 import zlib
+import struct
 
 
 # ============================================================================
@@ -20,13 +21,13 @@ def walk_map(node, path = "", perm = "ANY", reg_list = None, cursor = 0):
     entry = dict(node)
     entry["path"]   = path
     entry["perm"]   = node.get("permissions") or perm
-    entry["offset"] = cursor
+    entry["byte_offset"] = cursor                        # storage offset (distinct from engineering `offset`)
     reg_list.append(entry)
 
     if children:
         for child in children:
             cursor = walk_map(child, path, node.get("permissions"), reg_list, cursor)
-        entry["width"] = cursor - entry["offset"]     
+        entry["width"] = cursor - entry["byte_offset"]
     else:
         bits = width_of(entry)
         entry["width"] = (bits + 7) // 8             
@@ -84,6 +85,28 @@ def c_field_type(field):
     if dt == "enum":            return f"uint{w}_t"   # raw storage; named values live in the enum registry
     raise SystemExit(f"unsupported struct field dtype: {dt}")
 
+def apply_schema_defaults(reg):
+    # jsonschema doesn't inject declared defaults, so fill any the author omitted
+    props = group if "children" in reg else primitive
+    for key, spec in props.items():
+        if "default" in spec and key not in reg:
+            reg[key] = spec["default"]
+
+def encode_default(reg):
+    dt, w, val = reg["dtype"], reg["width"], reg["default"]
+    if dt == "bool":
+        return bytes([1 if val else 0])
+    if dt == "enum":                                          # raw index, no scaling
+        return int(val).to_bytes(w, "little")
+    if dt in ("uint", "int"):
+        raw = round((val - reg.get("offset", 0)) / reg["resolution"])   # engineering -> raw
+        return int(raw).to_bytes(w, "little", signed=(dt == "int"))
+    if dt == "float":
+        return struct.pack("<f" if w == 4 else "<d", float(val))
+    if dt == "string":
+        return str(val).encode("ascii")[:w].ljust(w, b"\0")
+    return bytes(w)
+
 def emit_dtype_enum(out):
     for num, name in enumerate(dtypes):
         out.write(f"\tDTYPE_{name.upper()} = {num + 1},\n")
@@ -104,9 +127,12 @@ def emit_reg_table(out):
         d = reg.get("dtype")
         dtype = f"DTYPE_{d.upper()}" if d else "DTYPE_NONE"
         perm_c = PERM_C[reg["perm"]]
-        offset = reg["offset"]
+        offset = reg["byte_offset"]
 
-        out.write(f"\t[REG_{path}] = {{ .width_bytes = {width}, .dtype = {dtype}, .perms = {perm_c}, .offset = {offset} }},\n")
+        out.write(
+            f"\t[REG_{path}] = {{ .width_bytes = {width}, .dtype = {dtype}, .perms = {perm_c}, "
+            f".offset = {offset}, .persist = {str(reg.get("persist", False)).lower()} }},\n"
+            )
 
 def emit_register_enums(out):
     for reg in registers:
@@ -130,8 +156,16 @@ def emit_crc(out):
     out.write(f"#define DBCAN_REG_MAP_HASH 0x{crc:08X}\n")
 
 def emit_reg_store(out):
+    inits = []
+    for reg in registers:
+        dt = reg.get("dtype")
+        if "children" in reg or dt in (None, "struct"):   # groups, commands, structs: no scalar default
+            continue
+        for j, b in enumerate(encode_default(reg)):
+            if b:                                         # only non-zero bytes; C zero-fills the rest
+                inits.append(f"[{reg['byte_offset'] + j}] = 0x{b:02X}")
     out.write(f"#define REG_STORE_BYTES {cursor}\n")
-    out.write(f"static uint8_t reg_store[REG_STORE_BYTES];")
+    out.write(f"static uint8_t reg_store[REG_STORE_BYTES] = {{ {', '.join(inits)} }};\n")
 
 def emit_reg_count(out):
     out.write(f"#define REG_COUNT {len(registers)}\n")
@@ -159,7 +193,46 @@ def emit_error_enums(out):
         for name, code in errs:
             out.write(f"\t{reg['name'].upper()}_ERROR_{name.upper()} = {code},\n")
         out.write("} " + reg["path"].replace(".", "_") + "_error_t;\n\n")
-        
+
+def emit_converter(out, name, raw_t, res, off, units):
+    if res == 1 and off == 0:
+        return
+    if float(res).is_integer() and float(off).is_integer():
+        eng_t = "int32_t"
+        res_l, off_l = int(res), int(off)
+    else:
+        eng_t = "float"
+        res_l, off_l = f"{float(res)}f", f"{float(off)}f"
+
+    out.write(f"static inline {eng_t} {name}_to_{units}({raw_t} raw) {{\n")
+    out.write(f"\treturn ({eng_t})(raw * {res_l} + {off_l});\n")
+    out.write("}\n\n")
+
+    out.write(f"static inline {raw_t} {name}_from_{units}({eng_t} eng) {{\n")
+    out.write(f"\treturn ({raw_t})((eng - {off_l}) / {res_l});\n")
+    out.write("}\n\n")
+
+def scaled(item):
+    if item.get("dtype") not in ("uint", "int"):
+        return False
+    if item.get("resolution", 1) == 1 and item.get("offset", 0) == 0:
+        return False
+    return item["bits"] <= 64
+
+def emit_conversion_funcs(out):
+    for reg in registers:
+        dt = reg.get("dtype")
+        if dt in ("uint", "int") and scaled(reg):            # top-level scaled register
+            emit_converter(out, reg["path"].replace(".", "_"), c_field_type(reg),
+                           reg["resolution"], reg.get("offset", 0), reg.get("units", "eng"))
+        elif dt == "struct":                                 # each scaled field of a struct
+            base = reg["path"].replace(".", "_")
+            for field in reg["values"]:
+                if scaled(field):
+                    emit_converter(out, f"{base}_{field['name']}", c_field_type(field),
+                                   field.get("resolution", 1), field.get("offset", 0),
+                                   field.get("units", "eng"))
+
 
 
 # ============================================================================
@@ -178,6 +251,7 @@ MARKERS = {
     "/* @@REGISTER_ENUM_TYPES@@ */":    emit_register_enums,
     "/* @@REGISTER_STRUCT_TYPES@@ */":  emit_register_structs,
     "/* @@ERROR_ENUM_TYPES@@ */":       emit_error_enums,
+    "/* @@CONVERSION_FUNCTIONS@@ */":   emit_conversion_funcs,
 }
 
 
@@ -222,6 +296,10 @@ perms       = group["permissions"]["enum"]
 _values_forms = primitive["values"]["anyOf"]
 _field_form   = next(f for f in _values_forms if f.get("type") == "array")
 field_dtypes  = _field_form["items"]["properties"]["dtype"]["enum"]   # struct-field dtypes
+
+# fill in every attribute the author omitted from the schema's declared defaults
+for reg in registers:
+    apply_schema_defaults(reg)
 
 with open("templates/dbcan_reg_map.h") as tmpl, open("dbcan_reg_map.h", "w") as out:
     for line in tmpl:

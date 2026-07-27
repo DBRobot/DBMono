@@ -39,6 +39,7 @@ typedef struct {
     dtype_t     dtype;
     reg_perm_t  perms;
     uint16_t    offset;
+    bool        persist;
 } reg_desc_t;
 
 /* @@REGISTER_ENUM_TYPES@@ */
@@ -50,5 +51,7 @@ static const reg_desc_t reg_table[] = {
 };
 
 /* @@ERROR_ENUM_TYPES@@ */
+
+/* @@CONVERSION_FUNCTIONS@@ */
 
 #endif
