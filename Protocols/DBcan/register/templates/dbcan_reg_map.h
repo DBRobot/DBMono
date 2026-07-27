@@ -40,6 +40,8 @@ typedef struct {
     reg_perm_t  perms;
     uint16_t    offset;
     bool        persist;
+    int32_t     min;
+    int32_t     max;
 } reg_desc_t;
 
 /* @@REGISTER_ENUM_TYPES@@ */

@@ -82,11 +82,10 @@ def c_field_type(field):
     w = round_up_bits(field["bits"])
     if dt == "uint":            return f"uint{w}_t"
     if dt == "int":             return f"int{w}_t"
-    if dt == "enum":            return f"uint{w}_t"   # raw storage; named values live in the enum registry
+    if dt == "enum":            return f"uint{w}_t"   
     raise SystemExit(f"unsupported struct field dtype: {dt}")
 
 def apply_schema_defaults(reg):
-    # jsonschema doesn't inject declared defaults, so fill any the author omitted
     props = group if "children" in reg else primitive
     for key, spec in props.items():
         if "default" in spec and key not in reg:
@@ -96,16 +95,30 @@ def encode_default(reg):
     dt, w, val = reg["dtype"], reg["width"], reg["default"]
     if dt == "bool":
         return bytes([1 if val else 0])
-    if dt == "enum":                                          # raw index, no scaling
+    if dt == "enum":                                          
         return int(val).to_bytes(w, "little")
     if dt in ("uint", "int"):
-        raw = round((val - reg.get("offset", 0)) / reg["resolution"])   # engineering -> raw
+        raw = round((val - reg.get("offset", 0)) / reg["resolution"])   
         return int(raw).to_bytes(w, "little", signed=(dt == "int"))
     if dt == "float":
         return struct.pack("<f" if w == 4 else "<d", float(val))
     if dt == "string":
         return str(val).encode("ascii")[:w].ljust(w, b"\0")
     return bytes(w)
+
+def raw_bounds(reg):
+    if reg.get("dtype") not in ("uint", "int"):
+        return 1, 0                                          
+    has_min, has_max = "min_value" in reg, "max_value" in reg
+    if not has_min and not has_max:
+        return 1, 0                                          
+    res, off = reg["resolution"], reg.get("offset", 0)
+    bits, dt = reg["bits"], reg["dtype"]
+    lo = round((reg["min_value"] - off) / res) if has_min else (0 if dt == "uint" else -(1 << (bits - 1)))
+    hi = round((reg["max_value"] - off) / res) if has_max else ((1 << bits) - 1 if dt == "uint" else (1 << (bits - 1)) - 1)
+    if not (-(1 << 31) <= lo <= (1 << 31) - 1 and -(1 << 31) <= hi <= (1 << 31) - 1):
+        raise SystemExit(f"{reg['path']}: raw bounds exceed int32 (widen descriptor min/max to int64)")
+    return lo, hi
 
 def emit_dtype_enum(out):
     for num, name in enumerate(dtypes):
@@ -128,10 +141,12 @@ def emit_reg_table(out):
         dtype = f"DTYPE_{d.upper()}" if d else "DTYPE_NONE"
         perm_c = PERM_C[reg["perm"]]
         offset = reg["byte_offset"]
+        lo, hi = raw_bounds(reg)
 
         out.write(
             f"\t[REG_{path}] = {{ .width_bytes = {width}, .dtype = {dtype}, .perms = {perm_c}, "
-            f".offset = {offset}, .persist = {str(reg.get("persist", False)).lower()} }},\n"
+            f".offset = {offset}, .persist = {str(reg.get("persist", False)).lower()}, "
+            f".min = {lo}, .max = {hi} }},\n"
             )
 
 def emit_register_enums(out):
@@ -148,11 +163,12 @@ def emit_register_enums(out):
         out.write("} " + f"{reg.get("path").replace(".", "_")}_t;\n\n")
 
 def emit_crc(out):
-    s = ""
+    parts = []
     for num, reg in enumerate(registers):
-        errs = ",".join(e["name"] for e in (reg.get("errors") or []))
-        s += f"{num}:{reg['path']}:{reg.get('dtype')}:{width_of(reg)}:{reg['perm']}:{errs};"
-    crc = zlib.crc32(s.encode())
+        defn = {k: v for k, v in reg.items() if k not in ("byte_offset", "width", "children")}
+        defn["num"] = num
+        parts.append(json.dumps(defn, sort_keys=True, default=str))
+    crc = zlib.crc32("\n".join(parts).encode())
     out.write(f"#define DBCAN_REG_MAP_HASH 0x{crc:08X}\n")
 
 def emit_reg_store(out):
@@ -222,10 +238,10 @@ def scaled(item):
 def emit_conversion_funcs(out):
     for reg in registers:
         dt = reg.get("dtype")
-        if dt in ("uint", "int") and scaled(reg):            # top-level scaled register
+        if dt in ("uint", "int") and scaled(reg):       
             emit_converter(out, reg["path"].replace(".", "_"), c_field_type(reg),
                            reg["resolution"], reg.get("offset", 0), reg.get("units", "eng"))
-        elif dt == "struct":                                 # each scaled field of a struct
+        elif dt == "struct":                               
             base = reg["path"].replace(".", "_")
             for field in reg["values"]:
                 if scaled(field):
@@ -295,7 +311,7 @@ perms       = group["permissions"]["enum"]
 
 _values_forms = primitive["values"]["anyOf"]
 _field_form   = next(f for f in _values_forms if f.get("type") == "array")
-field_dtypes  = _field_form["items"]["properties"]["dtype"]["enum"]   # struct-field dtypes
+field_dtypes  = _field_form["items"]["properties"]["dtype"]["enum"]   
 
 # fill in every attribute the author omitted from the schema's declared defaults
 for reg in registers:
