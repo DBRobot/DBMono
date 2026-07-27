@@ -1,7 +1,10 @@
+import sys
 import yaml
 import json
 import zlib
 import struct
+import jsonschema
+import sys
 
 
 # ============================================================================
@@ -272,33 +275,60 @@ MARKERS = {
 
 
 # ============================================================================
-#  DRIVER
-#  Load the map, build the IR, run semantic checks, load the schema
-#  vocabularies, then render the template into the C header.
+#  VALIDATION
+#  Run before emitting anything. Structural (jsonschema vs register.json) catches
+#  malformed registers; semantic catches the cross-field rules the schema can't
+#  express. Each collects every error and reports together, then exits non-zero.
 # ============================================================================
 
+def validate_structural(schema, data):
+    errs = sorted(jsonschema.Draft7Validator(schema).iter_errors(data),
+                  key=lambda e: list(e.path))
+    if errs:
+        for e in errs:
+            loc = "/".join(str(p) for p in e.path) or "(root)"
+            print(f"SCHEMA ERROR at {loc}: {e.message}", file=sys.stderr)
+        raise SystemExit(1)
+
+def validate_map(registers):
+    errs = []
+
+    enum_names = [r["name"] for r in registers if r.get("dtype") == "enum"]
+    for dup in sorted({n for n in enum_names if enum_names.count(n) > 1}):
+        errs.append(f"enum register name '{dup}' must be unique across the map")
+
+    for reg in registers:
+        p = reg["path"]
+        if len(p) > 48:
+            errs.append(f"{p}: path is {len(p)} chars (max 48)")
+        if reg.get("dtype") in ("uint", "int"):
+            res, off, default = reg["resolution"], reg.get("offset", 0), reg["default"]
+            r = (default - off) / res
+            if abs(r - round(r)) > 1e-9:                       # must land on a whole raw value
+                errs.append(f"{p}: default {default} not a multiple of resolution {res}")
+            lo, hi = reg.get("min_value"), reg.get("max_value")
+            if lo is not None and hi is not None and lo > hi:
+                errs.append(f"{p}: min_value {lo} > max_value {hi}")
+            if lo is not None and default < lo:
+                errs.append(f"{p}: default {default} < min_value {lo}")
+            if hi is not None and default > hi:
+                errs.append(f"{p}: default {default} > max_value {hi}")
+
+    if errs:
+        print("MAP VALIDATION FAILED:", file=sys.stderr)
+        for e in errs:
+            print("  " + e, file=sys.stderr)
+        raise SystemExit(1)
+
+
+# ============================================================================
+#  DRIVER
+#  load -> structural validate -> walk -> apply defaults -> semantic validate
+#  -> render the template into the C header.
+# ============================================================================
 
 global_reg_map_file = open("global_reg.yaml")
 global_reg_map = yaml.safe_load(global_reg_map_file)
-
-registers = []
-cursor = 0
-for top in global_reg_map["children"]:
-    cursor = walk_map(top, "", global_reg_map["permissions"], registers, cursor)
-
-
-enum_names = [r["name"] for r in registers if r.get("dtype") == "enum"]
-dupes = sorted({n for n in enum_names if enum_names.count(n) > 1})
-if dupes:
-    raise SystemExit(f"enum register names must be unique across the map; duplicates: {dupes}")
-
-
-value_map = { r["path"].split(".")[-1]: r["values"]
-              for r in registers
-              if r.get("dtype") == "enum" and isinstance(r.get("values"), dict) }
-
-FAULT_VALUES = {"no_fault": 0}                            
-
 
 schema      = json.load(open("register.json"))
 primitive   = schema["definitions"]["primitive"]["properties"]
@@ -311,11 +341,31 @@ perms       = group["permissions"]["enum"]
 
 _values_forms = primitive["values"]["anyOf"]
 _field_form   = next(f for f in _values_forms if f.get("type") == "array")
-field_dtypes  = _field_form["items"]["properties"]["dtype"]["enum"]   
+field_dtypes  = _field_form["items"]["properties"]["dtype"]["enum"]  
 
-# fill in every attribute the author omitted from the schema's declared defaults
+# structural validation, before we walk a possibly-malformed tree
+validate_structural(schema, global_reg_map)
+
+registers = []
+cursor = 0
+for top in global_reg_map["children"]:
+    cursor = walk_map(top, "", global_reg_map["permissions"], registers, cursor)
+
+
+value_map = { r["path"].split(".")[-1]: r["values"]
+              for r in registers
+              if r.get("dtype") == "enum" and isinstance(r.get("values"), dict) }
+
+FAULT_VALUES = {"no_fault": 0}                            
+
+
+ 
+
+# fill omitted attributes from the schema's declared defaults, then semantic-validate
 for reg in registers:
     apply_schema_defaults(reg)
+
+validate_map(registers)
 
 with open("templates/dbcan_reg_map.h") as tmpl, open("dbcan_reg_map.h", "w") as out:
     for line in tmpl:
