@@ -181,18 +181,32 @@ def derive(registers, value_map):
 
 # ============================================================================
 #  HASH
-#  CRC32 over the canonical form of every register definition. Derived fields
-#  are excluded — they are already implied by what is hashed. Must be computed
+#  CRC32 over the canonical form of every register definition. Must be computed
 #  here, never in a backend: every language has to agree on this number.
+#
+#  The hashed field set is taken from the schema, so a new attribute added to
+#  register.json counts toward map identity automatically. Derived fields are
+#  never schema properties and so can never leak in — which also means it does
+#  not matter whether derive() has already run.
 # ============================================================================
 
-DERIVED_KEYS = ("byte_offset", "width", "children")
+#  children: each child is hashed as its own entry
+#  description: documentation edits must not invalidate a shipped map
+HASH_EXCLUDE = {"children", "description"}
+
+#  computed by walk_map, not declared in the schema, but part of identity:
+#  path names the register, perm is resolved from its parents
+HASH_EXTRA = {"path", "perm"}
 
 
-def compute_crc(registers):
+def hashed_keys(primitive, group):
+    return (set(primitive) | set(group) | HASH_EXTRA) - HASH_EXCLUDE
+
+
+def compute_crc(registers, keys):
     parts = []
     for num, reg in enumerate(registers):
-        defn = {k: v for k, v in reg.items() if k not in DERIVED_KEYS}
+        defn = {k: reg[k] for k in keys if k in reg}
         defn["num"] = num
         parts.append(json.dumps(defn, sort_keys=True, default=str))
     return zlib.crc32("\n".join(parts).encode())
@@ -289,8 +303,7 @@ def build_ir(source, schema):
 
     validate_map(registers)
 
-    # hash the definitions as written, before derived fields are added
-    crc = compute_crc(registers)
+    crc = compute_crc(registers, hashed_keys(primitive, group))
 
     derive(registers, value_map)
 
