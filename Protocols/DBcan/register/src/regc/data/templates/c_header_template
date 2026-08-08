@@ -11,7 +11,6 @@
 
 /* @@CRC_DEFINE@@*/
 /* @@REG_COUNT@@ */
-/* @@REG_STORE_DECLARE@@ */
 
 
 typedef enum {
@@ -25,6 +24,18 @@ typedef enum {
     CMD_SUCCESS = 0,
     CMD_FAILED  = 1
 } cmd_result_t;
+
+/* standard (global) error codes, 0..63; register-specific errors are >= 64 */
+typedef enum {
+    ERR_OK              = 0,
+    ERR_NO_REGISTER     = 1,
+    ERR_NOT_READABLE    = 2,
+    ERR_NOT_WRITABLE    = 3,
+    ERR_NOT_COMMAND     = 4,
+    ERR_BAD_LENGTH      = 5,
+    ERR_OUT_OF_RANGE    = 6,
+    ERR_NOT_IMPLEMENTED = 7,
+} reg_err_t;
 
 typedef enum {
     DTYPE_NONE = 0,
@@ -50,9 +61,20 @@ _Static_assert(sizeof(reg_desc_t) == 16, "reg_desc_t must be 16 bytes on every t
 
 /* @@REGISTER_STRUCT_TYPES@@ */
 
-static const reg_desc_t reg_table[] = {
-    /* @@REGISTER_TABLE@@ */
-};
+/* Defined once in dbcan_reg_map.c. They are declared rather than defined here
+ * because reg_store is mutable state: a static definition in a header gives
+ * every translation unit its own private copy, so a write through one would
+ * be invisible to the others. */
+extern const reg_desc_t reg_table[REG_COUNT];
+extern uint8_t          reg_store[REG_STORE_BYTES];
+
+/* One handler per command register, indexed by table slot -- NULL where the
+ * register is not a command. Every entry has a weak default in
+ * dbcan_reg_map.c; define the same symbol normally to claim it. */
+typedef reg_err_t (*cmd_fn)(void);
+extern const cmd_fn cmd_table[REG_COUNT];
+
+/* @@CMD_PROTOTYPES@@ */
 
 /* wire number -> reg_table slot, or -1 if no such register.
  * Two contiguous blocks (globals from 0, board registers from BOARD_BASE),

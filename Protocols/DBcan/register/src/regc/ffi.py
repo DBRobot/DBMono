@@ -97,6 +97,7 @@ def build(ir, out_dir, verbose=False):
     ffibuilder.set_source(
         "_dbcan",
         '#include "dbcan_reg_map.h"',
+        sources=[str(Path(out_dir) / "dbcan_reg_map.c")],
         include_dirs=[str(out_dir)],
         #  reg_store is static in the header and unused by this shim -- that
         #  is expected here, and the firmware build still warns about it

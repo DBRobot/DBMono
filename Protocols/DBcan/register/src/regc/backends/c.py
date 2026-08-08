@@ -6,16 +6,19 @@ identifier style, and the marker set filled into templates/dbcan_reg_map.h.
 Each handler takes the RegisterMap and returns the text for its marker.
 """
 
-TEMPLATE = "c_template"
-OUTPUT   = "dbcan_reg_map.h"
+#  (template, output filename) pairs. reg_table and reg_store are defined in
+#  the .c so there is exactly one copy of each; the header only declares them.
+OUTPUTS = [
+    ("c_header_template", "dbcan_reg_map.h"),
+    ("c_source_template", "dbcan_reg_map.c"),
+]
 
-PERM_C = {
-    "R":    "REG_R",
-    "W":    "REG_W",
-    "RW":   "REG_R | REG_W",
-    "CMD":  "REG_CMD",
-    "ANY":  "0"
-}
+PERM_FLAGS = ((1, "REG_R"), (2, "REG_W"), (4, "REG_CMD"))
+
+
+def perm_c(bits):
+    """reg_perm_t expression for a register's effective permission bits."""
+    return " | ".join(name for bit, name in PERM_FLAGS if bits & bit) or "0"
 
 
 def c_ident(path):
@@ -61,7 +64,7 @@ def emit_reg_table(ir):
         #  reg_index() to go from a wire number to a slot.
         out.append(
             f"\t{{ .width_bytes = {reg['width']}, .dtype = {dtype}, "
-            f".perms = {PERM_C[reg['perm']]}, "
+            f".perms = {perm_c(reg['perm_bits'])}, "
             f".offset = {reg['byte_offset']}, .persist = {persist}, "
             f".min = {reg['min_raw']}, .max = {reg['max_raw']} }},"
             f"\t/* REG_{path} */\n"
@@ -86,22 +89,23 @@ def emit_crc(ir):
     return f"#define DBCAN_REG_MAP_HASH 0x{ir.crc:08X}\n"
 
 
-def emit_reg_store(ir):
+def emit_reg_store_init(ir):
     inits = []
     for reg in ir.registers:
         if "default_bytes" not in reg:                    # groups, commands, structs: no scalar default
             continue
         for j, b in enumerate(reg["default_bytes"]):
-            if b:                                         # only non-zero bytes; C zero-fills the rest
+            if b:
                 inits.append(f"[{reg['byte_offset'] + j}] = 0x{b:02X}")
-    return (f"#define REG_STORE_BYTES {ir.store_bytes}\n"
-            f"static uint8_t reg_store[REG_STORE_BYTES] = {{ {', '.join(inits)} }};\n")
+    return "\t" + ", ".join(inits) + "\n"
 
 
 def emit_reg_count(ir):
     return (f"#define REG_COUNT {len(ir.registers)}\n"
             f"#define GLOBAL_COUNT {ir.global_count}\n"
-            f"#define BOARD_BASE {ir.board_base}\n")
+            f"#define BOARD_BASE {ir.board_base}\n"
+            f"#define REG_STORE_BYTES {ir.store_bytes}\n"
+            f"#define REG_MAX_WIDTH {max(r['width'] for r in ir.registers)}\n")
 
 
 def emit_register_structs(ir):
@@ -158,6 +162,38 @@ def converter(conv):
             "}\n\n")
 
 
+def commands(ir):
+    """Leaf registers that are commands. A group of commands is not itself one."""
+    return [(slot, reg) for slot, reg in enumerate(ir.registers)
+            if "children" not in reg and reg["perm_bits"] & 4]
+
+
+def emit_cmd_prototypes(ir):
+    return "".join(f"reg_err_t cmd_{c_ident(reg['path'])}(void);\n"
+                   for _, reg in commands(ir))
+
+
+def emit_cmd_defaults(ir):
+    """A weak body for every command, so an unimplemented one answers honestly.
+
+    An ordinary definition of the same name anywhere in the link overrides it,
+    which is how the library claims the protocol commands and a board claims
+    its own -- neither edits generated code.
+    """
+    out = []
+    for _, reg in commands(ir):
+        out.append(f"__attribute__((weak)) reg_err_t cmd_{c_ident(reg['path'])}(void)\n"
+                   f"{{\n\treturn ERR_NOT_IMPLEMENTED;\n}}\n\n")
+    return "".join(out)
+
+
+def emit_cmd_table(ir):
+    #  indexed by table slot, not wire number: reg_index() already mapped it,
+    #  and a slot is always < REG_COUNT even when the number is above BOARD_BASE
+    return "".join(f"\t[{slot}] = cmd_{c_ident(reg['path'])},\n"
+                   for slot, reg in commands(ir))
+
+
 def emit_conversion_funcs(ir):
     return "".join(converter(c) for c in ir.converters)
 
@@ -172,10 +208,13 @@ MARKERS = {
     "/* @@REGISTER_TABLE@@ */":         emit_reg_table,
     "/* @@DTYPE_ENUM@@ */":             emit_dtype_enum,
     "/* @@CRC_DEFINE@@*/":              emit_crc,
-    "/* @@REG_STORE_DECLARE@@ */":      emit_reg_store,
+    "/* @@REG_STORE_INIT@@ */":         emit_reg_store_init,
     "/* @@REG_COUNT@@ */":              emit_reg_count,
     "/* @@REGISTER_ENUM_TYPES@@ */":    emit_register_enums,
     "/* @@REGISTER_STRUCT_TYPES@@ */":  emit_register_structs,
     "/* @@ERROR_ENUM_TYPES@@ */":       emit_error_enums,
     "/* @@CONVERSION_FUNCTIONS@@ */":   emit_conversion_funcs,
+    "/* @@CMD_PROTOTYPES@@ */":         emit_cmd_prototypes,
+    "/* @@CMD_DEFAULTS@@ */":           emit_cmd_defaults,
+    "/* @@CMD_TABLE@@ */":              emit_cmd_table,
 }

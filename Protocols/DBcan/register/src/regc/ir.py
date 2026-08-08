@@ -173,7 +173,44 @@ def resolve_errors(reg):
 #  the results and formats them; it never calls the functions above.
 # ============================================================================
 
+#  Permission bits, matching reg_perm_t. ANY means unrestricted, so it is
+#  read plus write rather than a bit of its own.
+PERM_BITS = {"R": 1, "W": 2, "RW": 3, "CMD": 4, "ANY": 3}
+
+
+def effective_perms(registers):
+    """Fold each group's permission together with everything stored inside it.
+
+    A group can be read or written as one blob, so it may only permit what
+    every register contributing bytes to that blob permits -- writing
+    node_state as a unit would otherwise write straight through
+    node_state.current, which is read-only.
+
+    Commands are skipped: they carry no storage, so they contribute nothing
+    to the blob and should not veto access to the group holding them.
+    """
+    for reg in registers:
+        reg["perm_bits"] = PERM_BITS[reg["perm"]]
+
+    for reg in registers:
+        if "children" not in reg:
+            continue
+        prefix = reg["path"] + "."
+        stored = [r for r in registers
+                  if r["path"].startswith(prefix)
+                  and "children" not in r
+                  and r["width"] > 0]
+
+        allowed = 0xFF                                   # identity for AND
+        for leaf in stored:
+            allowed &= PERM_BITS[leaf["perm"]]
+
+        reg["perm_bits"] = PERM_BITS[reg["perm"]] & allowed
+
+
 def derive(registers, value_map):
+    effective_perms(registers)
+
     for reg in registers:
         dt   = reg.get("dtype")
         bits = reg.get("bits")

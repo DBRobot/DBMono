@@ -79,10 +79,7 @@ def render(template_name, output_path, markers, ir):
                         f"{key!r}")
                 out.write(line)
 
-    unused = set(markers) - used
-    if unused:
-        raise SystemExit(f"regc: {template_name}: handlers never matched a "
-                         f"marker: {', '.join(sorted(unused))}")
+    return used
 
 
 def load_board(path):
@@ -137,9 +134,16 @@ def cmd_gen(args):
 
         for name in needed:
             backend = TARGETS[name].backend
-            render(backend.TEMPLATE, staging / backend.OUTPUT, backend.MARKERS, ir)
-            if name in requested:
-                artifacts.append(staging / backend.OUTPUT)
+            used = set()
+            for template, filename in backend.OUTPUTS:
+                used |= render(template, staging / filename, backend.MARKERS, ir)
+                if name in requested:
+                    artifacts.append(staging / filename)
+
+            unused = set(backend.MARKERS) - used
+            if unused:
+                raise SystemExit(f"regc: {name}: handlers never matched a marker: "
+                                 f"{', '.join(sorted(unused))}")
 
         if any(TARGETS[n].build_ext for n in requested):
             extension = ffi.build(ir, staging)
@@ -166,8 +170,12 @@ def cmd_list(args):
     print(f"{'NUM':>5}  {'PATH':<{width}}  {'TYPE':<7} {'BYTES':>5}  PERM")
     for reg in ir.registers:
         dtype = reg.get("dtype") or "-"
+        #  effective permission, not the declared one: a group is limited by
+        #  everything stored inside it
+        perm = "".join(c for bit, c in ((1, "R"), (2, "W"), (4, "C"))
+                       if reg["perm_bits"] & bit) or "-"
         print(f"{reg['num']:>5}  {reg['path']:<{width}}  {dtype:<7} "
-              f"{reg['width']:>5}  {reg['perm']}")
+              f"{reg['width']:>5}  {perm}")
     return 0
 
 

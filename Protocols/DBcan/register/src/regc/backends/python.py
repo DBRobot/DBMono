@@ -6,8 +6,9 @@ value names, error names, struct field names. Behaviour and tables stay in
 the C library -- nothing here decodes, converts, or mirrors reg_table.
 """
 
-TEMPLATE = "py_template"
-OUTPUT   = "dbcan_reg_map.py"
+OUTPUTS = [
+    ("py_template", "dbcan_reg_map.py"),
+]
 
 #  struct field dtype -> Python type. `enum` is int because struct fields
 #  reference a shared value set rather than declaring their own, exactly as
