@@ -170,7 +170,7 @@ children:
             dtype: bool
             default: true
 
-          - name: auto_id_meathod
+          - name: auto_id_method
             dtype: enum
             bits: 2
             values: { disabled: 0, gpio_select: 1, dynamic: 2}
@@ -203,7 +203,7 @@ children:
           - name: state
             dtype: enum
             bits: 3
-            values: { initalizing: 0, in_boot: 1, running: 2, stopped: 3, sleeping: 4, deep_sleep: 5, no_id: 6}
+            values: { initializing: 0, in_boot: 1, running: 2, stopped: 3, sleeping: 4, deep_sleep: 5, no_id: 6}
 
           - name: reason_in_boot
             dtype: enum
@@ -259,7 +259,7 @@ children:
           dtype: bool
           default: true
 
-        - name: require_recieve
+        - name: require_receive
           dtype: uint
           bits: 4
 
@@ -270,7 +270,7 @@ children:
           units: ms
           default: 100
 
-        - name: dehavior_on_loose
+        - name: behavior_on_loss
           dtype: enum
           bits: 2
           values: { warning: 0, fault: 1, stop: 2, emergency: 3}

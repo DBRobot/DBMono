@@ -6,7 +6,7 @@ identifier style, and the marker set filled into templates/dbcan_reg_map.h.
 Each handler takes the RegisterMap and returns the text for its marker.
 """
 
-TEMPLATE = "templates/dbcan_reg_map.h"
+TEMPLATE = "c_template"
 OUTPUT   = "dbcan_reg_map.h"
 
 PERM_C = {
@@ -43,14 +43,9 @@ def emit_dtype_enum(ir):
                    for num, name in enumerate(ir.dtypes))
 
 
-def emit_value_dtype(ir):
-    return "".join(f"\tFIELD_DTYPE_{name.upper()} = {num + 1},\n"
-                   for num, name in enumerate(ir.field_dtypes))
-
-
 def emit_reg_enum(ir):
-    return "".join(f"\tREG_{c_ident(reg['path']).upper()} = {num},\n"
-                   for num, reg in enumerate(ir.registers))
+    return "".join(f"\tREG_{c_ident(reg['path']).upper()} = {reg['num']},\n"
+                   for reg in ir.registers)
 
 
 def emit_reg_table(ir):
@@ -61,11 +56,15 @@ def emit_reg_table(ir):
         dtype = f"DTYPE_{d.upper()}" if d else "DTYPE_NONE"
         persist = str(reg.get("persist", False)).lower()
 
+        #  positional, not designated: a board register's number is >= BOARD_BASE
+        #  and would index far past the end. table order is IR order; use
+        #  reg_index() to go from a wire number to a slot.
         out.append(
-            f"\t[REG_{path}] = {{ .width_bytes = {reg['width']}, .dtype = {dtype}, "
+            f"\t{{ .width_bytes = {reg['width']}, .dtype = {dtype}, "
             f".perms = {PERM_C[reg['perm']]}, "
             f".offset = {reg['byte_offset']}, .persist = {persist}, "
-            f".min = {reg['min_raw']}, .max = {reg['max_raw']} }},\n"
+            f".min = {reg['min_raw']}, .max = {reg['max_raw']} }},"
+            f"\t/* REG_{path} */\n"
         )
     return "".join(out)
 
@@ -73,7 +72,7 @@ def emit_reg_table(ir):
 def emit_register_enums(ir):
     out = []
     for reg in ir.registers:
-        if reg.get("dtype") != "enum":
+        if reg.get("dtype") != "enum" or not reg["values_resolved"]:
             continue
 
         out.append("typedef enum {\n")
@@ -100,7 +99,9 @@ def emit_reg_store(ir):
 
 
 def emit_reg_count(ir):
-    return f"#define REG_COUNT {len(ir.registers)}\n"
+    return (f"#define REG_COUNT {len(ir.registers)}\n"
+            f"#define GLOBAL_COUNT {ir.global_count}\n"
+            f"#define BOARD_BASE {ir.board_base}\n")
 
 
 def emit_register_structs(ir):
@@ -108,10 +109,17 @@ def emit_register_structs(ir):
     for reg in ir.registers:
         if reg.get("dtype") != "struct":
             continue
-        out.append("typedef struct {\n")
+        name     = c_ident(reg["path"])
+        per_elem = reg["width"] // (reg.get("array_size") or 1)
+
+        # packed: the descriptor's width is the sum of the declared field bits,
+        # so the compiler must not insert padding or sizeof drifts from it
+        out.append("typedef struct __attribute__((packed)) {\n")
         for field in reg["values"]:
             out.append(f"\t{c_field_type(field)} {field['name']};\n")
-        out.append("} " + c_ident(reg["path"]) + "_t;\n\n")
+        out.append("} " + name + "_t;\n")
+        out.append(f"_Static_assert(sizeof({name}_t) == {per_elem}, "
+                   f"\"{reg['path']}: struct layout must match descriptor width\");\n\n")
     return "".join(out)
 
 
@@ -128,14 +136,18 @@ def emit_error_enums(ir):
     return "".join(out)
 
 
-def converter(name, raw_t, res, off, units):
-    if res == 1 and off == 0:
-        return ""
-    if float(res).is_integer() and float(off).is_integer():
-        eng_t = "int32_t"
+C_ENG_TYPE = {"int": "int32_t", "float": "float"}
+
+
+def converter(conv):
+    name, units = conv["name"], conv["units"]
+    raw_t = c_field_type({"dtype": conv["raw_dtype"], "storage_bits": conv["raw_bits"]})
+    eng_t = C_ENG_TYPE[conv["eng_type"]]
+    res, off = conv["resolution"], conv["offset"]
+
+    if conv["eng_type"] == "int":
         res_l, off_l = int(res), int(off)
     else:
-        eng_t = "float"
         res_l, off_l = f"{float(res)}f", f"{float(off)}f"
 
     return (f"static inline {eng_t} {name}_to_{units}({raw_t} raw) {{\n"
@@ -147,21 +159,7 @@ def converter(name, raw_t, res, off, units):
 
 
 def emit_conversion_funcs(ir):
-    out = []
-    for reg in ir.registers:
-        dt = reg.get("dtype")
-        if dt in ("uint", "int") and reg["scaled"]:
-            out.append(converter(c_ident(reg["path"]), c_field_type(reg),
-                                 reg["resolution"], reg.get("offset", 0),
-                                 reg.get("units", "eng")))
-        elif dt == "struct":
-            base = c_ident(reg["path"])
-            for field in reg["values"]:
-                if field["scaled"]:
-                    out.append(converter(f"{base}_{field['name']}", c_field_type(field),
-                                         field.get("resolution", 1), field.get("offset", 0),
-                                         field.get("units", "eng")))
-    return "".join(out)
+    return "".join(converter(c) for c in ir.converters)
 
 
 # ============================================================================
@@ -176,7 +174,6 @@ MARKERS = {
     "/* @@CRC_DEFINE@@*/":              emit_crc,
     "/* @@REG_STORE_DECLARE@@ */":      emit_reg_store,
     "/* @@REG_COUNT@@ */":              emit_reg_count,
-    "/* @@VALUE_DTYPE_ENUM*/":          emit_value_dtype,
     "/* @@REGISTER_ENUM_TYPES@@ */":    emit_register_enums,
     "/* @@REGISTER_STRUCT_TYPES@@ */":  emit_register_structs,
     "/* @@ERROR_ENUM_TYPES@@ */":       emit_error_enums,

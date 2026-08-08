@@ -205,6 +205,44 @@ rather than a silent misread. **There is intentionally no wire compatibility
 across map versions** — updating one node's firmware requires rebuilding the
 peers that talk to it.
 
+#### Number space
+
+The 16-bit number space is partitioned, following the same convention as
+CANopen's standard/manufacturer index ranges and J1939's proprietary PGNs:
+
+| Range           | Owner                | Count  |
+|-----------------|----------------------|--------|
+| `0 – 4095`      | protocol (global map)| 4096   |
+| `4096 – 65535`  | board-specific       | 61440  |
+
+```
+#define BOARD_BASE 4096
+```
+
+Every board compiles the global map plus its own registers. The split exists
+so that adding a protocol register never renumbers a board's registers — the
+two grow independently. Reserving 4096 for a global map currently using ~70
+follows the usual practice of holding back one to two orders of magnitude
+more than present use.
+
+The gap costs no flash. `reg_table` holds only real registers, and because
+the two blocks are each contiguous, lookup is a subtraction rather than a
+sparse index or a search:
+
+```c
+static inline int reg_index(uint16_t n) {
+    if (n < GLOBAL_COUNT) return n;
+    if (n < BOARD_BASE)   return -1;              /* reserved, unused */
+    uint16_t i = GLOBAL_COUNT + (n - BOARD_BASE);
+    return (i < REG_COUNT) ? i : -1;
+}
+```
+
+This does not change the compatibility rule above — `firmware.reg_map_hash`
+still governs whether two nodes may talk. The partition is about keeping the
+two authorities over the number space independent, not about wire
+compatibility across versions.
+
 ### Required Functions (Inventory)
 
 Everything the protocol must provide, independent of bit layouts. Status:

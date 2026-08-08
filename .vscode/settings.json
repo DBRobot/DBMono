@@ -3,5 +3,8 @@
     "C_Cpp.intelliSenseEngineFallback": "disabled",
     "C_Cpp.autocomplete": "disabled",
     "C_Cpp.errorSquiggles": "disabled",
-    "clangd.detectExtensionConflicts": false
+    "clangd.detectExtensionConflicts": false,
+    "files.associations": {
+        "**/templates/*": "plaintext"
+    }
 }

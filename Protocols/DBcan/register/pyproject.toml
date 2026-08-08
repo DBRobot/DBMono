@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name            = "regc"
+version         = "0.1.0"
+description     = "DBcan register map compiler — YAML register maps to C, Python, and beyond"
+requires-python = ">=3.12"
+#  setuptools is a runtime dependency: cffi's API-mode compile() needs it
+#  on Python >= 3.12, where distutils was removed from the stdlib
+dependencies    = ["pyyaml", "jsonschema", "cffi", "setuptools"]
+
+[project.scripts]
+regc = "regc.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"regc.data" = ["*.json", "*.yaml", "templates/*"]

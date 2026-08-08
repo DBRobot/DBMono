@@ -86,3 +86,15 @@ Release/
 .clangd
 .cache/
 compile_commands.json
+
+# Python packaging / virtualenvs
+.venv/
+venv/
+*.egg-info/
+.mypy_cache/
+
+# regc generated output (dbcan_reg_map.h/.py, _dbcan.*) is written to the
+# working directory by `regc gen` and is never committed
+dbcan_reg_map.h
+dbcan_reg_map.py
+_dbcan.c

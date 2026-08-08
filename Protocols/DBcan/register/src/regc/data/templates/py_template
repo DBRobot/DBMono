@@ -1,0 +1,58 @@
+from enum import IntEnum, IntFlag
+from typing import NamedTuple
+
+#  compiled extension -- no stub exists, so lib.* is Any to a type checker.
+#  Everything below re-exposes it with real types; callers never touch lib.
+from _dbcan import ffi, lib  # type: ignore[import-not-found]
+
+#  bit flags, matching reg_perm_t -- a register may be R, W, both, or CMD
+class perms(IntFlag):
+	REG_R = 1 << 0
+	REG_W = 1 << 1
+	REG_CMD = 1 << 2
+
+class CmdResult(IntEnum):
+	SUCCESS = 0
+	FAILED = 1
+
+class registers(IntEnum):
+	# @@REGISTER_ENUM@@
+
+class dtypes(IntEnum):
+	DTYPE_NONE = 0
+	# @@DTYPE_ENUM@@
+
+# @@REG_VALUE_ENUMS@@
+# @@REG_ERROR_ENUMS@@
+# @@REG_STRUCTS@@
+
+REG_COUNT: int = lib.REG_COUNT
+REG_MAP_HASH: int = lib.DBCAN_REG_MAP_HASH
+
+
+class RegDesc(NamedTuple):
+	width_bytes: int
+	dtype: dtypes
+	perms: perms
+	offset: int
+	persist: bool
+	min: int
+	max: int
+
+
+def desc(reg: registers) -> RegDesc:
+	"""Descriptor for one register, read from the C table.
+
+	Typed re-exposure of lib.reg_table -- callers never touch lib, which a
+	type checker sees only as Any. reg_index() maps a wire number to a table
+	slot; they differ for board registers, which are numbered from BOARD_BASE.
+	"""
+	i = lib.reg_index(reg)
+	if i < 0:
+		raise KeyError(f"no such register: {reg!r} ({int(reg)})")
+	d = lib.reg_table[i]
+	return RegDesc(d.width_bytes, dtypes(d.dtype), perms(d.perms),
+	               d.offset, bool(d.persist), d.min, d.max)
+
+
+# @@CONVERTERS@@

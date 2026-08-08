@@ -1,0 +1,8 @@
+#  Generator templates are indented with tabs, and the handlers in
+#  backend_*.py emit tabs to match. Python rejects mixing tabs and spaces
+#  inside one block, so an editor that silently converts these to spaces
+#  breaks the generated module.
+
+[templates/*]
+indent_style = tab
+indent_size = 4
