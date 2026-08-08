@@ -16,6 +16,12 @@ typedef struct {
     volatile uint32_t       ts_counter;
     tx_cb_t                 tx_cb;
     uint8_t                 tx_marker;
+    /* Slot occupancy, one bit per filter index. The peripheral has no notion
+     * of a used slot -- ConfigFilter simply writes message RAM -- so the port
+     * tracks it, letting a collision between two owners of the same index be
+     * rejected instead of silently overwriting a live filter. */
+    uint32_t                std_used;   /* SRAMCAN_FLS_NBR bits */
+    uint32_t                ext_used;   /* SRAMCAN_FLE_NBR bits */
 } fdcan_st_hal_transport_t;
 
 static const transport_ops_t fdcan_st_hal_ops;
@@ -382,15 +388,21 @@ static transport_error_t canfd_add_filter(transport_t *transport, const transpor
     fdcan_st_hal_transport_t *p = transport->ctx;
     FDCAN_FilterTypeDef f;
 
-    uint32_t max_index = filter->is_ext ? SRAMCAN_FLE_NBR : SRAMCAN_FLS_NBR;
+    /* Bound against what the application actually carved out of message RAM,
+     * not the RAM-layout maximum: writing past Init.*FiltersNbr lands in
+     * whatever follows the filter list. */
+    uint32_t max_index = filter->is_ext ? p->handle->Init.ExtFiltersNbr
+                                        : p->handle->Init.StdFiltersNbr;
     if (max_index <= filter->index) return TP_INVALID_ARG;
     if (filter->fifo > 1) return TP_INVALID_ARG;
+
+    uint32_t *used = filter->is_ext ? &p->ext_used : &p->std_used;
+    if (*used & (1u << filter->index)) return TP_INVALID_ARG;   /* slot taken */
 
     f.IdType            = filter->is_ext ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
     f.FilterIndex       = filter->index;
     f.FilterType        = (filter->mode == SINGLE_ID) ? FDCAN_FILTER_MASK
                         : (filter->mode == DUAL_ID) ? FDCAN_FILTER_DUAL
-                        : (filter->mode == RANGE_ID) ? FDCAN_FILTER_RANGE 
                         : 0;
     f.FilterConfig      = filter->fifo ? FDCAN_FILTER_TO_RXFIFO1 : FDCAN_FILTER_TO_RXFIFO0;
     f.FilterID1         = filter->id;
@@ -400,6 +412,8 @@ static transport_error_t canfd_add_filter(transport_t *transport, const transpor
 
     TRY_HAL(HAL_FDCAN_ConfigFilter(p->handle, &f));
 
+    *used |= (1u << filter->index);
+
     return TP_OK;
 }
 
@@ -408,8 +422,12 @@ static transport_error_t canfd_remove_filter(transport_t *transport, uint8_t ind
     fdcan_st_hal_transport_t *p = transport->ctx;
     FDCAN_FilterTypeDef f;
 
-    uint32_t max_index = is_ext ? SRAMCAN_FLE_NBR : SRAMCAN_FLS_NBR;
+    uint32_t max_index = is_ext ? p->handle->Init.ExtFiltersNbr
+                                : p->handle->Init.StdFiltersNbr;
     if (max_index <= index) return TP_INVALID_ARG; 
+
+    uint32_t *used = is_ext ? &p->ext_used : &p->std_used;
+    if (!(*used & (1u << index))) return TP_INVALID_ARG;        /* slot is free */
 
     f.IdType        = is_ext ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
     f.FilterIndex   = index;
@@ -419,6 +437,8 @@ static transport_error_t canfd_remove_filter(transport_t *transport, uint8_t ind
     f.FilterID2     = 0;
 
     TRY_HAL(HAL_FDCAN_ConfigFilter(p->handle, &f));
+
+    *used &= ~(1u << index);
 
     return TP_OK;
 }
@@ -433,17 +453,19 @@ static transport_error_t canfd_clear_filters(transport_t *transport) {
     f.FilterID1     = 0;
     f.FilterID2     = 0;
 
-    for(uint8_t i = 0; i < SRAMCAN_FLS_NBR; i++) {
+    for(uint8_t i = 0; i < p->handle->Init.StdFiltersNbr; i++) {
         f.FilterIndex   = i;
         TRY_HAL(HAL_FDCAN_ConfigFilter(p->handle, &f));
     }
 
     f.IdType        = FDCAN_EXTENDED_ID;
-    for(uint8_t i = 0; i < SRAMCAN_FLE_NBR; i++) {
+    for(uint8_t i = 0; i < p->handle->Init.ExtFiltersNbr; i++) {
         f.FilterIndex   = i;
         TRY_HAL(HAL_FDCAN_ConfigFilter(p->handle, &f));
     }
 
+    p->std_used = 0;
+    p->ext_used = 0;
 
     return TP_OK;
 }

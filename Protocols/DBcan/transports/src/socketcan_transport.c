@@ -18,13 +18,23 @@
 #define IFNAMSIZ 16
 #endif
 
+/* Logical filter slots. transport_filter_t.index is a uint8_t, so this is the
+ * whole index space -- distinct from CAN_RAW_FILTER_MAX, which bounds the
+ * physical can_filter entries the kernel will accept. */
+#define SOCKETCAN_FILTER_SLOTS 256
+
 typedef struct {
     transport_t             *self;
     transport_ctx_t         base;
     transport_config_t      config;
     char                    iface[IFNAMSIZ];
     int                     socket;
-    uint16_t                filter_slots[CAN_RAW_FILTER_MAX];   /* physical can_filter slot count per logical index; 0 = unused */
+    /* Physical can_filter count per logical slot; 0 = free. Two arrays so the
+     * index space is namespaced by is_ext, matching a peripheral with separate
+     * standard and extended filter lists. Physical layout is all standard
+     * slots in index order, then all extended. */
+    uint16_t                std_slots[SOCKETCAN_FILTER_SLOTS];
+    uint16_t                ext_slots[SOCKETCAN_FILTER_SLOTS];
 } socketcan_transport_t;
 
 static const transport_ops_t socketcan_ops;
@@ -241,6 +251,25 @@ transport_error_t can_stop(transport_t *transport) {
   ==============================================================================
   */
 
+static socklen_t array_total(const uint16_t *slots) {
+    socklen_t total = 0;
+    for (uint16_t i = 0; i < SOCKETCAN_FILTER_SLOTS; i++) total += slots[i];
+    return total;
+}
+
+/* Physical position of a logical slot: every occupied standard slot comes
+ * first, then extended. Free slots have width 0 and cost nothing here. */
+static socklen_t slot_offset(const socketcan_transport_t *p, uint8_t index, bool is_ext) {
+    const uint16_t *slots = is_ext ? p->ext_slots : p->std_slots;
+    socklen_t offset = is_ext ? array_total(p->std_slots) : 0;
+    for (uint8_t i = 0; i < index; i++) offset += slots[i];
+    return offset;
+}
+
+static socklen_t slots_total(const socketcan_transport_t *p) {
+    return array_total(p->std_slots) + array_total(p->ext_slots);
+}
+
 static transport_error_t can_add_filter(transport_t *transport, const transport_filter_t *filter) {
     CTX_OR_RETURN(transport);
     socketcan_transport_t *p = transport->ctx;
@@ -249,49 +278,44 @@ static transport_error_t can_add_filter(transport_t *transport, const transport_
     switch (filter->mode) {
         case SINGLE_ID: width = 1; break;
         case DUAL_ID:   width = 2; break;
-        case RANGE_ID:
-            if (filter->id > filter->mask) return TP_INVALID_ARG;
-            width = (filter->mask - filter->id) + 1;
-            break;
         default: return TP_INVALID_ARG;
     }
 
-    uint16_t logical_count = 0;
-    while (logical_count < CAN_RAW_FILTER_MAX && p->filter_slots[logical_count] != 0) logical_count++;
-    if (filter->index != logical_count) return TP_INVALID_ARG;
+    /* the caller owns the slot; occupied means remove it first */
+    uint16_t *slots = filter->is_ext ? p->ext_slots : p->std_slots;
+    if (slots[filter->index] != 0) return TP_INVALID_ARG;
 
-    socklen_t offset = 0;
-    for (uint8_t i = 0; i < filter->index; i++) offset += p->filter_slots[i];
+    socklen_t offset = slot_offset(p, filter->index, filter->is_ext);
 
     struct can_filter existing_filters[CAN_RAW_FILTER_MAX];
     socklen_t len_existing = sizeof(existing_filters);
     TRY_HAL(getsockopt(p->socket, SOL_CAN_RAW, CAN_RAW_FILTER, existing_filters, &len_existing));
     socklen_t len = len_existing/sizeof(struct can_filter);
-    if (len != offset) return TP_INVALID_ARG;   /* kernel-side list out of sync with our bookkeeping */
+    if (len != slots_total(p)) return TP_INVALID_ARG;   /* kernel-side list out of sync with our bookkeeping */
     if (len + width > CAN_RAW_FILTER_MAX) return TP_OVERFLOW;
 
+    /* open a gap at offset; entries for later slots shift up */
+    memmove(&existing_filters[offset + width], &existing_filters[offset],
+            (len - offset)*sizeof(struct can_filter));
+
     if (filter->mode == SINGLE_ID) {
-        existing_filters[offset].can_id   = filter->id;
-        existing_filters[offset].can_mask = filter->mask;
+        /* CAN_EFF_FLAG in the mask makes the frame format part of the match,
+         * so a standard filter cannot catch an extended frame whose low bits
+         * happen to satisfy it, or the reverse. */
+        existing_filters[offset].can_id   = filter->id   | (filter->is_ext ? CAN_EFF_FLAG : 0);
+        existing_filters[offset].can_mask = filter->mask | CAN_EFF_FLAG;
     } else {
+        /* DUAL_ID: exact match on either ID; the second lives in .mask */
         canid_t exact_mask = filter->is_ext ? (CAN_EFF_FLAG | CAN_EFF_MASK) : (CAN_EFF_FLAG | CAN_SFF_MASK);
-        if (filter->mode == DUAL_ID) {
-            existing_filters[offset].can_id       = filter->id;
-            existing_filters[offset].can_mask     = exact_mask;
-            existing_filters[offset + 1].can_id   = filter->mask;   /* second ID lives in .mask for DUAL_ID */
-            existing_filters[offset + 1].can_mask = exact_mask;
-        } else {
-            /* RANGE_ID: one exact-match entry per ID in [id, mask] */
-            for (uint32_t i = 0; i < width; i++) {
-                existing_filters[offset + i].can_id   = filter->id + i;
-                existing_filters[offset + i].can_mask = exact_mask;
-            }
-        }
+        existing_filters[offset].can_id       = filter->id;
+        existing_filters[offset].can_mask     = exact_mask;
+        existing_filters[offset + 1].can_id   = filter->mask;
+        existing_filters[offset + 1].can_mask = exact_mask;
     }
 
     TRY_HAL(setsockopt(p->socket, SOL_CAN_RAW, CAN_RAW_FILTER, existing_filters, (len + width)*sizeof(struct can_filter)));
 
-    p->filter_slots[filter->index] = width;
+    slots[filter->index] = width;
 
     return TP_OK;
 }
@@ -300,13 +324,11 @@ static transport_error_t can_remove_filter(transport_t *transport, uint8_t index
     CTX_OR_RETURN(transport);
     socketcan_transport_t *p = transport->ctx;
 
-    uint16_t logical_count = 0;
-    while (logical_count < CAN_RAW_FILTER_MAX && p->filter_slots[logical_count] != 0) logical_count++;
-    if (index >= logical_count) return TP_INVALID_ARG;
+    uint16_t *slots = is_ext ? p->ext_slots : p->std_slots;
+    uint16_t width = slots[index];
+    if (width == 0) return TP_INVALID_ARG;   /* slot is free */
 
-    socklen_t offset = 0;
-    for (uint8_t i = 0; i < index; i++) offset += p->filter_slots[i];
-    uint16_t width = p->filter_slots[index];
+    socklen_t offset = slot_offset(p, index, is_ext);
 
     struct can_filter existing_filters[CAN_RAW_FILTER_MAX];
     socklen_t len_existing = sizeof(existing_filters);
@@ -319,8 +341,8 @@ static transport_error_t can_remove_filter(transport_t *transport, uint8_t index
 
     TRY_HAL(setsockopt(p->socket, SOL_CAN_RAW, CAN_RAW_FILTER, existing_filters, len*sizeof(struct can_filter)));
 
-    memmove(&p->filter_slots[index], &p->filter_slots[index + 1], (logical_count - index - 1)*sizeof(p->filter_slots[0]));
-    p->filter_slots[logical_count - 1] = 0;
+    /* the slot is freed in place -- indices are the caller's and never shift */
+    slots[index] = 0;
 
     return TP_OK;
 }
@@ -329,7 +351,8 @@ static transport_error_t can_clear_filters(transport_t *transport) {
     CTX_OR_RETURN(transport);
     socketcan_transport_t *p = transport->ctx;
     TRY_HAL(setsockopt(p->socket, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0));
-    memset(p->filter_slots, 0, sizeof(p->filter_slots));
+    memset(p->std_slots, 0, sizeof(p->std_slots));
+    memset(p->ext_slots, 0, sizeof(p->ext_slots));
 
     return TP_OK;
 }

@@ -159,14 +159,25 @@ typedef struct {
 typedef enum {
     SINGLE_ID,  /**< id + mask bitmatch. */
     DUAL_ID,    /**< Exact match on either id or mask. */
-    RANGE_ID,   /**< Match any ID in [id, mask]. */
 } transport_filter_mode_t;
 
-/** Hardware RX filter. Filters live in message RAM indexed by index. */
+/** Hardware RX filter. Filters live in message RAM indexed by index.
+ *
+ *  index is a slot the caller assigns and owns. Slots are independent: adding
+ *  or removing one never moves another, so a caller may hold a fixed index for
+ *  the lifetime of a filter. Adding to an occupied slot is TP_INVALID_ARG;
+ *  remove it first.
+ *
+ *  Standard and extended filters have separate index spaces: {index 0,
+ *  is_ext = false} and {index 0, is_ext = true} are different slots and may
+ *  both be live. This follows the hardware — M_CAN keeps two filter lists at
+ *  fixed addresses — and ports whose backing store is a single flat list
+ *  emulate it. How many slots exist per format is port-specific; adding beyond
+ *  it returns TP_INVALID_ARG. */
 typedef struct {
     transport_filter_mode_t     mode;
     uint32_t    id;
-    uint32_t    mask;   /**< Bitmask, second ID, or upper bound — interpretation depends on mode. */
+    uint32_t    mask;   /**< Bitmask or second ID — interpretation depends on mode. */
     uint8_t     fifo;
     uint8_t     index;
     bool        is_ext;
