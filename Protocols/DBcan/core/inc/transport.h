@@ -20,16 +20,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/* dbcan_bus_state_t and dbcan_mode_t are defined by the protocol, not here --
+ * they are register values a peer reads, so there is one definition */
+#include "dbcan_protocol.h"
+
 typedef struct transport        transport_t;
-
-
-/** ISO 11898-1 error confinement states, plus off (deliberate stop or bus-off fault). */
-typedef enum {
-    TP_BUS_ACTIVE,      /**< Error counters below warning threshold. */
-    TP_BUS_WARNING,     /**< TEC or REC exceeded 96. */
-    TP_BUS_PASSIVE,     /**< TEC or REC exceeded 127 — passive error flags only. */
-    TP_BUS_OFF_STATE,   /**< TEC exceeded 255, or node deliberately stopped. */
-} transport_bus_state_t;
 
 
 /** Return codes for all transport operations. */
@@ -49,14 +44,6 @@ typedef enum {
     TP_HW_FAULT,
     TP_ERR_MAX,     /**< Sentinel — not a valid error code. */
 } transport_error_t;
-
-/** Operating mode for the CAN peripheral. */
-typedef enum {
-    TP_NORMAL_MODE,
-    TP_INT_LOOPBACK_MODE,   /**< TX routed to RX internally; not driven to the bus pin. */
-    TP_EXT_LOOPBACK_MODE,   /**< TX drives the bus pin and is also received back. */
-    TP_LISTEN_MODE,         /**< Receive only — no ACKs transmitted. */
-} transport_mode_t;
 
 /** Events reported per RX FIFO. */
 typedef enum {
@@ -118,7 +105,7 @@ typedef struct {
 /** Live status snapshot. Returned read-only by get_ctx(). Counters never reset. */
 typedef struct {
     // bus health
-    transport_bus_state_t   bus_state;
+    dbcan_bus_state_t       bus_state;
     uint32_t                bus_state_since_ms;
     
     // accumulated errors
@@ -138,9 +125,22 @@ typedef struct {
     transport_last_error_t   last_error;
 } transport_ctx_t;
 
+/** What the port can actually do. Set by init_transport(), valid from then on.
+ *
+ *  Filter counts are per format and bound the index space: a valid index is
+ *  < the count. A port whose silicon shares one filter list between formats
+ *  slices it and reports the halves. 0 means the port does no filtering of
+ *  that format and passes everything. */
+typedef struct {
+    uint8_t std_filter_max;
+    uint8_t ext_filter_max;
+    uint8_t fifo_count;
+    bool    rx_int_capable;     /**< Port can deliver RX via callback; if false the caller must poll. */
+} transport_caps_t;
+
 /** Configuration passed to init(). Set unused bitrates to 0; sample points to 0 for port default (80%). */
 typedef struct {
-    transport_mode_t        mode;
+    dbcan_mode_t            mode;
 
     bool    fd_enabled;
     bool    brs_enabled;
@@ -148,7 +148,6 @@ typedef struct {
     bool    auto_bus_recovery_enabled;
     bool    rx_int_active;  /**< Deliver RX frames via rx_cb_t; if false, poll with receive(). */
 
-    uint8_t     timestamp_us;   /**< Resolution in µs. Must divide the peripheral clock evenly. */
     uint32_t    nominal_bitrate;
     uint32_t    data_bitrate;
     uint8_t     nominal_sample_point;
@@ -219,6 +218,7 @@ typedef struct {
 struct transport {
     void *ctx;                      // per-instance vendor bundle; see port header
     const transport_ops_t *ops;
+    const transport_caps_t *caps;
     uint8_t bus_id;
 };
 

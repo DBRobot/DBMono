@@ -32,6 +32,13 @@ static const transport_ops_t fdcan_st_hal_ops;
   ==============================================================================
   */
 
+static const transport_caps_t fdcan_st_hal_caps = {
+    .std_filter_max = SRAMCAN_FLS_NBR,
+    .ext_filter_max = SRAMCAN_FLE_NBR,
+    .fifo_count     = 2,
+    .rx_int_capable = true,
+};
+
 static fdcan_st_hal_transport_t ctx[3];
 
 
@@ -72,10 +79,10 @@ static transport_error_t get_counters(fdcan_st_hal_transport_t *p) {
     p->base.tec = counters.TxErrorCnt;
     p->base.rec = counters.RxErrorCnt;
 
-    if      (status.BusOff)         p->base.bus_state = TP_BUS_OFF_STATE;
-    else if (status.ErrorPassive)   p->base.bus_state = TP_BUS_PASSIVE;
-    else if (status.Warning)        p->base.bus_state = TP_BUS_WARNING;
-    else                            p->base.bus_state = TP_BUS_ACTIVE;
+    if      (status.BusOff)         p->base.bus_state = BUS_STATE_BUS_OFF;
+    else if (status.ErrorPassive)   p->base.bus_state = BUS_STATE_PASSIVE;
+    else if (status.Warning)        p->base.bus_state = BUS_STATE_WARNING;
+    else                            p->base.bus_state = BUS_STATE_ACTIVE;
 
     if (status.LastErrorCode     != FDCAN_PROTOCOL_ERROR_NO_CHANGE) p->base.last_lec  = status.LastErrorCode;                                                       
     if (status.DataLastErrorCode != FDCAN_PROTOCOL_ERROR_NO_CHANGE) p->base.last_dlec = status.DataLastErrorCode;
@@ -112,15 +119,20 @@ static void record_error(fdcan_st_hal_transport_t *p, transport_error_t err, con
     p->base.last_error.rec              = p->base.rec;
 }
 
-/* Computes TSCC prescaler for the requested granularity; fails if not exactly achievable. */
-static transport_error_t calc_ts_prescaler(uint32_t *prescaler, uint8_t desired_us, uint32_t clock_speed) {
-    if (desired_us == 0) return TP_INVALID_ARG;
-    uint64_t product = (uint64_t)clock_speed * desired_us;
-    if (product % 1000000 != 0) return TP_INVALID_ARG;
+/* Timestamp tick target. The counter only counts CAN bit times (1..16), so
+ * resolution would otherwise track the bitrate; picking the nearest multiple
+ * keeps a tick worth roughly the same time at any bus speed. */
+#define TS_TARGET_NS  10000u
 
-    *prescaler = (product / 1000000) - 1;
+/* TSCC.TCP field value for the tick nearest TS_TARGET_NS at this bitrate. */
+static uint32_t calc_ts_prescaler(uint32_t bitrate) {
+    uint32_t bit_ns = 1000000000u / bitrate;
+    uint32_t n      = (TS_TARGET_NS + bit_ns / 2u) / bit_ns;
 
-    return TP_OK;
+    if (n < 1u)  n = 1u;
+    if (n > 16u) n = 16u;
+
+    return (n - 1u) << FDCAN_TSCC_TCP_Pos;
 }
 
 typedef struct {
@@ -252,6 +264,7 @@ transport_error_t init_transport(transport_t *transport, uint8_t bus) {
     transport->ctx      = p;
     transport->bus_id   = bus;
     transport->ops      = &fdcan_st_hal_ops;
+    transport->caps     = &fdcan_st_hal_caps;
 
     return TP_OK;
 }
@@ -261,16 +274,16 @@ static transport_error_t canfd_init(transport_t *transport, const transport_conf
     fdcan_st_hal_transport_t *p = transport->ctx;
     FDCAN_InitTypeDef *init = &p->handle->Init;
 
-    p->base.bus_state        = TP_BUS_OFF_STATE;
+    p->base.bus_state        = BUS_STATE_BUS_OFF;
     p->config                = *cfg;
 
     init->AutoRetransmission = cfg->auto_retx_enabled ? ENABLE : DISABLE;
     init->FrameFormat        = (cfg->fd_enabled && cfg->brs_enabled) ? FDCAN_FRAME_FD_BRS
                              : (cfg->fd_enabled) ? FDCAN_FRAME_FD_NO_BRS
                              : FDCAN_FRAME_CLASSIC;
-    init->Mode               = (cfg->mode == TP_INT_LOOPBACK_MODE) ? FDCAN_MODE_INTERNAL_LOOPBACK
-                             : (cfg->mode == TP_EXT_LOOPBACK_MODE) ? FDCAN_MODE_EXTERNAL_LOOPBACK
-                             : (cfg->mode == TP_LISTEN_MODE)       ? FDCAN_MODE_BUS_MONITORING
+    init->Mode               = (cfg->mode == MODE_INT_LOOPBACK) ? FDCAN_MODE_INTERNAL_LOOPBACK
+                             : (cfg->mode == MODE_EXT_LOOPBACK) ? FDCAN_MODE_EXTERNAL_LOOPBACK
+                             : (cfg->mode == MODE_LISTEN)       ? FDCAN_MODE_BUS_MONITORING
                              : FDCAN_MODE_NORMAL;
     init->StdFiltersNbr      = SRAMCAN_FLS_NBR;
     init->ExtFiltersNbr      = SRAMCAN_FLE_NBR;
@@ -303,9 +316,8 @@ static transport_error_t canfd_init(transport_t *transport, const transport_conf
     TRY_HAL(HAL_FDCAN_ConfigGlobalFilter(p->handle,
         FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE));
 
-    uint32_t ts_prescaler; 
-    TRY(calc_ts_prescaler(&ts_prescaler, cfg->timestamp_us, clock_speed));
-    TRY_HAL(HAL_FDCAN_ConfigTimestampCounter(p->handle, ts_prescaler));
+    TRY_HAL(HAL_FDCAN_ConfigTimestampCounter(p->handle,
+        calc_ts_prescaler(cfg->nominal_bitrate)));
     
 
     if (cfg->rx_int_active) {
@@ -333,7 +345,7 @@ static transport_error_t canfd_deinit(transport_t *transport) {
     CTX_OR_RETURN(transport);
     fdcan_st_hal_transport_t *p = transport->ctx;
 
-    p->base.bus_state   = TP_BUS_OFF_STATE;
+    p->base.bus_state   = BUS_STATE_BUS_OFF;
     p->tx_cb            = NULL;
     p->rx_cb[0]         = NULL;
     p->rx_cb[1]         = NULL;
@@ -359,7 +371,7 @@ static transport_error_t canfd_start(transport_t *transport) {
     fdcan_st_hal_transport_t *p = transport->ctx;
     TRY_HAL(HAL_FDCAN_Start(p->handle));
 
-    p->base.bus_state          = TP_BUS_ACTIVE;
+    p->base.bus_state          = BUS_STATE_ACTIVE;
     p->base.bus_state_since_ms = HAL_GetTick();
 
     return TP_OK;
@@ -370,7 +382,7 @@ static transport_error_t canfd_stop(transport_t *transport) {
     fdcan_st_hal_transport_t *p = transport->ctx;
     TRY_HAL(HAL_FDCAN_Stop(p->handle));
 
-    p->base.bus_state          = TP_BUS_OFF_STATE;
+    p->base.bus_state          = BUS_STATE_BUS_OFF;
     p->base.bus_state_since_ms = HAL_GetTick();
 
     return TP_OK;
@@ -657,7 +669,7 @@ void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *handle, uint32_t interru
 
     (void)interrupt;
 
-    transport_bus_state_t prev_state = p->base.bus_state;
+    dbcan_bus_state_t prev_state = p->base.bus_state;
     (void)get_counters(p);
     if (p->base.bus_state != prev_state) {
         p->base.bus_state_since_ms = HAL_GetTick();
@@ -675,7 +687,7 @@ void HAL_FDCAN_ErrorStatusCallback(FDCAN_HandleTypeDef *handle, uint32_t interru
     if (evt == BUS_OFF && p->config.auto_bus_recovery_enabled) {
         HAL_FDCAN_Stop(p->handle);
         HAL_FDCAN_Start(p->handle);
-        p->base.bus_state          = TP_BUS_ACTIVE;
+        p->base.bus_state          = BUS_STATE_ACTIVE;
         p->base.bus_state_since_ms = HAL_GetTick();
     }
 }

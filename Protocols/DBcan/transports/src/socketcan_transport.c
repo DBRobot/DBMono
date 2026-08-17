@@ -4,6 +4,7 @@
 #include <linux/can/netlink.h>
 #include <net/if.h>
 #include <linux/can.h>
+#include <linux/can/error.h>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <linux/can/raw.h>
@@ -39,6 +40,14 @@ typedef struct {
 
 static const transport_ops_t socketcan_ops;
 static transport_error_t can_clear_filters(transport_t *transport);
+
+/* one socket, one queue -- receive() ignores its fifo argument */
+static const transport_caps_t socketcan_caps = {
+    .std_filter_max = 255,
+    .ext_filter_max = 255,
+    .fifo_count     = 1,
+    .rx_int_capable = false,
+};
 
 /**
   ==============================================================================
@@ -80,16 +89,37 @@ static transport_error_t get_counters(socketcan_transport_t *p) {
     int bus_state; 
     can_get_state(p->iface, &bus_state);
     switch (bus_state) {
-        case CAN_STATE_ERROR_ACTIVE:        p->base.bus_state = TP_BUS_ACTIVE;    break;
-        case CAN_STATE_ERROR_WARNING:       p->base.bus_state = TP_BUS_WARNING;   break;
-        case CAN_STATE_ERROR_PASSIVE:       p->base.bus_state = TP_BUS_PASSIVE;   break;
-        case CAN_STATE_BUS_OFF:             p->base.bus_state = TP_BUS_OFF_STATE; break;
-        case CAN_STATE_STOPPED:             p->base.bus_state = TP_BUS_OFF_STATE; break;
-        case CAN_STATE_SLEEPING:            p->base.bus_state = TP_BUS_OFF_STATE; break;
-        default:                            p->base.bus_state = TP_BUS_OFF_STATE; break;
+        case CAN_STATE_ERROR_ACTIVE:        p->base.bus_state = BUS_STATE_ACTIVE;    break;
+        case CAN_STATE_ERROR_WARNING:       p->base.bus_state = BUS_STATE_WARNING;   break;
+        case CAN_STATE_ERROR_PASSIVE:       p->base.bus_state = BUS_STATE_PASSIVE;   break;
+        case CAN_STATE_BUS_OFF:             p->base.bus_state = BUS_STATE_BUS_OFF; break;
+        case CAN_STATE_STOPPED:             p->base.bus_state = BUS_STATE_BUS_OFF; break;
+        case CAN_STATE_SLEEPING:            p->base.bus_state = BUS_STATE_BUS_OFF; break;
+        default:                            p->base.bus_state = BUS_STATE_BUS_OFF; break;
     }
 
     return TP_OK;
+}
+
+/* Linux reports the last error code as a class bit plus a protocol-violation
+ * byte, where a controller reports a single LEC value. See linux/can/error.h. */
+static void record_error_frame(socketcan_transport_t *p, const struct canfd_frame *f) {
+    if (f->can_id & CAN_ERR_ACK) {
+        p->base.last_lec = LEC_ACK;
+        return;
+    }
+    if (!(f->can_id & CAN_ERR_PROT)) return;
+
+    uint8_t prot = f->data[2];
+    if      (prot & CAN_ERR_PROT_STUFF) p->base.last_lec = LEC_STUFF;
+    else if (prot & CAN_ERR_PROT_FORM)  p->base.last_lec = LEC_FORM;
+    else if (prot & CAN_ERR_PROT_BIT0)  p->base.last_lec = LEC_BIT0;
+    else if (prot & CAN_ERR_PROT_BIT1)  p->base.last_lec = LEC_BIT1;
+    else if (prot & CAN_ERR_PROT_BIT)   p->base.last_lec = LEC_BIT1;
+
+    if (f->data[3] == CAN_ERR_PROT_LOC_CRC_SEQ || f->data[3] == CAN_ERR_PROT_LOC_CRC_DEL) {
+        p->base.last_lec = LEC_CRC;
+    }
 }
 
 static void record_error(socketcan_transport_t *p, transport_error_t err, const char *function, uint32_t line) {
@@ -139,6 +169,7 @@ transport_error_t init_transport(transport_t *transport, const char *iface) {
     transport->ctx      = p;
     transport->bus_id   = (uint8_t)if_nametoindex(iface);
     transport->ops      = &socketcan_ops;
+    transport->caps     = &socketcan_caps;
 
     return TP_OK;
 }
@@ -150,7 +181,7 @@ transport_error_t can_init(transport_t *transport, const transport_config_t *cfg
     if (cfg->rx_int_active) return TP_INVALID_ARG;
 
     p->config = *cfg;
-    p->base.bus_state = TP_BUS_OFF_STATE;
+    p->base.bus_state = BUS_STATE_BUS_OFF;
 
     struct can_ctrlmode mode = {0};
 
@@ -158,11 +189,11 @@ transport_error_t can_init(transport_t *transport, const transport_config_t *cfg
         mode.mask  |= CAN_CTRLMODE_FD;
         mode.flags |= CAN_CTRLMODE_FD;
     }
-    if (cfg->mode == TP_LISTEN_MODE) {
+    if (cfg->mode == MODE_LISTEN) {
         mode.mask  |= CAN_CTRLMODE_LISTENONLY;
         mode.flags |= CAN_CTRLMODE_LISTENONLY;
     }
-    if (cfg->mode == TP_EXT_LOOPBACK_MODE || cfg->mode == TP_INT_LOOPBACK_MODE) {
+    if (cfg->mode == MODE_EXT_LOOPBACK || cfg->mode == MODE_INT_LOOPBACK) {
         mode.mask  |= CAN_CTRLMODE_LOOPBACK;
         mode.flags |= CAN_CTRLMODE_LOOPBACK;
     }
@@ -193,6 +224,11 @@ transport_error_t can_init(transport_t *transport, const transport_config_t *cfg
     TRY_HAL(bind(p->socket, (struct sockaddr *)&addr, sizeof(addr)));
     TRY(can_clear_filters(transport));
 
+    /* off by default, so without this the kernel delivers no error frames at
+     * all and last_lec never leaves 0 */
+    can_err_mask_t err_mask = CAN_ERR_MASK;
+    TRY_HAL(setsockopt(p->socket, SOL_CAN_RAW, CAN_RAW_ERR_FILTER, &err_mask, sizeof(err_mask)));
+
     if(cfg->fd_enabled) {
         int enable = 1;
         TRY_HAL(setsockopt(p->socket, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &enable, sizeof(enable)));
@@ -207,7 +243,7 @@ transport_error_t can_deinit(transport_t *transport) {
     CTX_OR_RETURN(transport);
     socketcan_transport_t *p = transport->ctx;
 
-    p->base.bus_state           = TP_BUS_OFF_STATE;
+    p->base.bus_state           = BUS_STATE_BUS_OFF;
     p->base.bus_state_since_ms  = get_time_ms();
 
     if(p->socket >= 0) close(p->socket);
@@ -228,7 +264,7 @@ transport_error_t can_start(transport_t *transport) {
     socketcan_transport_t *p = transport->ctx;
     TRY_HAL(can_do_start(p->iface));
 
-    p->base.bus_state = TP_BUS_ACTIVE;
+    p->base.bus_state = BUS_STATE_ACTIVE;
     p->base.bus_state_since_ms = get_time_ms();
 
     return TP_OK;
@@ -239,7 +275,7 @@ transport_error_t can_stop(transport_t *transport) {
     socketcan_transport_t *p = transport->ctx;
     TRY_HAL(can_do_stop(p->iface));
 
-    p->base.bus_state = TP_BUS_OFF_STATE;
+    p->base.bus_state = BUS_STATE_BUS_OFF;
     p->base.bus_state_since_ms = get_time_ms();
 
     return TP_OK;
@@ -401,9 +437,10 @@ static transport_error_t can_receive(transport_t *transport, can_frame_t *msg, u
     if (bytes != CAN_MTU && bytes != CANFD_MTU) return TP_INVALID_ARG;
 
     if (frame.can_id & CAN_ERR_FLAG) {
-      record_error(p, TP_BUS_ERR, __func__, __LINE__);
-      return TP_BUS_ERR;
-  }
+        record_error_frame(p, &frame);
+        record_error(p, TP_BUS_ERR, __func__, __LINE__);
+        return TP_BUS_ERR;
+    }
 
     bool is_ext = (frame.can_id & CAN_EFF_FLAG) != 0;
 
