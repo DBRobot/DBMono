@@ -64,8 +64,8 @@ typedef struct {
 } ptp_id_t;
 
 typedef enum {
-    DBCAN_ID_BCAST,
-    DBCAN_ID_PTP,
+    DBCAN_ID_BCAST  = 0u,
+    DBCAN_ID_PTP    = 1u,
 } dbcan_id_kind_t;
 
 typedef struct {
