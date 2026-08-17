@@ -1,0 +1,54 @@
+# Constants fixed by the DBcan protocol itself, not by any register map.
+# Every backend generates these, so adding one here reaches C, Python and
+# anything added later in a single edit.
+
+# Standard error codes, 0..63. A register's own errors are numbered from 64,
+# so this range must never grow past 63.
+errors:
+  ok:               0
+  no_register:      1
+  not_readable:     2
+  not_writable:     3
+  not_command:      4
+  bad_length:       5
+  out_of_range:     6
+  not_implemented:  7
+
+# Permission bit flags. RW and ANY are composites of these and are not
+# separate values -- see perm_bits() in ir.py.
+permissions:
+  r:    1
+  w:    2
+  cmd:  4
+
+# Result of every command primitive. Register-specific command errors are >= 64.
+cmd_result:
+  success:  0
+  failed:   1
+
+# Value sets more than one layer needs. A register references one by name
+# instead of declaring its own, so there is exactly one definition and the
+# transport can use it without knowing anything about the register map.
+enums:
+  mode:
+    normal:       0
+    int_loopback: 1
+    ext_loopback: 2
+    listen:       3
+
+  bus_state:
+    active:   0
+    warning:  1
+    passive:  2
+    bus_off:  3
+
+  # ISO 11898-1 last error code, as reported by the controller
+  lec:
+    none:       0
+    stuff:      1
+    form:       2
+    ack:        3
+    bit1:       4
+    bit0:       5
+    crc:        6
+    no_change:  7

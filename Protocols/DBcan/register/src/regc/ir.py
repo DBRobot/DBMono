@@ -95,6 +95,23 @@ def encode_default(reg):
     return bytes(w)
 
 
+def raw_default(reg):
+    """The default as it is stored: raw counts for scaled numbers, the integer
+    for an enum, the text for a string. None where a register owns no scalar."""
+    dt, val = reg.get("dtype"), reg.get("default")
+    if dt == "bool":
+        return 1 if val else 0
+    if dt == "enum":
+        return int(val)
+    if dt in ("uint", "int"):
+        return round((val - reg.get("offset", 0)) / reg["resolution"])
+    if dt == "float":
+        return float(val)
+    if dt == "string":
+        return str(val)
+    return None
+
+
 def raw_bounds(reg):
     if reg.get("dtype") not in ("uint", "int"):
         return 1, 0
@@ -173,12 +190,17 @@ def resolve_errors(reg):
 #  the results and formats them; it never calls the functions above.
 # ============================================================================
 
-#  Permission bits, matching reg_perm_t. ANY means unrestricted, so it is
-#  read plus write rather than a bit of its own.
-PERM_BITS = {"R": 1, "W": 2, "RW": 3, "CMD": 4, "ANY": 3}
+def perm_bits(permissions):
+    """Map a YAML permission string to bits.
+
+    RW and ANY are composites rather than values of their own -- ANY means
+    unrestricted, which is read plus write.
+    """
+    r, w, c = permissions["r"], permissions["w"], permissions["cmd"]
+    return {"R": r, "W": w, "RW": r | w, "CMD": c, "ANY": r | w}
 
 
-def effective_perms(registers):
+def effective_perms(registers, bits):
     """Fold each group's permission together with everything stored inside it.
 
     A group can be read or written as one blob, so it may only permit what
@@ -190,7 +212,7 @@ def effective_perms(registers):
     to the blob and should not veto access to the group holding them.
     """
     for reg in registers:
-        reg["perm_bits"] = PERM_BITS[reg["perm"]]
+        reg["perm_bits"] = bits[reg["perm"]]
 
     for reg in registers:
         if "children" not in reg:
@@ -203,13 +225,13 @@ def effective_perms(registers):
 
         allowed = 0xFF                                   # identity for AND
         for leaf in stored:
-            allowed &= PERM_BITS[leaf["perm"]]
+            allowed &= bits[leaf["perm"]]
 
-        reg["perm_bits"] = PERM_BITS[reg["perm"]] & allowed
+        reg["perm_bits"] = bits[reg["perm"]] & allowed
 
 
-def derive(registers, value_map):
-    effective_perms(registers)
+def derive(registers, value_map, bits):
+    effective_perms(registers, bits)
 
     for reg in registers:
         dt   = reg.get("dtype")
@@ -250,6 +272,7 @@ def derive(registers, value_map):
         # groups, commands and structs own no scalar default
         if "children" not in reg and dt not in (None, "struct"):
             reg["default_bytes"] = encode_default(reg)
+            reg["default_raw"]   = raw_default(reg)
 
 
 def collect_converters(registers):
@@ -271,8 +294,8 @@ def collect_converters(registers):
             "raw_bits":   item["storage_bits"],
         }
 
-    for reg in registers:
-        base = reg["path"].replace(".", "_")
+    for reg in distinct_types(registers):
+        base = reg.get("type_path", reg["path"]).replace(".", "_")
         if reg.get("dtype") in ("uint", "int") and reg["scaled"]:
             out.append(entry(base, reg))
         elif reg.get("dtype") == "struct":
@@ -295,7 +318,7 @@ def collect_converters(registers):
 
 #  children: each child is hashed as its own entry
 #  description: documentation edits must not invalidate a shipped map
-HASH_EXCLUDE = {"children", "description"}
+HASH_EXCLUDE = {"children", "description", "base", "count", "overrides"}
 
 #  computed by walk_map, not declared in the schema, but part of identity:
 #  path names the register, perm is resolved from its parents
@@ -341,7 +364,8 @@ def validate_map(registers):
     for dup in sorted({p for p in paths if paths.count(p) > 1}):
         errs.append(f"duplicate register path '{dup}' — sibling names must be unique")
 
-    enum_names = [r["name"] for r in registers if r.get("dtype") == "enum"]
+    enum_names = [r["name"] for r in registers
+                  if r.get("dtype") == "enum" and r.get("copy", 0) == 0]
     for dup in sorted({n for n in enum_names if enum_names.count(n) > 1}):
         errs.append(f"enum register name '{dup}' must be unique across the map")
 
@@ -409,32 +433,115 @@ def validate_derived(registers):
 #  nothing else — no module globals, no reaching back into the schema.
 # ============================================================================
 
+def distinct_types(registers):
+    """Registers that define a type, one per type rather than one per copy.
+
+    Copies of a pinned group are the same register repeated, so they share a
+    type_path -- emitting per register would produce N identical typedefs.
+    """
+    seen, out = set(), []
+    for reg in registers:
+        key = reg.get("type_path", reg["path"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(reg)
+    return out
+
+
 @dataclass
 class RegisterMap:
     registers:    list          # flat, in table order; wire id is reg["num"]
+    types:        list          # subset of registers, deduplicated by type_path
     store_bytes:  int           # total size of the register store blob
     global_count: int           # how many of the registers come from the global map
+    auto_count:   int           # of those, how many are auto-numbered (block 1)
+    blocks:       list          # pinned regions: {base, count, slot, stride}
     board_base:   int           # first wire number available to a board
     dtypes:       list          # dtype vocab, in schema order; number == index + 1
     perms:        list          # permission vocab
+    protocol:     dict          # protocol constants: errors, permissions, cmd_result
     converters:   list          # every raw<->eng conversion; see collect_converters
     crc:          int
 
 
 #  Wire numbers below this belong to the protocol's global map; a board's own
 #  registers start here. See README, "Register Map & Numbering".
-BOARD_BASE = 4096
+BOARD_BASE = 8192
+
+#  A pinned group may not repeat past this.
+PINNED_MAX_COPIES = 128
 
 
-def assign_numbers(registers, global_count):
-    """Wire ids: globals from 0, board registers from BOARD_BASE.
+def apply_overrides(source, board):
+    """Let a board adjust a pinned group's copy count in the global map.
 
-    The two blocks are numbered independently so adding a protocol register
-    never renumbers a board's. List position stays the table index; the wire
-    number is a separate field from here on.
+    Only count, only on groups that pin a base. Anything else would change
+    the global map's shape, which every peer's numbering depends on.
     """
-    for i, reg in enumerate(registers):
-        reg["num"] = i if i < global_count else BOARD_BASE + (i - global_count)
+    over = (board or {}).get("overrides")
+    if not over:
+        return
+
+    by_path = {}
+
+    def index(node, path=""):
+        path = node["name"] if not path else f"{path}.{node['name']}"
+        by_path[path] = node
+        for child in node.get("children", ()) or ():
+            index(child, path)
+
+    for top in source["children"]:
+        index(top)
+
+    errs = []
+    for path, changes in over.items():
+        target = by_path.get(path)
+        if target is None:
+            errs.append(f"override '{path}': no such register")
+        elif "children" not in target:
+            errs.append(f"override '{path}': not a group")
+        elif "base" not in target:
+            errs.append(f"override '{path}': group does not pin a base, so its "
+                        f"count cannot vary without renumbering the map")
+        elif changes["count"] > PINNED_MAX_COPIES:
+            errs.append(f"override '{path}': count {changes['count']} exceeds "
+                        f"{PINNED_MAX_COPIES}")
+        else:
+            target["count"] = changes["count"]
+
+    report(errs)
+
+
+def assign_numbers(registers, blocks):
+    """Wire ids per block. List position stays the table index; the number is
+    a separate field from here on.
+
+    auto     numbered 0.. in walk order
+    pinned   base + copy*stride, stride being the group's own register count,
+             so a differing copy count moves nothing outside the block
+    board    from BOARD_BASE
+    """
+    for reg in registers:
+        reg["num"] = None
+
+    n = 0
+    for reg in registers:
+        if reg["_block"] == "auto":
+            reg["num"] = n
+            n += 1
+
+    for b in blocks:
+        for copy in range(b["count"]):
+            for offset in range(b["stride"]):
+                registers[b["slot"] + copy*b["stride"] + offset]["num"] = \
+                    b["base"] + copy*b["stride"] + offset
+
+    n = BOARD_BASE
+    for reg in registers:
+        if reg["_block"] == "board":
+            reg["num"] = n
+            n += 1
 
 
 def check_collisions(registers, global_count):
@@ -449,30 +556,77 @@ def check_collisions(registers, global_count):
         raise SystemExit(1)
 
 
-def build_ir(source, schema, board=None):
+def build_ir(source, schema, protocol, board=None):
     primitive = schema["definitions"]["primitive"]["properties"]
     group     = schema["definitions"]["group"]["properties"]
 
     validate_structural(schema, source)
+    if board is not None:
+        validate_structural(schema, board)
+    apply_overrides(source, board)
 
+    #  Pinned groups are walked after the auto-numbered ones so table slots run
+    #  in block order -- auto, then pinned, then board -- which is what lets a
+    #  wire number map to a slot with arithmetic instead of a search.
     registers = []
-    cursor = 0
+    cursor    = 0
+    blocks    = []
+
     for top in source["children"]:
-        cursor = walk_map(top, "", source["permissions"], registers, cursor)
+        if "base" not in top:
+            cursor = walk_map(top, "", source["permissions"], registers, cursor)
+    auto_count = len(registers)
+
+    for top in source["children"]:
+        if "base" not in top:
+            continue
+        slot   = len(registers)
+        copies = top.get("count", 1)
+        for i in range(copies):
+            first = len(registers)
+            copy = dict(top)
+            copy["name"] = f"{top['name']}_{i}"
+            cursor = walk_map(copy, "", source["permissions"], registers, cursor)
+            for reg in registers[first:]:
+                #  Every copy is the same register repeated, so types and names
+                #  are generated once, from copy 0, under the unsuffixed path.
+                reg["copy"] = i
+                reg["type_path"] = top["name"] + reg["path"][len(copy["name"]):]
+        blocks.append({
+            "name":   top["name"],
+            "base":   top["base"],
+            "count":  copies,
+            "slot":   slot,
+            "stride": (len(registers) - slot) // copies,
+        })
 
     global_count = len(registers)
 
     if board is not None:
-        validate_structural(schema, board)
         for top in board["children"]:
             cursor = walk_map(top, "", board["permissions"], registers, cursor)
         check_collisions(registers, global_count)
 
-    assign_numbers(registers, global_count)
+    for i, reg in enumerate(registers):
+        reg["_block"] = ("board" if i >= global_count
+                         else "pinned" if i >= auto_count
+                         else "auto")
 
+    assign_numbers(registers, blocks)
+
+    shared = protocol.get("enums", {})
     value_map = { r["path"].split(".")[-1]: r["values"]
                   for r in registers
                   if r.get("dtype") == "enum" and isinstance(r.get("values"), dict) }
+    clash = sorted(set(shared) & set(value_map))
+    if clash:
+        report([f"'{n}': declared inline by a register and in protocol.yaml; "
+                f"reference it by name instead" for n in clash])
+    value_map.update(shared)
+
+    for reg in registers:
+        if isinstance(reg.get("values"), str) and reg["values"] in shared:
+            reg["shared_enum"] = reg["values"]
 
     # fill omitted attributes from the schema's declared defaults, then semantic-validate
     for reg in registers:
@@ -482,16 +636,20 @@ def build_ir(source, schema, board=None):
 
     crc = compute_crc(registers, hashed_keys(primitive, group))
 
-    derive(registers, value_map)
+    derive(registers, value_map, perm_bits(protocol["permissions"]))
     validate_derived(registers)
 
     return RegisterMap(
         registers    = registers,
+        types        = distinct_types(registers),
         store_bytes  = cursor,
         global_count = global_count,
+        auto_count   = auto_count,
+        blocks       = blocks,
         board_base   = BOARD_BASE,
         dtypes       = primitive["dtype"]["enum"],
         perms        = group["permissions"]["enum"],
+        protocol     = protocol,
         converters   = collect_converters(registers),
         crc          = crc,
     )

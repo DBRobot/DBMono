@@ -9,8 +9,8 @@ const reg_desc_t reg_table[REG_COUNT] = {
     /* @@REGISTER_TABLE@@ */
 };
 
-/* only non-zero bytes are listed; C zero-fills the rest */
-uint8_t reg_store[REG_STORE_BYTES] = {
+/* only non-zero defaults are listed; C zero-fills the rest */
+reg_store_t reg_store = {
     /* @@REG_STORE_INIT@@ */
 };
 

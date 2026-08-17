@@ -7,13 +7,15 @@ from _dbcan import ffi, lib  # type: ignore[import-not-found]
 
 #  bit flags, matching reg_perm_t -- a register may be R, W, both, or CMD
 class perms(IntFlag):
-	REG_R = 1 << 0
-	REG_W = 1 << 1
-	REG_CMD = 1 << 2
+	# @@PERM_FLAGS@@
 
 class CmdResult(IntEnum):
-	SUCCESS = 0
-	FAILED = 1
+	# @@CMD_RESULT@@
+
+#  standard (global) error codes, 0..63; register-specific errors are >= 64.
+#  Mirrors reg_err_t in dbcan_reg_map.h.
+class RegErr(IntEnum):
+	# @@ERROR_CODES@@
 
 class registers(IntEnum):
 	# @@REGISTER_ENUM@@
@@ -22,6 +24,7 @@ class dtypes(IntEnum):
 	DTYPE_NONE = 0
 	# @@DTYPE_ENUM@@
 
+# @@PROTOCOL_ENUMS@@
 # @@REG_VALUE_ENUMS@@
 # @@REG_ERROR_ENUMS@@
 # @@REG_STRUCTS@@

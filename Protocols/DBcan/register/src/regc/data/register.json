@@ -97,8 +97,21 @@
             "type": "object",
             "properties": {
                 "name":     { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 32},
-                "count":    { "type": "integer", "minimum": 1, "default": 1 },
+                "count":    { "type": "integer", "minimum": 1, "default": 1,
+                              "description": "How many copies of this group exist. Only meaningful with base -- repeating an auto-numbered group would shift every register after it." },
+                "base":     { "type": "integer", "minimum": 0,
+                              "description": "Pins this group's first register number instead of taking it from the walk. Copies are laid out base + i*stride, where stride is the group's register count, so count may vary per node without moving anything else." },
+                "overrides":{ "type": "object",
+                              "description": "Board maps only: adjusts a pinned group in the global map. Keyed by full dotted path; only count may be set.",
+                              "additionalProperties": {
+                                  "type": "object",
+                                  "properties": { "count": { "type": "integer", "minimum": 1 } },
+                                  "required": ["count"],
+                                  "additionalProperties": false
+                              } },
                 "permissions":  { "type": "string", "enum": ["R", "W", "RW", "CMD", "ANY"] },
+                "description":  { "type": "string",
+                                  "description": "What this group is for as a unit -- effect, timing, and interactions a caller needs. Not hashed, so it can be improved without invalidating deployed maps." },
                 "children": { "type": "array" }
             },
             "required": ["name", "permissions", "children"],

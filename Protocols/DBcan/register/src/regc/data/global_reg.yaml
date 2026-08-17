@@ -88,6 +88,185 @@ children:
             dtype: uint
             bits: 64
 
+  - name: can
+    base: 4096
+    permissions: ANY
+    children:
+      - name: settings
+        permissions: RW
+        description: >
+          Bus configuration, applied at boot. A node cannot be asked for these
+          over the bus it has not configured yet, so every register here is
+          persisted and read back from storage before the transport is started.
+          Changes take effect on the next reboot, not immediately.
+        children:
+          - name: mode
+            dtype: enum
+            bits: 4
+            values: mode
+            default: 0
+            persist: true
+
+          - name: fd
+            dtype: bool
+            default: true
+            persist: true
+
+          - name: brs
+            dtype: bool
+            default: true
+            persist: true
+
+          - name: auto_retry
+            dtype: bool
+            default: true
+            persist: true
+
+          - name: auto_recover
+            dtype: bool
+            default: true
+            persist: true
+
+          - name: nominal_bitrate
+            dtype: uint
+            bits: 32
+            units: bps
+            default: 1000000
+            persist: true
+
+          - name: data_bitrate
+            dtype: uint
+            bits: 32
+            units: bps
+            default: 5000000
+            persist: true
+
+          - name: nominal_sample_p
+            dtype: uint
+            bits: 8
+            units: percent
+            min_value: 50
+            max_value: 90
+            default: 80
+            persist: true
+
+          - name: data_sample_p
+            dtype: uint
+            bits: 8
+            units: percent
+            min_value: 50
+            max_value: 90
+            default: 80
+            persist: true
+
+      - name: state
+        permissions: R
+        description: >
+          Live bus health for this line, written by the node from its transport
+          and never by a peer.
+        children:
+          - name: bus_state
+            dtype: enum
+            bits: 2
+            values: bus_state
+            default: 3
+
+          - name: tec
+            dtype: uint
+            bits: 8
+            default: 0
+
+          - name: rec
+            dtype: uint
+            bits: 8
+            default: 0
+
+          - name: last_error_code
+            dtype: enum
+            bits: 3
+            values: lec
+            default: 0
+
+          - name: data_last_error_code
+            dtype: enum
+            bits: 3
+            values: lec
+            default: 0
+            description: >
+              Last error code for the data phase of an FD frame. Classic CAN
+              and non-FD lines leave this at none.
+
+          - name: rx_count
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: tx_count
+            dtype: uint
+            bits: 32
+            default: 0
+
+
+      - name: errors
+        permissions: R
+        description: >
+          Accumulated bus faults for this line. Counters wrap and are never
+          reset by the node.
+        children:
+          - name: bus_off
+            dtype: uint
+            bits: 32
+            default: 0
+            description: >
+              Times this line has entered bus-off. Recovery, automatic or not,
+              does not decrement it.
+
+          - name: messages_lost
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: arbitration
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: data
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: tx_overflow
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: ram_access
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: tx_abort
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: hw_fault
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: timeout
+            dtype: uint
+            bits: 32
+            default: 0
+
+          - name: ram_watchdog
+            dtype: uint
+            bits: 32
+            default: 0
+
+
 # 0 prio - Faults
 
   - name: faults

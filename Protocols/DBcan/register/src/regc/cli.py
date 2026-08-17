@@ -52,6 +52,10 @@ def load_schema():
     return json.loads(DATA.joinpath("register.json").read_text())
 
 
+def load_protocol():
+    return yaml.safe_load(DATA.joinpath("protocol.yaml").read_text())
+
+
 MARKER = re.compile(r"@@\w*@@?")
 
 
@@ -97,7 +101,7 @@ def build(args):
     Validation happens inside build_ir, which exits non-zero and reports every
     problem it found if either map is bad.
     """
-    return reg_ir.build_ir(load_map(), load_schema(),
+    return reg_ir.build_ir(load_map(), load_schema(), load_protocol(),
                            board=load_board(getattr(args, "board", None)))
 
 

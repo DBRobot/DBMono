@@ -38,6 +38,21 @@ def py_class(path):
 #  One per generated block. Each returns the text that replaces its marker.
 # ============================================================================
 
+def emit_perm_flags(ir):
+    return "".join(f"\t{f'REG_{name.upper()}':<8}= {bit}\n"
+                   for name, bit in ir.protocol["permissions"].items())
+
+
+def emit_error_codes(ir):
+    return "".join(f"\t{name.upper():<16}= {code}\n"
+                   for name, code in ir.protocol["errors"].items())
+
+
+def emit_cmd_result(ir):
+    return "".join(f"\t{name.upper():<8}= {code}\n"
+                   for name, code in ir.protocol["cmd_result"].items())
+
+
 def emit_reg_enum(ir):
     return "".join(f"\t{py_ident(reg["path"].upper())} = {reg["num"]}\n"
                    for reg in ir.registers)
@@ -46,13 +61,24 @@ def emit_dtype_enum(ir):
     return "".join(f"\t{name.upper()} = {num + 1}\n"
                    for num, name in enumerate(ir.dtypes))
 
+def emit_protocol_enums(ir):
+    out = []
+    for name, values in ir.protocol.get("enums", {}).items():
+        out.append(f"class {py_class(name)}(IntEnum):\n")
+        for key, value in values.items():
+            out.append(f"\t{key.upper()} = {value}\n")
+        out.append("\n")
+    return "".join(out)
+
 def emit_reg_val_enums(ir):
     out = []
-    for reg in ir.registers:
+    for reg in ir.types:
         if reg.get("dtype") != "enum" or not reg["values_resolved"]:
             continue
+        if reg.get("shared_enum"):                  # defined once above
+            continue
 
-        out.append(f"class {py_class(reg["path"])}(IntEnum):\n")
+        out.append(f"class {py_class(reg.get("type_path", reg["path"]))}(IntEnum):\n")
         for key, value in reg["values_resolved"].items():
             out.append(f"\t{key.upper()} = {value}\n")
         out.append("\n")
@@ -60,12 +86,12 @@ def emit_reg_val_enums(ir):
 
 def emit_reg_error_enums(ir):
     out = []
-    for reg in ir.registers:
+    for reg in ir.types:
         errs = reg.get("errors_resolved")
         if errs is None:
             continue
 
-        out.append(f"class {py_class(reg["path"])}Error(IntEnum):\n")
+        out.append(f"class {py_class(reg.get("type_path", reg["path"]))}Error(IntEnum):\n")
         for name, code in errs:
             out.append(f"\t{name.upper()} = {code}\n")
         out.append("\n")
@@ -73,11 +99,11 @@ def emit_reg_error_enums(ir):
 
 def emit_reg_structs(ir):
     out = []
-    for reg in ir.registers:
+    for reg in ir.types:
         if reg.get("dtype") != "struct":
             continue
 
-        out.append(f"class {py_class(reg["path"])}(NamedTuple):\n")
+        out.append(f"class {py_class(reg.get("type_path", reg["path"]))}(NamedTuple):\n")
         for field in reg["values"]:
             out.append(f"\t{field["name"]}: {PY_FIELD_TYPE[field["dtype"]]}\n")
         out.append("\n")
@@ -110,6 +136,10 @@ def emit_converters(ir):
 MARKERS = {
     "# @@REGISTER_ENUM@@":          emit_reg_enum,
     "# @@DTYPE_ENUM@@":             emit_dtype_enum,
+    "# @@PERM_FLAGS@@":             emit_perm_flags,
+    "# @@ERROR_CODES@@":            emit_error_codes,
+    "# @@CMD_RESULT@@":             emit_cmd_result,
+    "# @@PROTOCOL_ENUMS@@":         emit_protocol_enums,
     "# @@REG_VALUE_ENUMS@@":        emit_reg_val_enums,
     "# @@REG_ERROR_ENUMS@@":        emit_reg_error_enums,
     "# @@REG_STRUCTS@@":            emit_reg_structs,
